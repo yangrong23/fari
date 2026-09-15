@@ -1,0 +1,10 @@
+# Environment secrets — never commit
+.env
+.env.*
+
+# OS / editor
+.DS_Store
+*.log
+
+# Dependencies (none currently; server.js uses Node built-ins only)
+node_modules/

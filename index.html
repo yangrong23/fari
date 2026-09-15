@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>fari | Photo to emotional video gifts</title>
+  <meta name="description" content="Turn a photo into a video they will want to keep. Preview for free, then unlock an HD video with music, no watermark, and share-ready captions.">
+  <meta name="google-site-verification" content="REPLACE_WITH_GOOGLE_SITE_VERIFICATION">
+  <meta name="facebook-domain-verification" content="REPLACE_WITH_META_DOMAIN_VERIFICATION">
+  <script defer src="ui/tracking.js"></script>
+  <style>
+    :root {
+      --bg: #07090d;
+      --surface: #0d1016;
+      --ink: #fff;
+      --muted: #c2c4ca;
+      --pink: #e91e63;
+      --pink-bright: #ff347e;
+      --line: rgba(255,255,255,.16);
+      --max: 1180px;
+      --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; background: var(--bg); }
+    body { margin: 0; overflow-x: hidden; background: var(--bg); color: var(--ink); font-family: var(--font); }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+    button { font: inherit; }
+    .container { width: min(calc(100% - 56px), var(--max)); margin: 0 auto; }
+    .nav { position: fixed; z-index: 20; inset: 0 0 auto; height: 74px; background: transparent; }
+    .nav-inner { height: 100%; display: flex; align-items: center; justify-content: space-between; }
+    .logo { display:block; width:74px; height:40px; overflow:hidden; }
+    .logo img { width:100%; height:100%; object-fit:contain; }
+    .nav-links { display: flex; align-items: center; gap: 28px; color: #f3f3f5; font-size: 14px; font-weight: 700; }
+    .nav-links a { opacity: .92; transition: opacity .2s; }
+    .nav-links a:hover { opacity: .65; }
+    .nav-cta, .button { display: inline-flex; align-items: center; justify-content: center; border: 0; border-radius: 9px; background: var(--pink); color: #fff; font-weight: 800; transition: transform .2s, background .2s; }
+    .nav-cta { min-height: 38px; padding: 0 19px; font-size: 11px; }
+    .nav-cta:hover, .button:hover { background: var(--pink-bright); transform: translateY(-2px); }
+    .hero { position: relative; min-height: 720px; height: 100svh; overflow: hidden; display: grid; place-items: center; text-align: center; }
+    .hero-media { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 44%; }
+    .hero:after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(4,4,8,.46), rgba(4,4,8,.24) 45%, rgba(7,9,13,.95) 100%), linear-gradient(90deg, rgba(7,9,13,.36), transparent 50%, rgba(7,9,13,.42)); }
+    .hero-content { position: relative; z-index: 1; width: min(680px, calc(100% - 34px)); margin-top: 72px; }
+    .hero h1 { margin: 0; font-size: clamp(52px, 7vw, 88px); line-height: .94; letter-spacing: -.065em; text-shadow: 0 4px 20px rgba(0,0,0,.4); }
+    .hero h1 span { color: var(--pink-bright); }
+    .type-line { display: block; min-height: .94em; }
+    .type-line.accent { color: var(--pink-bright); }
+    .cursor { display: inline-block; width: .06em; height: .82em; margin-left: .08em; background: currentColor; vertical-align: -.06em; animation: blink .86s steps(2,end) infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+    .hero p { max-width: 560px; margin: 24px auto 0; color: #f1eef2; font-size: 15px; line-height: 1.55; }
+    .hero .button { min-height: 48px; margin-top: 26px; padding: 0 30px; font-size: 12px; }
+    .section { padding: 64px 0; scroll-margin-top: 82px; }
+    .section-title { margin: 0 0 30px; font-size: clamp(30px, 4vw, 48px); line-height: .98; letter-spacing: -.05em; white-space: nowrap; }
+    .section-title span { color: var(--pink-bright); }
+    .steps { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 60px; }
+    .steps:before { content: ""; position: absolute; z-index: 0; left: 7%; right: 7%; top: 31px; height: 2px; border-radius: 999px; background: linear-gradient(90deg, transparent, rgba(255,255,255,.28) 8%, rgba(255,255,255,.28) 92%, transparent); }
+    .steps:after { content: ""; position: absolute; z-index: 0; top: 29px; left: 7%; width: 25%; height: 6px; border-radius: 999px; background: linear-gradient(90deg, transparent, var(--pink-bright), #ff9ab7, transparent); filter: blur(1px); animation: stepFlow 4.2s ease-in-out infinite; }
+    .step { position: relative; z-index: 1; }
+    .step:not(:last-child):after { content: ""; position: absolute; z-index: -1; top: 28px; right: -40px; width: 80px; height: 12px; border-top: 1px solid rgba(255,255,255,.28); border-radius: 50%; transform: rotate(3deg); }
+    .step-number { color: var(--pink-bright); font-size: 64px; font-weight: 900; line-height: .8; letter-spacing: -.08em; text-shadow: 0 0 24px rgba(255,52,126,.18); }
+    @keyframes stepFlow { 0% { transform: translateX(-8%); opacity: .25; } 45% { opacity: 1; } 100% { transform: translateX(300%); opacity: .2; } }
+    .step h3 { margin: 18px 0 8px; font-size: 18px; line-height: 1.05; }
+    .step p { max-width: 220px; margin: 0; color: var(--muted); font-size: 12px; line-height: 1.65; }
+    .templates { background: #080a0e; }
+    .templates .container { width: min(calc(100% - 40px), 1320px); }
+    .template-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; }
+    .template { position: relative; aspect-ratio: 9 / 16; margin: 0; padding: 0; border: 1px solid rgba(255,255,255,.12); border-radius: 22px; background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.015)); box-shadow: 0 22px 58px rgba(0,0,0,.22); overflow: hidden; transition: transform .28s ease, border-color .28s ease, box-shadow .28s ease; }
+    .template:before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,.46)); pointer-events: none; z-index: 1; }
+    .template:hover { transform: translateY(-8px); border-color: rgba(255,52,126,.54); box-shadow: 0 28px 66px rgba(255,52,126,.16), 0 22px 58px rgba(0,0,0,.28); }
+    .template img, .template video { width: 100%; height: 100%; border: 0; border-radius: inherit; object-fit: cover; transition: transform .4s ease, filter .4s ease; }
+    .template:hover img, .template:hover video { transform: scale(1.05); filter: saturate(1.08) contrast(1.03); }
+    .template figcaption { position: absolute; left: 18px; bottom: 16px; z-index: 2; display: inline-flex; align-items: center; justify-content: center; min-height: 34px; max-width: calc(100% - 36px); padding: 0 14px; border-radius: 999px; background: rgba(7,9,13,.74); color: #fff; font-size: 13px; font-weight: 700; letter-spacing: .02em; backdrop-filter: blur(12px); text-align: center; }
+    .testimonials { background: #080a0e; }
+    .testimonials .section-title { opacity: 0; transform: translateY(18px); transition: opacity .65s ease, transform .65s ease; }
+    .testimonials.in-view .section-title { opacity: 1; transform: translateY(0); }
+    .testimonial-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; align-items: start; }
+    .testimonial { min-height: 170px; padding: 17px; border: 1px solid rgba(255,255,255,.5); border-radius: 8px; background: rgba(16,18,24,.62); opacity: 0; transform: translateY(34px) rotate(-2deg) scale(.96); transition: opacity .68s ease, transform .68s cubic-bezier(.2,.72,.2,1), border-color .2s, box-shadow .2s; }
+    .testimonial:nth-child(2) { transform: translateY(59px) rotate(2deg) scale(.96); transition-delay: .12s; }
+    .testimonial:nth-child(3) { transform: translateY(34px) rotate(1deg) scale(.96); transition-delay: .24s; }
+    .testimonials.in-view .testimonial { opacity: 1; transform: translateY(0) rotate(-2deg) scale(1); }
+    .testimonials.in-view .testimonial:nth-child(2) { transform: translateY(25px) rotate(2deg) scale(1); }
+    .testimonials.in-view .testimonial:nth-child(3) { transform: translateY(0) rotate(1deg) scale(1); }
+    .testimonial:hover { border-color: rgba(255,52,126,.72); box-shadow: 0 18px 42px rgba(255,52,126,.12); }
+    .profile { display: flex; align-items: center; gap: 10px; font-size: 12px; }
+    .profile img { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; }
+    .stars { margin-left: auto; color: var(--pink-bright); letter-spacing: 2px; }
+    .testimonial p { margin: 16px 0 0; color: #eeeaf0; font-size: 12px; line-height: 1.6; }
+    .moments { background: #080a0e; }
+    .moment-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .moment { position: relative; overflow: hidden; aspect-ratio: 1.18; border: 1px solid rgba(255,255,255,.22); border-radius: 8px; }
+    .moment img, .moment video { width: 100%; height: 100%; object-fit: cover; transition: transform .4s; }
+    .moment:hover img { transform: scale(1.05); }
+    .moment:after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(0,0,0,.7), transparent 50%); }
+    .moment label { position: absolute; z-index: 1; left: 10px; bottom: 10px; padding: 7px 10px; border-radius: 5px; background: var(--pink); font-size: 10px; font-weight: 800; }
+    .final { margin: 0 auto 48px; padding: 45px 52px; border-radius: 8px; background: linear-gradient(90deg, rgba(233,30,99,.95), rgba(188,35,57,.78)), url("assets/fari/fari 高级模板 - 婚礼订婚.webp") center/cover; }
+    .final h2 { max-width: 540px; margin: 0; font-size: clamp(30px, 4vw, 48px); line-height: .98; letter-spacing: -.05em; font-weight: 600; }
+    .final p { margin: 14px 0 0; font-size: 14px; }
+    .final .button { min-width: 156px; min-height: 46px; margin-top: 24px; padding: 0 24px; border-radius: 999px; background: #fff; color: var(--pink); font-size: 13px; font-weight: 850; line-height: 1; box-shadow: 0 12px 28px rgba(0,0,0,.18); }
+    .final .button:hover { background: #fff; color: #c91550; transform: translateY(-2px); }
+    .footer { padding: 24px 0 34px; border-top: 1px solid rgba(255,255,255,.13); }
+    .footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .footer-links { display: flex; gap: 38px; color: #e7e3e8; font-size: 11px; }
+    .social { display: flex; align-items: center; gap: 13px; }
+    .social a { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border: 1px solid rgba(255,255,255,.18); border-radius: 50%; color: #f6edf2; background: rgba(255,255,255,.04); transition: transform .2s, border-color .2s, background .2s, color .2s; }
+    .social a:hover { transform: translateY(-2px); border-color: rgba(255,52,126,.8); background: rgba(255,52,126,.12); color: var(--pink-bright); }
+    .social svg { width: 19px; height: 19px; display: block; }
+    @media (max-width: 800px) {
+      .container { width: min(calc(100% - 34px), var(--max)); }
+      .nav-links { gap: 14px; font-size: 12px; }
+      .steps { gap: 24px; }
+      .step:not(:last-child):after { right: -27px; width: 52px; }
+      .templates .container { width: min(calc(100% - 34px), var(--max)); }
+      .template-grid { grid-template-columns: 1fr; gap: 18px; }
+      .moment-grid { gap: 14px; }
+    }
+    @media (max-width: 560px) {
+      .container { width: calc(100% - 28px); }
+      .logo { width:58px; height:32px; }
+      .nav { height: 58px; }
+      .nav-inner { gap: 10px; }
+      .nav-links { display: flex; gap: 12px; margin-left: auto; font-size: 11px; white-space: nowrap; }
+      .hero { min-height: 620px; height: 100svh; }
+      .hero-content { width: calc(100% - 28px); margin-top: 24px; }
+      .hero h1 { font-size: clamp(38px, 10vw, 50px); letter-spacing: -.045em; line-height: .95; }
+      .hero p { margin-top: 16px; font-size: 12px; line-height: 1.45; }
+      .hero .button { min-height: 44px; margin-top: 18px; padding: 0 22px; font-size: 11px; }
+      .section { padding: 24px 0; }
+      .section { scroll-margin-top: 68px; }
+      .section-title { margin-bottom: 15px; font-size: clamp(25px, 7.5vw, 32px); }
+      .steps {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 7px;
+        margin: 0;
+        padding: 0;
+        overflow: visible;
+      }
+      .steps:before, .steps:after { display: block; }
+      .step {
+        display: block;
+        min-width: 0;
+        min-height: 0;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+      }
+      .step:not(:last-child):after { display: block; top: 23px; right: -5px; width: 10px; height: 8px; }
+      .steps .step-number { margin: 0 0 8px; font-size: 39px; line-height: .82; }
+      .step h3 { margin: 0 0 7px; font-size: 13px; line-height: 1.05; }
+      .step p { max-width: none; font-size: 9px; line-height: 1.38; }
+      .template-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+      .template { padding-bottom: 32px; border-radius: 12px; }
+      .template img { border-radius: inherit; }
+      .template figcaption { left: 14px; right: auto; bottom: 10px; min-height: 28px; padding: 0 10px; font-size: 11px; }
+      .testimonial-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 7px;
+        margin: 0;
+        padding: 0;
+        overflow: visible;
+      }
+      .testimonial { min-width: 0; min-height: 132px; padding: 8px; border-radius: 6px; }
+      .profile { gap: 4px; font-size: 8px; }
+      .profile img { width: 18px; height: 18px; }
+      .stars { margin-left: auto; letter-spacing: 0; font-size: 7px; }
+      .testimonial p { margin-top: 8px; font-size: 8px; line-height: 1.35; }
+      .testimonials .section-title,
+      .testimonial,
+      .testimonial:nth-child(2),
+      .testimonial:nth-child(3),
+      .testimonials.in-view .testimonial,
+      .testimonials.in-view .testimonial:nth-child(2),
+      .testimonials.in-view .testimonial:nth-child(3) { opacity: 1; transform: none; }
+      .moment-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+      .moment:last-child { grid-column: auto; }
+      .moment { aspect-ratio: 1; }
+      .moment label { left: 6px; bottom: 6px; padding: 5px 6px; font-size: 8px; }
+      .final { padding: 24px 20px; }
+      .final h2 { font-size: clamp(24px, 7vw, 34px); }
+      .final p { font-size: 12px; }
+      .final .button { min-width: 144px; min-height: 42px; padding: 0 20px; font-size: 11px; }
+      .footer { padding: 18px 0 22px; }
+      .footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+      .footer .logo { flex: 0 0 42px; width: 42px; height: 24px; }
+      .footer-links { display: flex; align-items: center; gap: 6px; width: auto; font-size: 7px; white-space: nowrap; }
+      .social { flex: 0 0 auto; gap: 4px; }
+      .social a { width: 22px; height: 22px; }
+      .social svg { width: 13px; height: 13px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="logo" href="#top" aria-label="fari home"><img src="assets/fari-logo-symbol.png" alt="fari"></a>
+      <nav class="nav-links" aria-label="Navigation">
+        <a href="template-gallery.html">Templates</a>
+        <a href="#how">How it works</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <video class="hero-media" src="assets/fari-hero-home.mp4" poster="assets/fari/fari 首页主视觉 - 家庭生日庆祝.webp" autoplay muted loop playsinline aria-label="Friends celebrating together"></video>
+      <div class="hero-content">
+        <h1 class="type-title" aria-label="Turn a photo into a video they will want to keep">
+          <span class="type-line" data-type-text="Turn a photo into">Turn a photo into</span>
+          <span class="type-line accent" data-type-text="a video they’ll keep">a video they’ll keep</span>
+        </h1>
+        <p>Choose a template, upload one photo, and preview the feeling for free. Unlock the final HD video with music, no watermark, and a share-ready caption when it feels right.</p>
+        <a class="button" href="template-gallery.html">Create a Free Preview</a>
+      </div>
+    </section>
+
+    <section class="section" id="how">
+      <div class="container">
+        <h2 class="section-title">How it <span>works</span></h2>
+        <div class="steps">
+          <article class="step"><div class="step-number">01</div><h3>Choose a<br>template</h3><p>Choose an AI scene: family, pets, birthdays, cinema or football.</p></article>
+          <article class="step"><div class="step-number">02</div><h3>Preview for<br>free</h3><p>Upload one photo and see a low-cost personalized preview first.</p></article>
+          <article class="step"><div class="step-number">03</div><h3>Unlock and<br>share</h3><p>Create the final HD video with music, no watermark, and captions.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section templates" id="templates">
+      <div class="container">
+        <h2 class="section-title">Exclusive <span>templates</span></h2>
+        <div class="template-grid">
+          <a href="template-gallery.html"><figure class="template"><video src="assets/production-templates/da-barriga.mp4" poster="assets/production-templates/posters/da-barriga.jpg" autoplay muted loop playsinline></video><figcaption>Da Barriga pra Vida IA</figcaption></figure></a>
+          <a href="template-gallery.html"><figure class="template"><video src="assets/production-templates/dupla-chef-pet.mp4" poster="assets/production-templates/posters/dupla-chef-pet.jpg" autoplay muted loop playsinline></video><figcaption>Dupla Chef Pet IA</figcaption></figure></a>
+          <a href="template-gallery.html"><figure class="template"><video src="assets/production-templates/nosso-bebe.mp4" poster="assets/production-templates/posters/nosso-bebe.jpg" autoplay muted loop playsinline></video><figcaption>Nosso Bebê do Futuro IA</figcaption></figure></a>
+          <a href="template-gallery.html"><figure class="template"><video src="assets/production-templates/pet-motoqueiro.mp4" poster="assets/production-templates/posters/pet-motoqueiro.jpg" autoplay muted loop playsinline></video><figcaption>Pet Motoqueiro IA</figcaption></figure></a>
+          <a href="template-gallery.html"><figure class="template"><video src="assets/production-templates/niver-piscina.mp4" poster="assets/production-templates/posters/niver-piscina.jpg" autoplay muted loop playsinline></video><figcaption>Niver na Piscina IA</figcaption></figure></a>
+          <a href="template-gallery.html"><figure class="template"><video src="assets/production-templates/meu-namorado.mp4" poster="assets/production-templates/posters/meu-namorado.jpg" autoplay muted loop playsinline></video><figcaption>Meu Namorado IA</figcaption></figure></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section testimonials">
+      <div class="container">
+        <h2 class="section-title">Stories you can <span>create</span></h2>
+        <div class="testimonial-grid">
+          <article class="testimonial"><div class="profile"><img src="assets/fari/fari 用户头像 1.webp" alt=""><span>Parent & child</span></div><p>Turn a parent-and-child photo into a warm journey from pregnancy memories to a riverside walk.</p></article>
+          <article class="testimonial"><div class="profile"><img src="assets/fari/fari 用户头像 2.webp" alt=""><span>Two pet chefs</span></div><p>Give two pets starring roles in a kitchen comedy, with pasta and a very unexpected hairstyle.</p></article>
+          <article class="testimonial"><div class="profile"><img src="assets/fari/fari 用户头像 3.webp" alt=""><span>Pet racer</span></div><p>Put your pet in the racing seat with a playful motorcycle adventure on a Brazilian track.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section moments">
+      <div class="container">
+        <h2 class="section-title">Special <span>moments</span></h2>
+        <div class="moment-grid">
+          <a class="moment" href="template-gallery.html"><video src="assets/production-templates/niver-piscina.mp4" poster="assets/production-templates/posters/niver-piscina.jpg" autoplay muted loop playsinline></video><label>Niver na Piscina IA</label></a>
+          <a class="moment" href="template-gallery.html"><video src="assets/production-templates/meu-namorado.mp4" poster="assets/production-templates/posters/meu-namorado.jpg" autoplay muted loop playsinline></video><label>Meu Namorado IA</label></a>
+          <a class="moment" href="template-gallery.html"><video src="assets/production-templates/cena-cinema.mp4" poster="assets/production-templates/posters/cena-cinema.jpg" autoplay muted loop playsinline></video><label>Cena de Cinema IA</label></a>
+          <a class="moment" href="template-gallery.html"><video src="assets/production-templates/de-pequena.mp4" poster="assets/production-templates/posters/de-pequena.jpg" autoplay muted loop playsinline></video><label>De Pequena pra Hoje IA</label></a>
+          <a class="moment" href="template-gallery.html"><video src="assets/production-templates/giro-craque.mp4" poster="assets/production-templates/posters/giro-craque.jpg" autoplay muted loop playsinline></video><label>Giro de Craque IA</label></a>
+          <a class="moment" href="template-gallery.html"><video src="assets/production-templates/danca-torcida.mp4" poster="assets/production-templates/posters/danca-torcida.jpg" autoplay muted loop playsinline></video><label>Dança da Torcida IA</label></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="final">
+      <div class="container">
+        <h2>Make a video gift<br>from one photo.</h2>
+        <p>Preview the feeling for free. Create the final video when it feels right.</p>
+        <a class="button" href="template-gallery.html">Create a Free Preview</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <a class="logo" href="#top" aria-label="fari home"><img src="assets/fari-logo-symbol.png" alt="fari"></a>
+      <div class="footer-links"><a href="ui/terms.html">Terms</a><a href="ui/privacy.html">Privacy</a><a href="ui/refund.html">Refund</a><a href="ui/company.html">Company</a><a href="ui/contact.html">Contact</a></div>
+      <div class="social" aria-label="Social links">
+        <a href="https://www.instagram.com/" aria-label="Instagram" rel="noopener noreferrer">
+          <svg viewBox="0 0 48 48" aria-hidden="true">
+            <defs><linearGradient id="igFooterA" x1="8" y1="42" x2="42" y2="8"><stop stop-color="#feda75"/><stop offset=".32" stop-color="#fa7e1e"/><stop offset=".58" stop-color="#d62976"/><stop offset=".78" stop-color="#962fbf"/><stop offset="1" stop-color="#4f5bd5"/></linearGradient></defs>
+            <rect x="7" y="7" width="34" height="34" rx="11" fill="url(#igFooterA)"/><rect x="14" y="14" width="20" height="20" rx="6" fill="none" stroke="#fff" stroke-width="3"/><circle cx="24" cy="24" r="5" fill="none" stroke="#fff" stroke-width="3"/><circle cx="31" cy="17" r="2" fill="#fff"/>
+          </svg>
+        </a>
+        <a href="https://t.me/" aria-label="Telegram" rel="noopener noreferrer">
+          <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="20" fill="#2aabee"/><path fill="#fff" d="M34.8 14.3 31 32.4c-.3 1.3-1 1.6-2.1 1l-5.8-4.3-2.8 2.7c-.3.3-.6.6-1.2.6l.4-5.9 10.7-9.7c.5-.4-.1-.7-.7-.3L16.3 24.8l-5.7-1.8c-1.2-.4-1.3-1.2.3-1.8l22.2-8.6c1-.4 1.9.2 1.7 1.7Z"/></svg>
+        </a>
+        <a href="https://www.tiktok.com/" aria-label="TikTok" rel="noopener noreferrer">
+          <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="20" fill="#07080d"/><path fill="#25f4ee" transform="translate(-1 1)" d="M28 11h5c.4 2.5 1.3 4.5 2.8 6 1.6 1.5 3.5 2.4 5.7 2.7v5.1a15.2 15.2 0 0 1-8.4-2.5v10.3a11.1 11.1 0 1 1-11.1-11.1c.7 0 1.5.1 2.2.2v5.3a5.9 5.9 0 1 0 3.8 5.6V11Z"/><path fill="#fe2c55" transform="translate(1 -1)" d="M28 11h5c.4 2.5 1.3 4.5 2.8 6 1.6 1.5 3.5 2.4 5.7 2.7v5.1a15.2 15.2 0 0 1-8.4-2.5v10.3a11.1 11.1 0 1 1-11.1-11.1c.7 0 1.5.1 2.2.2v5.3a5.9 5.9 0 1 0 3.8 5.6V11Z"/><path fill="#fff" d="M28 11h5c.4 2.5 1.3 4.5 2.8 6 1.6 1.5 3.5 2.4 5.7 2.7v5.1a15.2 15.2 0 0 1-8.4-2.5v10.3a11.1 11.1 0 1 1-11.1-11.1c.7 0 1.5.1 2.2.2v5.3a5.9 5.9 0 1 0 3.8 5.6V11Z"/></svg>
+        </a>
+      </div>
+    </div>
+  </footer>
+  <script>
+    const typeLines = document.querySelectorAll("[data-type-text]");
+    if (typeLines.length) {
+      const isCompact = window.matchMedia("(max-width: 560px)").matches;
+      typeLines.forEach(line => {
+        line.textContent = "";
+        line.setAttribute("aria-hidden", "true");
+      });
+      const cursor = document.createElement("span");
+      cursor.className = "cursor";
+      cursor.setAttribute("aria-hidden", "true");
+      let lineIndex = 0;
+      let charIndex = 0;
+
+      function placeCursor(line) {
+        cursor.remove();
+        line.appendChild(cursor);
+      }
+
+      function typeNext() {
+        const line = typeLines[lineIndex];
+        const text = line.dataset.typeText || "";
+        placeCursor(line);
+        if (charIndex < text.length) {
+          line.insertBefore(document.createTextNode(text[charIndex]), cursor);
+          charIndex += 1;
+          window.setTimeout(typeNext, lineIndex === 0 ? 82 : 54);
+          return;
+        }
+        lineIndex += 1;
+        charIndex = 0;
+        if (lineIndex < typeLines.length) {
+          window.setTimeout(typeNext, 220);
+        }
+      }
+
+      if (isCompact) {
+        typeLines.forEach(line => {
+          line.textContent = line.dataset.typeText || "";
+        });
+      } else {
+        window.setTimeout(typeNext, 360);
+      }
+    }
+
+    const testimonialSection = document.querySelector(".testimonials");
+    if (testimonialSection) {
+      const revealTestimonials = () => testimonialSection.classList.add("in-view");
+      if ("IntersectionObserver" in window) {
+        const observer = new IntersectionObserver(entries => {
+          if (!entries.some(entry => entry.isIntersecting)) return;
+          revealTestimonials();
+          observer.disconnect();
+        }, { threshold: 0.28 });
+        observer.observe(testimonialSection);
+      } else {
+        revealTestimonials();
+      }
+    }
+  </script>
+</body>
+</html>

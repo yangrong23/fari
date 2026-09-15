@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>fari | Choose your credit package</title>
+  <meta name="description" content="Choose fari credits and turn meaningful feelings into unforgettable AI videos.">
+  <script defer src="ui/tracking.js"></script>
+  <style>
+    :root{--bg:#030409;--surface:#15161c;--ink:#f8f7f8;--muted:#aaa9b0;--pink:#f12662;--pink-2:#ff3a78;--line:#484950;--max:1740px;--font:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    *{box-sizing:border-box}
+    html{background:var(--bg);scroll-behavior:smooth}
+    body{margin:0;min-width:320px;background:var(--bg);color:var(--ink);font-family:var(--font);letter-spacing:0}
+    a{color:inherit;text-decoration:none}
+    button{font:inherit;cursor:pointer}
+    .nav{position:absolute;z-index:5;inset:0 0 auto;padding:27px 0}
+    .nav-inner{width:min(calc(100% - 96px),var(--max));margin:auto;display:flex;align-items:center;justify-content:space-between;gap:40px}
+    .logo{display:block;width:74px;height:40px;overflow:hidden}
+    .logo img{width:100%;height:100%;object-fit:contain;display:block}
+    .nav-links{display:flex;align-items:center;gap:40px;margin-left:auto;font-size:14px;font-weight:700}
+    .nav-links a{position:relative;padding:10px 0;transition:color .2s}
+    .nav-links a:hover{color:var(--pink-2)}
+    .nav-cta{display:inline-flex;align-items:center;justify-content:center;min-width:160px;min-height:42px;margin-left:28px;border-radius:12px;background:linear-gradient(135deg,#f32b67,#dd205a);box-shadow:0 14px 30px #d619591f;font-size:14px;font-weight:750;transition:transform .2s,filter .2s}
+    .nav-cta:hover{filter:brightness(1.12);transform:translateY(-2px)}
+    main{position:relative;min-height:100vh;overflow:hidden;padding:124px 0 55px}
+    main:before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 55%,#e61c5c0c,transparent 38%),linear-gradient(180deg,#020307 0%,#05060b 100%)}
+    .intro{position:relative;z-index:1;text-align:center}
+    .intro h1{margin:0;font-size:clamp(34px,4vw,56px);font-weight:780;line-height:1.08;letter-spacing:-.055em}
+    .intro h1 span{color:var(--pink-2)}
+    .intro p{margin:18px 0 0;color:var(--muted);font-size:16px;line-height:1.5}
+    .plans{position:relative;z-index:1;width:min(calc(100% - 96px),1240px);margin:56px auto 0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;align-items:stretch}
+    .plan-card{position:relative;min-height:0;padding:30px 28px 28px;border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.05);text-align:left;box-shadow:none}
+    .plan-card.popular{border-color:rgba(255,79,135,.45);background:rgba(255,79,135,.06);box-shadow:none}
+    .badge{position:static;display:inline-flex;min-width:0;margin:0 0 18px;padding:6px 12px;border-radius:999px;background:linear-gradient(135deg,#f62d68,#e31d59);font-size:12px;font-weight:750;transform:none}
+    .plan-name{margin:0 0 8px;color:rgba(255,255,255,.7);font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
+    .credits{margin:0 0 6px;color:#fff;font-size:38px;font-weight:900;line-height:1;letter-spacing:-1.5px}
+    .credit-label{margin:0 0 20px;color:rgba(255,255,255,.4);font-size:14px;font-weight:500}
+    .rule{height:1px;margin:0 0 22px;background:rgba(255,255,255,.1)}
+    .price{display:flex;align-items:baseline;justify-content:flex-start;gap:4px;margin:0 0 24px;padding:0 0 20px;border-bottom:1px solid rgba(255,255,255,.1);white-space:nowrap}
+    .currency{font-size:16px;font-weight:550;color:rgba(255,255,255,.7)}
+    .amount{font-size:44px;font-weight:760;letter-spacing:-.045em}
+    .features{display:flex;flex-direction:column;gap:12px;margin:0 0 24px;padding:0;list-style:none;text-align:left;font-size:14px;line-height:1.45;color:rgba(255,255,255,.72)}
+    .features li{display:flex;align-items:flex-start;gap:12px;margin:0}
+    .features li:before{content:"✓";display:grid;place-items:center;flex:0 0 18px;width:18px;height:18px;border-radius:50%;background:rgba(255,79,135,.14);color:var(--pink-2);font-size:11px}
+    .buy{width:100%;min-height:50px;margin:0;border:1.5px solid rgba(255,255,255,.18);border-radius:100px;background:transparent;color:#fff;font-size:15px;font-weight:700;transition:background .2s,color .2s,transform .2s}
+    .buy:hover{background:var(--pink-2);color:white;transform:translateY(-2px)}
+    .popular .buy{border:0;background:linear-gradient(135deg,#ff4f87,#ff6b35,#f7931e);box-shadow:0 6px 28px rgba(255,79,135,.4);color:#fff}
+    .popular .buy:hover{filter:brightness(1.1)}
+    .payment{position:relative;z-index:1;margin:24px 0 0;text-align:center;color:var(--muted);font-size:14px}
+    .video-bg{position:fixed;inset:0;width:100vw;height:100vh;object-fit:cover;z-index:-2;filter:saturate(1.08)}
+    .video-overlay{position:fixed;inset:0;z-index:-1;background:radial-gradient(ellipse at 50% 0%,rgba(10,10,15,.36),rgba(10,10,15,.86) 70%,rgba(10,10,15,.97) 100%)}
+    .nav{position:fixed;top:0;left:0;right:0;height:74px;padding:0;background:transparent}
+    .nav-inner{max-width:1200px;height:100%;padding:0 32px}
+    .logo{width:74px;height:40px}
+    .nav-links{gap:10px;font-size:14px}
+    .nav-links a{padding:8px 20px;border-radius:100px;color:rgba(255,255,255,.7)}
+    .nav-links a:hover{background:rgba(255,255,255,.07);color:#fff}
+    .nav-cta{display:none}
+    main{padding:148px 0 0;background:none}
+    main:before{display:none}
+    .intro{max-width:1200px;padding:0 32px}
+    .intro:before{content:"";display:block;width:8px;height:8px;margin:0 auto 24px;border-radius:50%;background:var(--pink-2);box-shadow:0 0 18px rgba(255,79,135,.7)}
+    .intro h1{font-size:clamp(40px,4.8vw,66px);font-weight:900;letter-spacing:-2px}
+    .intro h1 span{background:linear-gradient(135deg,#ff4f87,#ff6b35,#f7931e);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .intro p{margin:20px auto 0;max-width:none;font-size:17px;color:rgba(255,255,255,.7)}
+    .plans{width:min(calc(100% - 64px),1200px);margin:64px auto 0;display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+    .plan-card{min-height:0;padding:36px 32px 32px;border:1px solid rgba(255,255,255,.1);border-radius:20px;background:rgba(255,255,255,.05);text-align:left;box-shadow:none;transition:transform .3s,border-color .3s,background .3s}
+    .plan-card:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.08)}
+    .plan-card.popular{transform:translateY(-8px);background:rgba(255,79,135,.06);border-color:rgba(255,79,135,.45);box-shadow:0 0 48px rgba(255,79,135,.25),0 8px 32px rgba(0,0,0,.4)}
+    .plan-card.popular:hover{transform:translateY(-12px)}
+    .plan-card.popular:before{content:"";position:absolute;top:-1px;left:20px;right:20px;height:3px;border-radius:0 0 3px 3px;background:linear-gradient(135deg,#ff4f87,#ff6b35,#f7931e)}
+    .badge{position:static;display:inline-flex;min-width:0;margin:0 0 24px;padding:6px 14px;border-radius:100px;background:linear-gradient(135deg,#ff4f87,#ff6b35,#f7931e);font-size:12px;letter-spacing:.5px;transform:none}
+    .plan-name{margin:0 0 8px;color:rgba(255,255,255,.7);font-size:14px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
+    .credits{margin:0 0 6px;color:#fff;font-size:38px;font-weight:900;line-height:1;letter-spacing:-1.5px}
+    .popular .credits{background:linear-gradient(135deg,#ff4f87,#ff6b35,#f7931e);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .credit-label{margin:0 0 28px;color:rgba(255,255,255,.4);font-size:14px;font-weight:500}
+    .rule{height:1px;margin:0 0 28px;background:rgba(255,255,255,.1)}
+    .price{display:flex;align-items:baseline;justify-content:flex-start;gap:4px;margin:0 0 32px;padding:0 0 28px;border-bottom:1px solid rgba(255,255,255,.1)}
+    .currency{font-size:20px;color:rgba(255,255,255,.7)}
+    .amount{font-size:44px;font-weight:900;letter-spacing:-2px}
+    .features{display:flex;flex-direction:column;gap:14px;min-height:145px;margin:0 0 32px;font-size:15px;color:rgba(255,255,255,.7)}
+    .features li{display:flex;align-items:flex-start;gap:12px;margin:0;line-height:1.5}
+    .features li:before{content:"✓";display:grid;place-items:center;flex:0 0 20px;width:20px;height:20px;margin:0;border-radius:50%;background:rgba(255,79,135,.14);color:var(--pink-2);font-size:12px}
+    .buy{width:100%;min-height:50px;margin:0;padding:16px 24px;border:1.5px solid rgba(255,255,255,.18);border-radius:100px;background:transparent;color:#fff;font-size:16px;font-weight:700}
+    .popular .buy{border:0;background:linear-gradient(135deg,#ff4f87,#ff6b35,#f7931e);box-shadow:0 6px 28px rgba(255,79,135,.4)}
+    .payment{margin:0;padding:56px 32px 80px;font-size:14px}
+    .payment:before{content:"";display:inline-block;width:18px;height:18px;margin-right:10px;vertical-align:-4px;border:1.5px solid var(--pink-2);border-radius:5px;box-shadow:inset 0 0 0 4px transparent}
+    .footer{padding:32px;border-top:1px solid rgba(255,255,255,.1)}
+    .footer-inner{max-width:1200px}
+    .footer .logo{width:64px;height:34px}
+    .footer-links{display:none}
+    @media(max-width:900px){.plans{grid-template-columns:1fr;max-width:480px}.plan-card.popular{transform:none;order:-1}.plan-card.popular:hover{transform:translateY(-4px)}.intro p{font-size:16px}}
+    @media(max-width:600px){.nav-inner{padding:0 20px}.logo{width:64px;height:34px}.nav-links{gap:4px}.nav-links a{padding:7px 10px;font-size:12px;white-space:nowrap}.intro{padding:0 20px}.intro h1{font-size:34px}.plans{width:calc(100% - 40px);margin-top:36px;gap:14px}.plan-card{padding:24px 20px 20px;border-radius:18px}.credits{font-size:32px}.amount{font-size:34px}.credit-label,.plan-name{font-size:13px}.features{min-height:0;font-size:13px}.buy{min-height:46px;font-size:14px}.payment{padding:0 20px 56px;font-size:13px}.footer-inner{flex-direction:column;align-items:center;text-align:center;gap:12px}.footer .logo{width:64px;height:34px}}
+  </style>
+</head>
+<body>
+  <video class="video-bg" src="assets/fari-hero-home.mp4" poster="assets/fari/fari 首页主视觉 - 家庭生日庆祝.webp" autoplay muted loop playsinline aria-hidden="true"></video>
+  <div class="video-overlay"></div>
+  <header class="nav">
+    <div class="nav-inner">
+      <a class="logo" href="index.html" aria-label="fari home"><img src="assets/fari-logo-symbol.png" alt="fari"></a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="template-gallery.html">Templates</a>
+        <a href="index.html#how">How it works</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="intro" aria-labelledby="page-title">
+      <h1 id="page-title">Choose your <span>credit package</span></h1>
+      <p>Credits are valid for 12 months. Create when you need to express something meaningful.</p>
+    </section>
+
+    <section class="plans" aria-label="Credit packages">
+      <article class="plan-card">
+        <h2 class="plan-name">Starter</h2>
+        <div class="credits">100</div>
+        <div class="credit-label">credits</div>
+        <div class="rule"></div>
+        <div class="price"><span class="currency">R$</span><span class="amount">39,90</span></div>
+        <ul class="features">
+          <li>Create expressive AI videos</li>
+          <li>Turn moments into emotional stories</li>
+          <li>High-quality video output</li>
+          <li>Use anytime, with no daily expiration</li>
+        </ul>
+        <button class="buy" type="button" data-plan="Starter">Buy now</button>
+      </article>
+
+      <article class="plan-card popular">
+        <div class="badge">Most popular</div>
+        <h2 class="plan-name">Popular</h2>
+        <div class="credits">300</div>
+        <div class="credit-label">credits</div>
+        <div class="rule"></div>
+        <div class="price"><span class="currency">R$</span><span class="amount">99,90</span></div>
+        <ul class="features">
+          <li>Create expressive AI videos</li>
+          <li>Turn moments into emotional stories</li>
+          <li>High-quality video output</li>
+          <li>Use anytime, with no daily expiration</li>
+        </ul>
+        <button class="buy" type="button" data-plan="Popular">Buy now</button>
+      </article>
+
+      <article class="plan-card">
+        <h2 class="plan-name">Pro</h2>
+        <div class="credits">1000</div>
+        <div class="credit-label">credits</div>
+        <div class="rule"></div>
+        <div class="price"><span class="currency">R$</span><span class="amount">299,90</span></div>
+        <ul class="features">
+          <li>Create expressive AI videos</li>
+          <li>Turn moments into emotional stories</li>
+          <li>High-quality video output</li>
+          <li>Use anytime, with no daily expiration</li>
+        </ul>
+        <button class="buy" type="button" data-plan="Pro">Buy now</button>
+      </article>
+    </section>
+    <p class="payment">Video generation included with each finished video</p>
+  </main>
+  <footer class="footer">
+    <div class="footer-inner">
+      <a class="logo" href="index.html" aria-label="fari home"><img src="assets/fari-logo-symbol.png" alt="fari"></a>
+      <span class="footer-copy">© 2026 fari video, Inc. Credits are valid for 12 months. <a href="ui/contact.html">Contact &amp; Support</a>.</span>
+    </div>
+  </footer>
+  <script>
+    document.querySelectorAll('.buy').forEach(button => {
+      button.addEventListener('click', () => {
+        location.href = `paywall.html?plan=${encodeURIComponent(button.dataset.plan)}`;
+      });
+    });
+  </script>
+</body>
+</html>

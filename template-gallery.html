@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>fari | Modelos</title>
+  <link rel="icon" type="image/png" href="assets/fari-logo.png">
+  <link rel="apple-touch-icon" href="assets/fari-logo.png">
+  <script defer src="ui/tracking.js"></script>
+  <style>
+    :root {
+      --bg: #08090d;
+      --ink: #f7f6f8;
+      --muted: #9a98a2;
+      --pink: #ec2464;
+      --line: rgba(255,255,255,.14);
+      --max: 1940px;
+      --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font); letter-spacing: 0; }
+    body { min-width: 320px; min-height: 100vh; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; color: inherit; cursor: pointer; }
+    img { display: block; max-width: 100%; }
+    .nav { position: fixed; z-index: 20; inset: 0 0 auto; height: 74px; background: transparent; transition: transform .28s ease; }
+    .nav.nav-hidden { transform: translateY(-100%); }
+    .nav-inner { width: min(calc(100% - 56px), var(--max)); height: 100%; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 28px; }
+    .brand { display: block; width:74px; height:40px; overflow:hidden; }
+    .brand img { width:100%; height:100%; object-fit:contain; }
+    .links { display: flex; align-items: center; gap: 30px; margin-left: auto; font-size: 14px; font-weight: 700; }
+    .links a { padding: 6px 0; color: #f1eef4; opacity: .9; }
+    .links .active { color: var(--pink); border-bottom: 3px solid var(--pink); }
+    main { width: min(calc(100% - 56px), var(--max)); margin: 0 auto; padding: 106px 0 128px; }
+    .gallery-hero { max-width: 760px; margin: 0 0 22px; }
+    .gallery-kicker { margin: 0 0 10px; color: var(--pink); font-size: 11px; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
+    .gallery-hero h1 { margin: 0; font-size: clamp(34px, 4.3vw, 58px); line-height: .96; letter-spacing: -.05em; }
+    .gallery-hero p { max-width: 480px; margin: 12px 0 0; color: #d6d2da; font-size: 13px; line-height: 1.45; }
+    .gallery { width: 100%; margin: 0 auto; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:22px; }
+    .template-wrap { min-width: 0; }
+    .template { position: relative; display: block; width: 100%; aspect-ratio: 9 / 16; margin: 0; min-width: 0; padding: 0; overflow: hidden; border: 1px solid var(--line); border-radius: 18px; background: #15161b; text-align: left; box-shadow: 0 18px 42px rgba(0,0,0,.24); }
+    .thumb { position: absolute; inset: 0; display: block; width: 100%; overflow: hidden; border-radius: inherit; background: #15161b; }
+    .thumb:after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 50%, rgba(8,9,13,.78)); opacity: .7; transition: opacity .2s; }
+    .thumb img, .thumb video { width: 100%; height: 100%; object-fit: cover; transition: transform .45s ease; }
+    .template:hover .thumb img, .template:hover .thumb video { transform: scale(1.045); }
+    .template:hover .thumb:after { opacity: .2; }
+    .play { position: absolute; z-index: 1; left: 50%; top: 50%; width: 54px; height: 54px; display: grid; place-items: center; border-radius: 50%; background: rgba(255,255,255,.22); color: white; font-size: 0; line-height: 0; transform: translate(-50%, -50%); backdrop-filter: blur(8px); }
+    .play:before { content: ""; display: block; width: 0; height: 0; margin-left: 3px; border-top: 9px solid transparent; border-bottom: 9px solid transparent; border-left: 14px solid currentColor; }
+    .bars { position: absolute; z-index: 1; left: 50%; top: calc(50% + 48px); display: flex; align-items: end; gap: 4px; height: 28px; transform: translateX(-50%); }
+    .bars i { display: block; width: 4px; border-radius: 3px; background: rgba(255,255,255,.7); }
+    .bars i:nth-child(1) { height: 13px; }
+    .bars i:nth-child(2) { height: 25px; }
+    .bars i:nth-child(3) { height: 18px; }
+    .bars i:nth-child(4) { height: 28px; }
+    .bars i:nth-child(5) { height: 16px; }
+    .generate-btn { width: 72px; position: absolute; z-index: 3; right: 12px; bottom: 42px; border: 0; border-radius: 999px; padding: 9px 20px; background: #fff; color: #111; font-size: 12px; font-weight: 800; box-shadow: 0 4px 14px rgba(0,0,0,.25); transition: transform .2s, background .2s; }
+    .generate-btn:hover { transform: translateY(-2px); background: #ffe7f0; }
+    .template-label { position: absolute; z-index: 2; left: 12px; right: 12px; bottom: 10px; display: block; color: #fff; font-size: 14px; font-weight: 760; line-height: 1.3; white-space: normal; overflow-wrap: anywhere; text-shadow: 0 2px 14px rgba(0,0,0,.55); }
+    .template-meta { display: none; }
+    .footer { padding: 24px 0 34px; border-top: 1px solid rgba(255,255,255,.13); color: inherit; }
+    .footer-inner { width: min(calc(100% - 56px), 1180px); margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .footer .logo { display: block; width: 74px; height: 40px; opacity: 1; overflow: hidden; }
+    .footer .logo img { width: 100%; height: 100%; object-fit: contain; }
+    .footer-links { display: flex; gap: 38px; color: #e7e3e8; font-size: 11px; }
+    .social { display: flex; align-items: center; gap: 13px; }
+    .social a { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border: 1px solid rgba(255,255,255,.18); border-radius: 50%; color: #f6edf2; background: rgba(255,255,255,.04); }
+    .social svg { width: 19px; height: 19px; display: block; }
+    @media (max-width: 1100px) {
+      .gallery { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    }
+    @media (max-width: 700px) {
+      .nav-inner, main, .footer-inner { width: calc(100% - 28px); }
+      .nav { height: 64px; }
+      .brand { width: 64px; height: 34px; }
+      .links { display: flex; align-items: center; gap: 10px; margin-left: auto; font-size: 11px; white-space: nowrap; max-width: calc(100vw - 104px); overflow: hidden; }
+      .links a { padding: 5px 0; }
+      .links a[href="index.html#how"] { display: none; }
+      main { padding: 82px 0 60px; }
+      .gallery-hero { margin-bottom: 12px; }
+      .gallery-kicker, .gallery-hero p { display: none; }
+      .gallery-hero h1 { font-size: 24px; line-height: 1; letter-spacing: -.035em; }
+      .gallery { grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+      .template { border-radius: 10px; }
+      .generate-btn { width: 42px; right: 6px; bottom: 30px; padding: 5px 8px; font-size: 7px; }
+      .template-label { left: 6px; right: 6px; bottom: 5px; font-size: 10px; line-height: 1.25; }
+      .play { width: 24px; height: 24px; font-size: 0; line-height: 0; }
+      .play:before { margin-left: 2px; border-top-width: 4px; border-bottom-width: 4px; border-left-width: 7px; }
+      .bars { top: calc(50% + 20px); height: 12px; gap: 2px; }
+      .bars i { width: 2px; }
+      .footer { padding: 18px 0 22px; }
+      .footer-inner { width: calc(100% - 28px); display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+      .footer .logo { flex: 0 0 42px; width: 42px; height: 24px; }
+      .footer-links { display: flex; align-items: center; gap: 6px; width: auto; font-size: 7px; white-space: nowrap; }
+      .social { flex: 0 0 auto; gap: 4px; }
+      .social a { width: 22px; height: 22px; }
+      .social svg { width: 13px; height: 13px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="index.html" aria-label="fari home"><img src="assets/fari-logo.png" alt="fari"></a>
+      <nav class="links" aria-label="Main navigation">
+        <a href="index.html#how">How it works</a>
+        <a class="active" href="template-gallery.html">Modelos</a>
+      </nav>
+    </div>
+  </header>
+  <main>
+    <section class="gallery-hero" aria-label="Modelos introduction">
+      <h1>Escolha um modelo.</h1>
+    </section>
+    <section class="gallery" aria-label="Video templates" id="gallery"></section>
+  </main>
+  <footer class="footer">
+    <div class="container footer-inner">
+      <a class="logo" href="index.html#top" aria-label="fari home"><img src="assets/fari-logo.png" alt="fari"></a>
+      <div class="footer-links"><a href="ui/terms.html">Terms</a><a href="ui/privacy.html">Privacy</a><a href="ui/refund.html">Refund</a><a href="ui/company.html">Company</a><a href="ui/contact.html">Contact</a></div>
+      <div class="social" aria-label="Social links">
+        <a href="https://www.instagram.com/" aria-label="Instagram" rel="noopener noreferrer">
+          <svg viewBox="0 0 48 48" aria-hidden="true">
+            <defs><linearGradient id="igFooterB" x1="8" y1="42" x2="42" y2="8"><stop stop-color="#feda75"/><stop offset=".32" stop-color="#fa7e1e"/><stop offset=".58" stop-color="#d62976"/><stop offset=".78" stop-color="#962fbf"/><stop offset="1" stop-color="#4f5bd5"/></linearGradient></defs>
+            <rect x="7" y="7" width="34" height="34" rx="11" fill="url(#igFooterB)"/><rect x="14" y="14" width="20" height="20" rx="6" fill="none" stroke="#fff" stroke-width="3"/><circle cx="24" cy="24" r="5" fill="none" stroke="#fff" stroke-width="3"/><circle cx="31" cy="17" r="2" fill="#fff"/>
+          </svg>
+        </a>
+        <a href="https://t.me/" aria-label="Telegram" rel="noopener noreferrer">
+          <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="20" fill="#2aabee"/><path fill="#fff" d="M34.8 14.3 31 32.4c-.3 1.3-1 1.6-2.1 1l-5.8-4.3-2.8 2.7c-.3.3-.6.6-1.2.6l.4-5.9 10.7-9.7c.5-.4-.1-.7-.7-.3L16.3 24.8l-5.7-1.8c-1.2-.4-1.3-1.2.3-1.8l22.2-8.6c1-.4 1.9.2 1.7 1.7Z"/></svg>
+        </a>
+        <a href="https://www.tiktok.com/" aria-label="TikTok" rel="noopener noreferrer"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="20" fill="#07080d"/><path fill="#25f4ee" transform="translate(-1 1)" d="M28 11h5c.4 2.5 1.3 4.5 2.8 6 1.6 1.5 3.5 2.4 5.7 2.7v5.1a15.2 15.2 0 0 1-8.4-2.5v10.3a11.1 11.1 0 1 1-11.1-11.1c.7 0 1.5.1 2.2.2v5.3a5.9 5.9 0 1 0 3.8 5.6V11Z"/><path fill="#fe2c55" transform="translate(1 -1)" d="M28 11h5c.4 2.5 1.3 4.5 2.8 6 1.6 1.5 3.5 2.4 5.7 2.7v5.1a15.2 15.2 0 0 1-8.4-2.5v10.3a11.1 11.1 0 1 1-11.1-11.1c.7 0 1.5.1 2.2.2v5.3a5.9 5.9 0 1 0 3.8 5.6V11Z"/><path fill="#fff" d="M28 11h5c.4 2.5 1.3 4.5 2.8 6 1.6 1.5 3.5 2.4 5.7 2.7v5.1a15.2 15.2 0 0 1-8.4-2.5v10.3a11.1 11.1 0 1 1-11.1-11.1c.7 0 1.5.1 2.2.2v5.3a5.9 5.9 0 1 0 3.8 5.6V11Z"/></svg></a>
+      </div>
+    </div>
+  </footer>
+  <script src="ui/template-catalog.js?v=20260915"></script>
+  <script>
+    const gallery = document.querySelector('#gallery');
+    const plainTemplateName = name => String(name || '').replace(/[\p{Extended_Pictographic}\uFE0F]/gu, '').replace(/\s{2,}/g, ' ').trim();
+    gallery.innerHTML = window.FARI_TEMPLATES.map((item,index) => `
+      <article class="template">
+        <a class="thumb" href="templates.html?template=${index}" aria-label="${plainTemplateName(item.title)}">
+          <video src="${item.video}" poster="${item.image}" autoplay muted loop playsinline></video>
+        </a>
+        <span class="template-label">${plainTemplateName(item.title)}</span>
+        <button class="generate-btn" type="button" data-generate="${index}">Usar</button>
+      </article>`).join('');
+    gallery.addEventListener('click', event => {
+      const button = event.target.closest('[data-generate]');
+      if (button) location.href = `templates.html?template=${button.dataset.generate}`;
+    });
+
+    const nav = document.querySelector(".nav");
+    let lastScrollY = window.scrollY;
+    window.addEventListener("scroll", () => {
+      const currentScrollY = window.scrollY;
+      if (currentScrollY <= 12) {
+        nav.classList.remove("nav-hidden");
+      } else if (currentScrollY > lastScrollY + 4) {
+        nav.classList.add("nav-hidden");
+      } else if (currentScrollY < lastScrollY - 4) {
+        nav.classList.remove("nav-hidden");
+      }
+      lastScrollY = currentScrollY;
+    }, { passive: true });
+  </script>
+</body>
+</html>

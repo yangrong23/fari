@@ -1,0 +1,1990 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>fari | AI video generator</title>
+  <script defer src="ui/tracking.js"></script>
+  <style>
+    :root{--bg:#050507;--panel:#101015;--text:#fff;--muted:#b9b2bd;--line:rgba(255,255,255,.14);--pink:#ff347e;--coral:#ff744a;--green:#a8ff48;--font:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:var(--font);letter-spacing:0}
+    body{background:radial-gradient(circle at 50% 18%,rgba(255,52,126,.16),transparent 32%),linear-gradient(180deg,#07070b,#050507)}
+    a{color:inherit;text-decoration:none}
+    button,input,textarea,select{font:inherit;color:inherit}
+    button{cursor:pointer}
+    .nav{height:72px;display:flex;align-items:center;justify-content:space-between;width:min(calc(100% - 36px),1100px);margin:0 auto}
+    .logo{display:block;width:62px;height:34px}
+    .logo img{width:100%;height:100%;object-fit:contain}
+    .nav-links{display:flex;gap:18px;color:#eee8f0;font-size:13px;font-weight:750}
+    .page{width:min(calc(100% - 36px),1100px);margin:0 auto;padding:18px 0 44px}
+    .hero{text-align:center;margin:22px auto 26px}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;color:#ff9bbc;font-size:11px;font-weight:850;letter-spacing:.1em;text-transform:uppercase}
+    .eyebrow:before{content:"";width:7px;height:7px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--green))}
+    h1{margin:12px auto 0;max-width:760px;font-size:clamp(36px,7vw,74px);line-height:.94;letter-spacing:-.07em}
+    h1 span{display:block;background:linear-gradient(90deg,var(--pink),#ff9ab7 48%,var(--green));-webkit-background-clip:text;background-clip:text;color:transparent}
+    .copy{max-width:620px;margin:16px auto 0;color:var(--muted);font-size:14px;line-height:1.6}
+    .template-library{width:min(calc(100% - 20px),1180px);margin:0 auto 18px}
+    .template-library-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:14px}
+    .template-library-head h2{margin:0;font-size:18px;line-height:1.1;letter-spacing:-.03em}
+    .template-library-head p{margin:5px 0 0;color:var(--muted);font-size:12px;line-height:1.45;max-width:660px}
+    .template-active{display:grid;gap:4px;padding:12px 14px;border:1px solid rgba(255,255,255,.12);border-radius:16px;background:rgba(255,255,255,.05);box-shadow:0 16px 36px rgba(0,0,0,.2)}
+    .template-active span{color:var(--muted);font-size:10px;font-weight:850;letter-spacing:.08em;text-transform:uppercase}
+    .template-active strong{font-size:14px;line-height:1.2}
+    .template-active small{color:var(--muted);font-size:11px;line-height:1.4}
+    .template-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+    .template-card{display:grid;gap:10px;padding:10px;border:1px solid rgba(255,255,255,.12);border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.025));box-shadow:0 18px 42px rgba(0,0,0,.22);text-align:left}
+    .template-card.active{border-color:rgba(168,255,72,.55);box-shadow:0 22px 46px rgba(0,0,0,.24),0 0 0 1px rgba(168,255,72,.08) inset}
+    .template-preview{position:relative;overflow:hidden;border-radius:14px;background:#111;aspect-ratio:9/16}
+    .template-preview img,.template-preview video{width:100%;height:100%;object-fit:cover}
+    .template-preview:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 44%,rgba(0,0,0,.72));pointer-events:none}
+    .template-chip{position:absolute;z-index:1;left:10px;top:10px;display:inline-flex;align-items:center;gap:6px;min-height:24px;padding:0 9px;border-radius:999px;background:rgba(0,0,0,.44);color:#fff;font-size:10px;font-weight:850;backdrop-filter:blur(10px)}
+    .template-chip:before{content:"";width:6px;height:6px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--green))}
+    .template-open{position:absolute;z-index:1;right:10px;top:10px;display:inline-flex;align-items:center;justify-content:center;min-height:24px;padding:0 8px;border-radius:999px;background:rgba(0,0,0,.44);color:#fff;font-size:10px;font-weight:850;backdrop-filter:blur(10px)}
+    .template-info{display:grid;gap:4px}
+    .template-info strong{font-size:14px;line-height:1.2}
+    .template-info small{color:var(--muted);font-size:11px;line-height:1.45}
+    .template-prompt{margin:0;color:#e8e2eb;font-size:11px;line-height:1.5}
+    .template-file{margin:0;color:#bde59d;font-size:10px;font-weight:800;line-height:1.35;word-break:break-all}
+    .template-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .template-actions button,.template-actions a{min-height:40px;padding:0 12px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:#fff;font-size:12px;font-weight:850;display:inline-flex;align-items:center;justify-content:center;text-align:center}
+    .template-actions button.primary-lite{background:linear-gradient(100deg,var(--green),#7dffbc);color:#141915;border-color:transparent}
+    .grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(320px,.95fr);gap:18px;align-items:start}
+    .tool-stack{display:grid;gap:18px}
+    .card{border:1px solid var(--line);border-radius:24px;background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.025));box-shadow:0 24px 70px rgba(0,0,0,.34);backdrop-filter:blur(20px)}
+    .form{display:grid;gap:14px;padding:20px}
+    label{display:grid;gap:8px;color:#f7f1f7;font-size:13px;font-weight:750;text-align:left}
+    textarea,input,select{width:100%;border:1px solid rgba(255,255,255,.12);border-radius:16px;background:rgba(0,0,0,.28);outline:none}
+    textarea{min-height:290px;resize:vertical;padding:14px;line-height:1.55;color:#fff}
+    textarea.compact{min-height:118px}
+    input,select{min-height:48px;padding:0 13px;color:#fff}
+    textarea:focus,input:focus,select:focus{border-color:rgba(255,52,126,.65);box-shadow:0 0 0 4px rgba(255,52,126,.12)}
+    .settings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+    .asset-mode{display:flex;gap:8px;padding:5px;border:1px solid rgba(255,255,255,.1);border-radius:15px;background:rgba(0,0,0,.2)}
+    .asset-mode button{flex:1;min-height:38px;border:0;border-radius:11px;background:transparent;color:var(--muted);font-size:12px;font-weight:800}
+    .asset-mode button.active{background:rgba(255,255,255,.1);color:#fff}
+    .asset-group{display:grid;gap:9px;padding:12px;border:1px solid rgba(255,255,255,.1);border-radius:17px;background:rgba(0,0,0,.16)}
+    .section-title{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin:4px 0 0}
+    .section-title h2{margin:0;color:#fff;font-size:15px;line-height:1.2;letter-spacing:0}
+    .section-title p{margin:4px 0 0;color:var(--muted);font-size:11px;line-height:1.45}
+    .section-badge{flex:0 0 auto;border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:6px 9px;color:#d9ff8b;background:rgba(168,255,72,.1);font-size:10px;font-weight:900;text-transform:uppercase}
+    .asset-row{display:grid;grid-template-columns:1fr auto;gap:9px;align-items:center}
+    .asset-row input[type=file]{padding:8px;font-size:11px}
+    .reference-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:8px}
+    .reference-item{position:relative;min-width:0;overflow:hidden;border:1px solid rgba(255,255,255,.1);border-radius:12px;background:rgba(0,0,0,.24)}
+    .reference-item img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover;background:#09090d}
+    .reference-item span{display:block;padding:7px 26px 7px 8px;overflow:hidden;color:#d7d0db;font-size:10px;line-height:1.2;text-overflow:ellipsis;white-space:nowrap}
+    .reference-remove{position:absolute;top:5px;right:5px;width:22px;height:22px;padding:0;border:1px solid rgba(255,255,255,.22);border-radius:50%;background:rgba(0,0,0,.68);color:#fff;font-size:15px;line-height:18px}
+    .reference-remove:hover{background:var(--pink)}
+    .sub-actions{display:flex;gap:9px;align-items:center}
+    .sub-actions select{max-width:120px}
+    .compact-btn{min-height:48px;padding:0 16px;border:0;border-radius:15px;background:linear-gradient(100deg,var(--green),#7dffbc);color:#151915;font-size:13px;font-weight:900;box-shadow:0 12px 26px rgba(168,255,72,.14)}
+    .compact-secondary{min-height:48px;padding:0 14px;border-radius:15px;font-size:13px}
+    .compact-btn:disabled{cursor:not-allowed;filter:saturate(.4);opacity:.68}
+    .asset-state{display:inline-flex;align-items:center;gap:7px;color:#ffd3e1;font-size:11px;word-break:break-word}
+    .asset-state.uploading{color:#fff}
+    .asset-state.uploading:before{content:"";width:12px;height:12px;flex:0 0 12px;border-radius:50%;border:2px solid rgba(255,255,255,.22);border-top-color:#ff6d9b;border-right-color:#b280ff;animation:assetSpin .85s linear infinite}
+    .asset-state.uploaded{color:#ffd3e1}
+    .asset-state.uploaded:before{content:"";width:7px;height:7px;flex:0 0 7px;border-radius:50%;background:#ff6d9b;box-shadow:0 0 12px rgba(255,52,126,.42)}
+    .asset-state.error{color:#ff9ab7}
+    .actions{display:flex;gap:10px;align-items:center}
+    .primary{flex:1;min-height:56px;border:0;border-radius:18px;background:linear-gradient(100deg,var(--pink),#ff6d9b 52%,var(--coral));color:#fff;font-size:16px;font-weight:900;box-shadow:0 16px 38px rgba(255,45,111,.3)}
+    .secondary{min-height:56px;padding:0 18px;border:1px solid rgba(255,255,255,.13);border-radius:18px;background:rgba(255,255,255,.06);font-weight:850}
+    .panel{padding:20px}
+    .result-stack{display:grid;gap:14px}
+    .status{display:grid;gap:12px}
+    .status-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .pill{display:inline-flex;align-items:center;gap:8px;min-height:30px;padding:0 12px;border-radius:999px;background:rgba(168,255,72,.12);color:#d9ff8b;font-size:11px;font-weight:850;text-transform:uppercase;letter-spacing:.08em}
+    .pill:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 12px rgba(168,255,72,.6)}
+    .task{color:#cfc7d2;font-size:12px;word-break:break-all}
+    .log{min-height:170px;margin:14px 0 0;padding:14px;border:1px solid rgba(255,255,255,.1);border-radius:18px;background:rgba(0,0,0,.24);color:#d7d0db;font-size:12px;line-height:1.55;white-space:pre-wrap}
+    .preview{margin-top:14px;overflow:hidden;border-radius:22px;background:#0b0b10;border:1px solid rgba(255,255,255,.1)}
+    .preview video{display:block;width:100%;aspect-ratio:9/16;background:#000}
+    .image-result-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:8px;margin-top:14px}
+    .image-result-grid a{display:block;overflow:hidden;border:1px solid rgba(255,255,255,.1);border-radius:16px;background:#0b0b10}
+    .image-result-grid img{display:block;width:100%;aspect-ratio:9/16;object-fit:cover}
+    .result-card-shell{padding:16px}
+    .result-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+    .result-head h3{margin:0;font-size:14px;line-height:1.15;letter-spacing:-.02em}
+    .result-head p{margin:4px 0 0;color:var(--muted);font-size:11px;line-height:1.45}
+    .download{display:none;margin-top:12px;min-height:48px;border:0;border-radius:16px;background:#fff;color:#111;font-weight:900;place-items:center}
+    .download.show{display:grid}
+    .source-video{display:block;width:100%;max-height:320px;margin-top:10px;border:1px solid rgba(255,255,255,.1);border-radius:18px;background:#000}
+    .edit-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+    .edit-grid label{margin-top:0}
+    .edit-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+    .tool-btn{min-height:42px;padding:0 14px;border:1px solid rgba(255,255,255,.13);border-radius:14px;background:rgba(255,255,255,.05);color:#fff;font-size:13px;font-weight:850}
+    .tool-btn.active{background:linear-gradient(100deg,var(--pink),#ff6d9b 55%,var(--coral));border-color:transparent}
+    .brush-wrap{display:grid;gap:6px;min-width:160px;flex:1}
+    .brush-wrap input[type=range]{width:100%}
+    .editor-shell{display:grid;gap:10px}
+    .editor-stage{position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.1);border-radius:18px;background:#08080d;aspect-ratio:16/9}
+    .editor-stage canvas{display:block;width:100%;height:100%}
+    #maskCanvas{position:absolute;inset:0;mix-blend-mode:screen;opacity:.96;touch-action:none;cursor:crosshair}
+    .editor-note{color:var(--muted);font-size:11px;line-height:1.45}
+    .frame-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:8px}
+    .frame-item{display:grid;gap:6px;overflow:hidden;border:1px solid rgba(255,255,255,.1);border-radius:13px;background:rgba(0,0,0,.22);padding:7px;text-align:left;color:#fff}
+    .frame-item.active{border-color:rgba(255,52,126,.75);box-shadow:0 0 0 3px rgba(255,52,126,.12)}
+    .frame-item img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:9px;background:#08080d}
+    .frame-item span{font-size:10px;color:#d7d0db}
+    .frame-item button{min-height:26px;border:0;border-radius:8px;background:rgba(255,255,255,.1);font-size:10px;font-weight:850}
+    .loader{display:none;margin-top:16px;height:7px;overflow:hidden;border-radius:999px;background:rgba(255,255,255,.08)}
+    .loader.show{display:block}
+    .loader span{display:block;width:42%;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--pink),#ff9ab7,#b280ff);animation:load 1.25s ease-in-out infinite}
+    @keyframes assetSpin{to{transform:rotate(360deg)}}
+    @keyframes load{0%{transform:translateX(-110%)}100%{transform:translateX(250%)}}
+    @media(max-width:760px){.nav{height:62px}.nav-links{gap:12px;font-size:12px}.page{width:min(calc(100% - 28px),560px);padding-top:8px}.hero{margin-top:12px}.template-library{width:min(calc(100% - 20px),560px)}.template-library-head{align-items:flex-start;flex-direction:column}.template-grid{grid-template-columns:1fr}.grid{display:grid;grid-template-columns:1fr;gap:14px}textarea{min-height:230px}.settings{grid-template-columns:1fr 1fr}.actions{display:grid}.secondary{width:100%}.edit-grid{grid-template-columns:1fr 1fr}.edit-actions{display:grid;grid-template-columns:1fr 1fr}.brush-wrap{min-width:0}}
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <a class="logo" href="index.html" aria-label="fari home"><img src="assets/fari-logo-symbol.png" alt="fari"></a>
+    <nav class="nav-links" aria-label="Navigation"><a href="template-gallery.html">Templates</a><a href="index.html#how">How it works</a></nav>
+  </header>
+
+  <main class="page">
+    <section class="hero">
+      <div class="eyebrow">DashScope AI generation</div>
+      <h1>Generate images<br><span>or videos independently.</span></h1>
+      <p class="copy">Use the image API for standalone reference images, or use the video API for standalone video synthesis. There is no required order between the two.</p>
+    </section>
+
+    <section class="template-library" aria-label="Video prompt templates">
+      <div class="template-library-head">
+        <div>
+          <h2>Template prompts and source videos</h2>
+          <p>Pick a template, load the prompt, and generate with your uploaded selfie or portrait. A template reference image is added automatically to improve reproduction fidelity.</p>
+        </div>
+        <div class="template-active">
+          <span>Active template</span>
+          <strong id="activeTemplateName">Brazil Football Motion</strong>
+          <small id="activeTemplateHint">Reference image will be attached automatically when you generate.</small>
+        </div>
+      </div>
+      <div class="template-grid" id="templateGrid" aria-live="polite"></div>
+    </section>
+
+    <section class="grid">
+      <div class="tool-stack">
+        <section class="card form" id="imageTool" aria-labelledby="imageToolTitle">
+          <div class="section-title">
+            <div>
+              <h2 id="imageToolTitle">Generate reference images</h2>
+              <p>Standalone image generation. It only calls the image API and never submits a video task.</p>
+            </div>
+            <span class="section-badge">Image only</span>
+          </div>
+          <label>Product screenshots for keyframes
+            <div class="asset-row"><input id="productInput" type="file" accept="image/*" multiple><span class="asset-state" id="productState">Upload 1 to 3 screenshots</span></div>
+          </label>
+          <div class="reference-list" id="productList" aria-live="polite"></div>
+          <label>Keyframe direction
+            <textarea class="compact" id="keyframePrompt">Use the uploaded product screenshots as strict visual references. Generate realistic phone or desktop UI screenshots with crisp readable English text, no gibberish, no placeholder letters, and no distorted typography. Keep the interface layout believable, clean, modern, and consistent with an actual app or website. Show one clear task per frame, with real buttons, menus, input fields, and browser or mobile chrome when appropriate. Maintain the exact product identity, UI labels, and visual hierarchy. Output should look like a genuine screen capture used inside a marketing video.</textarea>
+          </label>
+          <div class="sub-actions">
+            <select id="keyframeCount" aria-label="Keyframe count"><option>4</option><option>2</option><option>3</option><option>5</option><option>6</option></select>
+            <select id="keyframeFormat" aria-label="Screenshot format"><option value="2560*1440">Desktop 16:9</option><option value="1440*2560">Mobile 9:16</option><option value="2048*2048">Square 1:1</option></select>
+            <button class="compact-btn" id="generateKeyframesBtn" type="button">Generate keyframes</button>
+            <button class="secondary compact-secondary" id="clearKeyframesBtn" type="button">Clear images</button>
+            <span class="asset-state" id="keyframeState">Keyframes will be added below.</span>
+          </div>
+          <div class="reference-list" id="keyframeOutputList" aria-live="polite"></div>
+        </section>
+
+        <form class="card form" id="videoForm" aria-labelledby="videoToolTitle">
+          <div class="section-title">
+            <div>
+              <h2 id="videoToolTitle">Generate video</h2>
+              <p>Standalone video generation. It only calls the video API and does not require image generation first.</p>
+            </div>
+            <span class="section-badge">Video only</span>
+          </div>
+          <label>Video prompt
+            <textarea id="prompt">A premium smart glasses product advertisement. Minimal, futuristic, fashionable and high-end. Restrained lighting with black, silver gray and ice blue as the main palette, accented by soft white light and UI parameter graphics. The smart glasses slowly emerge from darkness, with elegant highlights across the temples and frame. Macro camera moves reveal the lenses, nose pads, hinges, temples and material details, showing refined metal and high-performance composite textures. The product rotates in the air while clean motion graphics show core parameters. Parts then assemble precisely into the final product. Cut to a young confident model wearing the glasses in a minimal city-light environment, turning naturally, walking, smiling, and showing front, side and rear angles. Emphasize lightweight fit, stylish silhouette and everyday versatility. End on a clean background with the product floating, slow push-in to brand logo and core slogan. Minimal electronic music, precise beats, premium restrained visual quality, pure international tech aesthetic.</textarea>
+          </label>
+          <div class="asset-group">
+          <div class="asset-mode" aria-label="Video asset mode">
+            <button type="button" class="active" data-asset-mode="reference">Reference images</button>
+            <button type="button" data-asset-mode="frames">First / last frame</button>
+          </div>
+          <div id="referenceGroup">
+          <label>Reference images (optional)
+            <div class="asset-row"><input id="referenceInput" type="file" accept="image/*" multiple><span class="asset-state" id="referenceState">No optional images selected</span></div>
+          </label>
+          <div class="reference-list" id="referenceList" aria-live="polite"></div>
+            <small class="asset-state">Upload optional reference images only when you want visual control. The page will get an OSS URL for each image automatically.</small>
+          </div>
+          <div id="framesGroup" hidden>
+          <label>First frame
+            <div class="asset-row"><input id="firstFrameInput" type="file" accept="image/*"><span class="asset-state" id="firstFrameState">Not uploaded</span></div>
+          </label>
+          <label>Last frame (optional)
+            <div class="asset-row"><input id="lastFrameInput" type="file" accept="image/*"><span class="asset-state" id="lastFrameState">Not uploaded</span></div>
+          </label>
+          <small class="asset-state">First and last frames replace reference-image mode.</small>
+          </div>
+          </div>
+          <div class="settings">
+          <label>Resolution
+            <select id="resolution"><option selected>720P</option></select>
+          </label>
+          <label>Ratio
+            <select id="ratio"><option>adaptive</option><option>9:16</option><option>16:9</option><option>1:1</option></select>
+          </label>
+          <label>Duration
+            <select id="duration"><option value="-1">Smart</option><option>4</option><option>5</option><option>6</option><option>8</option><option>10</option><option>12</option><option>15</option></select>
+          </label>
+          </div>
+          <div class="actions">
+          <button class="primary" id="submitBtn" type="submit">Generate video</button>
+          <button class="secondary" id="clearBtn" type="button">Clear</button>
+          </div>
+        </form>
+
+        <section class="card form" id="customVideoCard" aria-labelledby="customVideoTitle">
+          <div class="section-title">
+            <div>
+              <h2 id="customVideoTitle">Generate another video</h2>
+              <p>Write a fresh prompt, attach your own reference images, and generate a separate video without touching the template flow.</p>
+            </div>
+            <span class="section-badge">Custom</span>
+          </div>
+          <label>Custom prompt
+            <textarea id="customPrompt">Create a polished vertical social video using the uploaded reference images as the identity and style anchor. Preserve the subject accurately, keep the motion natural and cinematic, and make the final result suitable for short-form sharing.</textarea>
+          </label>
+          <div class="asset-group">
+            <div class="asset-mode" aria-label="Custom video asset mode">
+              <button type="button" class="active" data-custom-asset-mode="reference">Reference images</button>
+              <button type="button" data-custom-asset-mode="frames">First / last frame</button>
+            </div>
+            <div id="customReferenceGroup">
+              <label>Reference images
+                <div class="asset-row"><input id="customReferenceInput" type="file" accept="image/*" multiple><span class="asset-state" id="customReferenceState">No images selected</span></div>
+              </label>
+              <div class="reference-list" id="customReferenceList" aria-live="polite"></div>
+            </div>
+            <div id="customFramesGroup" hidden>
+              <label>First frame
+                <div class="asset-row"><input id="customFirstFrameInput" type="file" accept="image/*"><span class="asset-state" id="customFirstFrameState">Not uploaded</span></div>
+              </label>
+              <label>Last frame
+                <div class="asset-row"><input id="customLastFrameInput" type="file" accept="image/*"><span class="asset-state" id="customLastFrameState">Not uploaded</span></div>
+              </label>
+            </div>
+          </div>
+          <div class="settings">
+            <label>Resolution
+              <select id="customResolution"><option selected>720P</option></select>
+            </label>
+            <label>Ratio
+              <select id="customRatio"><option>adaptive</option><option>9:16</option><option>16:9</option><option>1:1</option></select>
+            </label>
+            <label>Duration
+              <select id="customDuration"><option value="-1">Smart</option><option>4</option><option>5</option><option>6</option><option>8</option><option>10</option><option>12</option><option>15</option></select>
+            </label>
+          </div>
+          <div class="actions">
+            <button class="primary" id="customSubmitBtn" type="button">Generate another video</button>
+            <button class="secondary" id="customClearBtn" type="button">Clear</button>
+          </div>
+        </section>
+
+        <section class="card form" id="editForm" aria-labelledby="editToolTitle">
+          <div class="section-title">
+            <div>
+              <h2 id="editToolTitle">Edit selected frames</h2>
+              <p>Upload a source video, capture the current frame in the browser, paint the area to change, then send only the mask to the edit API.</p>
+            </div>
+            <span class="section-badge">Frame edit</span>
+          </div>
+          <label>Source video
+            <div class="asset-row"><input id="editVideoInput" type="file" accept="video/*"><span class="asset-state" id="editVideoState">Upload a video first</span></div>
+          </label>
+          <video id="editSourceVideo" class="source-video" controls playsinline></video>
+          <div class="edit-grid">
+            <label>Frame ID
+              <input id="maskFrameId" type="number" min="1" value="1">
+            </label>
+            <label>FPS
+              <input id="maskFps" type="number" min="1" value="30">
+            </label>
+            <label>Mask type
+              <select id="maskType">
+                <option value="fixed">fixed</option>
+                <option value="tracking">tracking</option>
+              </select>
+            </label>
+            <label>Expand ratio
+              <input id="expandRatio" type="number" min="0" max="1" step="0.01" value="0.02">
+            </label>
+          </div>
+          <div class="edit-actions">
+            <button class="tool-btn active" id="brushBtn" type="button">Brush</button>
+            <button class="tool-btn" id="eraseBtn" type="button">Erase</button>
+            <button class="tool-btn" id="captureFrameBtn" type="button">Capture frame</button>
+            <button class="tool-btn" id="saveFrameBtn" type="button">Save frame mask</button>
+            <button class="tool-btn" id="clearMaskBtn" type="button">Clear mask</button>
+            <div class="brush-wrap">
+              <label>Brush size
+                <input id="brushSize" type="range" min="6" max="120" value="28">
+              </label>
+            </div>
+          </div>
+          <div class="editor-shell">
+            <div class="editor-stage">
+              <canvas id="frameCanvas"></canvas>
+              <canvas id="maskCanvas"></canvas>
+            </div>
+            <div class="editor-note" id="maskHint">Upload a video, scrub to the frame you want, then click Capture frame.</div>
+          </div>
+          <div class="frame-list" id="editFrameList" aria-live="polite"></div>
+          <label>Edit prompt
+            <textarea id="editPrompt" class="compact">Modify only the marked area in the captured frame. Keep the rest of the video unchanged, preserve the overall style and motion, and change only the selected detail.</textarea>
+          </label>
+          <div class="actions">
+            <button class="primary" id="submitEditBtn" type="button">Generate edited video</button>
+            <button class="secondary" id="resetEditBtn" type="button">Clear editor</button>
+          </div>
+        </section>
+      </div>
+
+      <aside class="result-stack" aria-label="Generation results">
+        <section class="card panel result-card-shell">
+          <div class="result-head">
+            <div>
+              <h3>Image result</h3>
+              <p>Standalone keyframe generation output from the image API.</p>
+            </div>
+            <span class="pill" id="imageStatusPill">Ready</span>
+          </div>
+          <div class="status">
+            <div class="status-top"><span class="task" id="imageTaskId">No task yet</span></div>
+            <div class="loader" id="imageLoader"><span></span></div>
+            <div class="log" id="imageLog">Generate keyframes to preview image API results here.</div>
+            <div class="image-result-grid" id="imageResultGrid" aria-live="polite"></div>
+          </div>
+        </section>
+        <section class="card panel result-card-shell">
+          <div class="result-head">
+            <div>
+              <h3>Template video result</h3>
+              <p>Main template flow. This preview is only for the first video generator.</p>
+            </div>
+            <span class="pill" id="mainStatusPill">Ready</span>
+          </div>
+          <div class="status">
+            <div class="status-top"><span class="task" id="mainTaskId">No task yet</span></div>
+            <div class="loader" id="mainLoader"><span></span></div>
+            <div class="log" id="mainLog">Submit the main video task to start generating.</div>
+            <div class="preview"><video id="mainVideoPreview" controls playsinline></video></div>
+            <a class="download" id="mainDownloadLink" href="#" download>Download video</a>
+          </div>
+        </section>
+        <section class="card panel result-card-shell">
+          <div class="result-head">
+            <div>
+              <h3>Custom video result</h3>
+              <p>Independent prompt flow. It keeps its own preview and download state.</p>
+            </div>
+            <span class="pill" id="customStatusPill">Ready</span>
+          </div>
+          <div class="status">
+            <div class="status-top"><span class="task" id="customTaskId">No task yet</span></div>
+            <div class="loader" id="customLoader"><span></span></div>
+            <div class="log" id="customLog">Upload at least one reference image, then click Generate another video.</div>
+            <div class="preview"><video id="customVideoPreview" controls playsinline></video></div>
+            <a class="download" id="customDownloadLink" href="#" download>Download video</a>
+          </div>
+        </section>
+        <section class="card panel result-card-shell">
+          <div class="result-head">
+            <div>
+              <h3>Edit video result</h3>
+              <p>Frame-mask edit output is kept separate from the two video generators.</p>
+            </div>
+            <span class="pill" id="editStatusPill">Ready</span>
+          </div>
+          <div class="status">
+            <div class="status-top"><span class="task" id="editTaskId">No task yet</span></div>
+            <div class="loader" id="editLoader"><span></span></div>
+            <div class="log" id="editLog">Submit the edit task to start generating.</div>
+            <div class="preview"><video id="editVideoPreview" controls playsinline></video></div>
+            <a class="download" id="editDownloadLink" href="#" download>Download video</a>
+          </div>
+        </section>
+      </aside>
+    </section>
+  </main>
+
+  <script>
+    const form = document.querySelector("#videoForm");
+    const promptInput = document.querySelector("#prompt");
+    const productInput = document.querySelector("#productInput");
+    const productState = document.querySelector("#productState");
+    const productList = document.querySelector("#productList");
+    const keyframePrompt = document.querySelector("#keyframePrompt");
+    const keyframeCount = document.querySelector("#keyframeCount");
+    const keyframeFormat = document.querySelector("#keyframeFormat");
+    const generateKeyframesBtn = document.querySelector("#generateKeyframesBtn");
+    const clearKeyframesBtn = document.querySelector("#clearKeyframesBtn");
+    const keyframeState = document.querySelector("#keyframeState");
+    const keyframeOutputList = document.querySelector("#keyframeOutputList");
+    const referenceInput = document.querySelector("#referenceInput");
+    const firstFrameInput = document.querySelector("#firstFrameInput");
+    const lastFrameInput = document.querySelector("#lastFrameInput");
+    const referenceState = document.querySelector("#referenceState");
+    const referenceList = document.querySelector("#referenceList");
+    const firstFrameState = document.querySelector("#firstFrameState");
+    const lastFrameState = document.querySelector("#lastFrameState");
+    const referenceGroup = document.querySelector("#referenceGroup");
+    const framesGroup = document.querySelector("#framesGroup");
+    const resolutionInput = document.querySelector("#resolution");
+    const ratioInput = document.querySelector("#ratio");
+    const durationInput = document.querySelector("#duration");
+    const submitBtn = document.querySelector("#submitBtn");
+    const clearBtn = document.querySelector("#clearBtn");
+    const customPromptInput = document.querySelector("#customPrompt");
+    const customReferenceInput = document.querySelector("#customReferenceInput");
+    const customReferenceState = document.querySelector("#customReferenceState");
+    const customReferenceList = document.querySelector("#customReferenceList");
+    const customFirstFrameInput = document.querySelector("#customFirstFrameInput");
+    const customLastFrameInput = document.querySelector("#customLastFrameInput");
+    const customFirstFrameState = document.querySelector("#customFirstFrameState");
+    const customLastFrameState = document.querySelector("#customLastFrameState");
+    const customReferenceGroup = document.querySelector("#customReferenceGroup");
+    const customFramesGroup = document.querySelector("#customFramesGroup");
+    const customResolutionInput = document.querySelector("#customResolution");
+    const customRatioInput = document.querySelector("#customRatio");
+    const customDurationInput = document.querySelector("#customDuration");
+    const customSubmitBtn = document.querySelector("#customSubmitBtn");
+    const customClearBtn = document.querySelector("#customClearBtn");
+    const imageStatusPill = document.querySelector("#imageStatusPill");
+    const imageTaskIdEl = document.querySelector("#imageTaskId");
+    const imageLogEl = document.querySelector("#imageLog");
+    const imageLoader = document.querySelector("#imageLoader");
+    const imageResultGrid = document.querySelector("#imageResultGrid");
+    const mainStatusPill = document.querySelector("#mainStatusPill");
+    const mainTaskIdEl = document.querySelector("#mainTaskId");
+    const mainLogEl = document.querySelector("#mainLog");
+    const mainLoader = document.querySelector("#mainLoader");
+    const mainVideoPreview = document.querySelector("#mainVideoPreview");
+    const mainDownloadLink = document.querySelector("#mainDownloadLink");
+    const customStatusPill = document.querySelector("#customStatusPill");
+    const customTaskIdEl = document.querySelector("#customTaskId");
+    const customLogEl = document.querySelector("#customLog");
+    const customLoader = document.querySelector("#customLoader");
+    const customVideoPreview = document.querySelector("#customVideoPreview");
+    const customDownloadLink = document.querySelector("#customDownloadLink");
+    const editStatusPill = document.querySelector("#editStatusPill");
+    const editTaskIdEl = document.querySelector("#editTaskId");
+    const editLogEl = document.querySelector("#editLog");
+    const editLoader = document.querySelector("#editLoader");
+    const editVideoPreview = document.querySelector("#editVideoPreview");
+    const editDownloadLink = document.querySelector("#editDownloadLink");
+    const editForm = document.querySelector("#editForm");
+    const editVideoInput = document.querySelector("#editVideoInput");
+    const editVideoState = document.querySelector("#editVideoState");
+    const editSourceVideo = document.querySelector("#editSourceVideo");
+    const maskFrameIdInput = document.querySelector("#maskFrameId");
+    const maskFpsInput = document.querySelector("#maskFps");
+    const maskTypeInput = document.querySelector("#maskType");
+    const expandRatioInput = document.querySelector("#expandRatio");
+    const brushBtn = document.querySelector("#brushBtn");
+    const eraseBtn = document.querySelector("#eraseBtn");
+    const captureFrameBtn = document.querySelector("#captureFrameBtn");
+    const saveFrameBtn = document.querySelector("#saveFrameBtn");
+    const clearMaskBtn = document.querySelector("#clearMaskBtn");
+    const brushSizeInput = document.querySelector("#brushSize");
+    const maskHint = document.querySelector("#maskHint");
+    const editPrompt = document.querySelector("#editPrompt");
+    const editorStage = document.querySelector(".editor-stage");
+    const frameCanvas = document.querySelector("#frameCanvas");
+    const maskCanvas = document.querySelector("#maskCanvas");
+    const editFrameList = document.querySelector("#editFrameList");
+    const submitEditBtn = document.querySelector("#submitEditBtn");
+    const resetEditBtn = document.querySelector("#resetEditBtn");
+    const frameCtx = frameCanvas.getContext("2d");
+    const maskCtx = maskCanvas.getContext("2d");
+    let videoPollTimer = null;
+    let customVideoPollTimer = null;
+    let editPollTimer = null;
+    let keyframePollTimer = null;
+    let mainVideoPollStartedAt = 0;
+    let customVideoPollStartedAt = 0;
+    let assetMode = "reference";
+    const uploadedAssets = { product: [], reference: [], firstFrame: null, lastFrame: null };
+    const generatedKeyframes = [];
+    let editVideoObjectUrl = "";
+    let editVideoReady = false;
+    let editTool = "brush";
+    let editDrawing = false;
+    let editLastPoint = null;
+    let activeEditFrameId = "";
+    let displayedFrameId = "";
+    const savedEditFrames = [];
+    const customUploadedAssets = { reference: [], firstFrame: null, lastFrame: null };
+    let customAssetMode = "reference";
+    const promptBase = "Use the user's uploaded portrait as the only identity reference. Preserve the exact face, hairstyle, skin tone, age impression, body proportions, and expression across every shot. Do not use the template preview image as the person's identity. Keep the result photorealistic, vertical 9:16, crisp, and suitable for short-form social video. If you include a reference inset, it should be the user's photo in the lower-left corner with a small curved transformation arrow. Avoid cartoon styling, warped hands, distorted text, duplicate limbs, fake logos, and unstable facial features.";
+    const templateData = [
+      { id: "01", title: "Brazil Football Motion", file: "01-brazil-football-motion.mp4", preview: "previews/01-brazil-football-motion.jpg", reference: "previews/01-brazil-football-motion.jpg", prompt: `${promptBase} Scene 1: the subject starts as a calm portrait, then the frame blooms into a packed Brazil football stadium with green-yellow lighting, fluttering flags, crowd bokeh, and a rising sense of anticipation. Scene 2: the outfit shifts into a Brazil supporter jersey with cloth motion, scarf movement, and subtle wind. Scene 3: the subject steps forward with a confident celebratory pose while stadium lights sweep behind them and confetti drifts through the air. Scene 4: end on a hero-style fan shot with strong contrast, cinematic depth, and high energy.` },
+      { id: "02", title: "Brazil Fan Cheer", file: "02-brazil-fan-cheer.mp4", preview: "previews/02-brazil-fan-cheer.jpg", reference: "previews/02-brazil-fan-cheer.jpg", prompt: `${promptBase} Build a cheer moment that feels like a real Brazil match celebration. Start with the subject looking directly at camera, then transition into a crowded stadium reaction with raised arms, painted cheeks, bright flags, and handheld crowd motion. Keep the face locked and natural while the background becomes louder, brighter, and more alive. Add confetti, camera shake, and a final triumphant pose that feels like a creator-made celebratory reel.` },
+      { id: "03", title: "Football Spin", file: "03-football-spin.mp4", preview: "previews/03-football-spin.jpg", reference: "previews/03-football-spin.jpg", prompt: `${promptBase} Create a dynamic spin transformation inspired by football highlight edits. Begin on a still portrait, then rotate the subject with smooth motion blur, shifting jersey fabric, stadium rim light, and a controlled camera orbit. The motion should feel athletic and premium, not chaotic. End with the subject centered, fully stabilized, and lit by crisp sport lighting that shows the same face clearly.` },
+      { id: "04", title: "Bicycle Kick", file: "04-bicycle-kick.mp4", preview: "previews/04-bicycle-kick.jpg", reference: "previews/04-bicycle-kick.jpg", prompt: `${promptBase} Turn the portrait into an iconic bicycle-kick scene. Keep the same identity, then place the subject into a dramatic sports action frame with an airborne body arc, grass field, stadium depth, and a ball crossing the scene. The pose must read clearly in a single glance, with balanced limbs and believable anatomy. Add strong motion, sharp highlights, and a final frozen-action frame that looks like a premium sports edit.` },
+      { id: "05", title: "Brazil Together", file: "05-brazil-together.mp4", preview: "previews/05-brazil-together.jpg", reference: "previews/05-brazil-together.jpg", prompt: `${promptBase} Create a warm group-celebration feeling centered on the same person. Expand the scene into a Brazil-inspired togetherness moment with friends, flags, soft party lights, and layered depth in the background. The tone should be joyful and social, like a memory clip made for sharing. Keep the motion gentle but alive, with natural smiles, subtle crowd movement, and a clean final composition.` },
+      { id: "06", title: "Brazil Free Kick", file: "06-brazil-free-kick.mp4", preview: "previews/06-brazil-free-kick.jpg", reference: "previews/06-brazil-free-kick.jpg", prompt: `${promptBase} Build a pre-kick tension scene with clear football drama. Start on the subject in a focused stance, then reveal a grass pitch, goal depth, stadium spectators, and strong directional light. Add a measured run-up, subtle dust or turf motion, and a sense that the next action is about to happen. Finish with the subject locked in a powerful free-kick pose, framed for a mobile-first social clip.` },
+      { id: "11", title: "Birthday Time Travel", file: "11-birthday-time-travel.mp4", preview: "previews/11-birthday-time-travel.jpg", reference: "previews/11-birthday-time-travel.jpg", prompt: `${promptBase} Create a birthday time-travel progression with an emotional, cinematic feel. The subject should move through a sequence of birthday memories: candle light, room glow, soft party decor, changing outfits, and a sense of years passing beautifully. Keep the face identical in every stage, but shift the lighting and background to suggest time passing. End with a meaningful birthday moment that feels warm, polished, and nostalgic.` },
+      { id: "12", title: "Poolside Birthday", file: "12-poolside-birthday.mp4", preview: "previews/12-poolside-birthday.jpg", reference: "previews/12-poolside-birthday.jpg", prompt: `${promptBase} Turn the portrait into a luxury poolside birthday scene. Keep the subject centered while the background becomes shimmering water, reflective highlights, birthday props, and relaxed summer styling. The motion should feel elegant and playful at the same time, with subtle hair movement, water sparkle, and warm evening color. End on a confident celebration frame that feels like a high-end birthday reel.` },
+      { id: "14", title: "Pet Ice Cream", file: "14-pet-ice-cream.mp4", preview: "previews/14-pet-ice-cream.jpg", reference: "previews/14-pet-ice-cream.jpg", prompt: `${promptBase} Reimagine the uploaded subject as a cute pet-centered ice cream moment while keeping identity stable. Use soft pastel colors, a playful dessert setting, and clear subject separation so the pet remains the focus. Add small lively motions like ear movement, head tilt, or body bounce, but keep the composition clean and easy to read. The final frame should feel sweet, polished, and highly shareable.` },
+      { id: "15", title: "Paws in Motion", file: "15-paws-in-motion.mp4", preview: "previews/15-paws-in-motion.jpg", reference: "previews/15-paws-in-motion.jpg", prompt: `${promptBase} Animate the subject into a playful paws-in-motion sequence with lively movement and strong identity retention. The pet or animal should stay recognizable while the camera and body motion create a rhythmic, energetic short video. Use smooth transitions, realistic fur or texture detail, and a clean background that never fights the subject. End with a bright, expressive pose that feels like a premium pet social template.` },
+      { id: "17", title: "Paws Kitchen Diaries", file: "17-paws-kitchen-diaries.mp4", preview: "previews/17-paws-kitchen-diaries.jpg", reference: "previews/17-paws-kitchen-diaries.jpg", prompt: `${promptBase} Create a cozy kitchen diary scene around the uploaded pet identity. Place the subject in a warm home kitchen with gentle sunlight, soft shadows, and believable daily-life motion like looking around, stepping, or reacting to food. Keep the background domestic and tidy, not busy, so the subject remains the focus. Make it feel like a real lifestyle clip captured for a pet account.` },
+      { id: "18", title: "Pet Rides Moto", file: "18-pet-rides-moto.mp4", preview: "previews/18-pet-rides-moto.jpg", reference: "previews/18-pet-rides-moto.jpg", prompt: `${promptBase} Turn the subject into a cinematic moto-riding adventure while preserving the same face or pet identity. Add forward motion, road energy, speed lines, and a slightly heroic camera angle that makes the subject feel brave and playful. Keep the anatomy believable and the movement smooth, with no extra limbs or broken wheels. Finish on a bold action frame that reads instantly in a vertical feed.` },
+      { id: "19", title: "Rhythm Duo", file: "19-rhythm-duo.mp4", preview: "previews/19-rhythm-duo.jpg", reference: "previews/19-rhythm-duo.jpg", prompt: `${promptBase} Build a two-beat rhythm performance around the same subject, as if the clip has a coordinated dance partner or synchronized visual echo. Keep the identity fixed while the body, background lights, and movement timing create a performance loop with musical energy. Add stage lighting pulses, motion accents, and a polished creator-style edit rhythm. The ending should feel catchy, energetic, and easy to remember.` },
+      { id: "20", title: "Boss Lady", file: "20-boss-lady.mp4", preview: "previews/20-boss-lady.jpg", reference: "previews/20-boss-lady.jpg", prompt: `${promptBase} Transform the portrait into a confident boss-lady scene with premium fashion energy. Keep the face steady while the wardrobe, posture, and camera language become sharp, elegant, and composed. Use urban lighting, strong silhouette framing, and subtle movement in hair or clothing to create authority without looking stiff. End with a poised, high-status final frame that feels editorial.` },
+      { id: "21", title: "Timeless Beauty", file: "21-timeless-beauty.mp4", preview: "previews/21-timeless-beauty.jpg", reference: "previews/21-timeless-beauty.jpg", prompt: `${promptBase} Turn the portrait into a timeless beauty edit with soft glam, smooth camera drift, and premium magazine style. Keep the same face and expression while the lighting becomes refined, the background softens, and the motion slows into elegant micro-movements. The look should feel delicate, polished, and emotionally calm. Finish with a graceful close-up that keeps the identity clear and flattering.` },
+      { id: "22", title: "Beach Dance Fever", file: "22-beach-dance-fever.mp4", preview: "previews/22-beach-dance-fever.jpg", reference: "previews/22-beach-dance-fever.jpg", prompt: `${promptBase} Build a beach dance celebration with sun, wind, and upbeat motion. Keep the subject locked while the scene expands into shoreline light, shimmering water, warm sand tones, and energetic dance rhythm. The clip should feel bright, free, and music-driven, with natural body movement and a strong mobile-friendly silhouette. End on a joyful beach pose with clear subject separation.` },
+      { id: "23", title: "Baby Dance", file: "23-baby-dance.mp4", preview: "previews/23-baby-dance.jpg", reference: "previews/23-baby-dance.jpg", prompt: `${promptBase} Create a cute baby dance style scene with playful, gentle movement. Keep the identity steady while the subject dances with soft bounces, rounded motion, and a lighthearted rhythm that reads clearly in short-form video. Use bright, clean lighting and simple background shapes so the action stays understandable. The final frame should feel sweet, animated, and instantly readable.` }
+    ];
+    let selectedTemplateId = templateData[0].id;
+
+    function createResultState({ pill, taskId, log, loader, video, download }) {
+      return {
+        setStatus(status, message) {
+          pill.textContent = status;
+          log.textContent = message;
+        },
+        clear() {
+          taskId.textContent = "No task yet";
+          video.removeAttribute("src");
+          download.classList.remove("show");
+          loader.classList.remove("show");
+          download.removeAttribute("href");
+        },
+        begin(submittingText, message) {
+          loader.classList.add("show");
+          this.setStatus(submittingText, message);
+        },
+        queue(task, data) {
+          taskId.textContent = task;
+          this.setStatus("Queued", JSON.stringify(data, null, 2));
+        },
+        succeed(message, url) {
+          loader.classList.remove("show");
+          video.src = url;
+          download.href = url;
+          download.classList.add("show");
+          this.setStatus("Succeeded", message);
+        },
+        fail(message) {
+          loader.classList.remove("show");
+          this.setStatus("Error", message);
+        }
+      };
+    }
+
+    const mainResult = createResultState({
+      pill: mainStatusPill,
+      taskId: mainTaskIdEl,
+      log: mainLogEl,
+      loader: mainLoader,
+      video: mainVideoPreview,
+      download: mainDownloadLink
+    });
+    const imageResult = {
+      setStatus(status, message) {
+        imageStatusPill.textContent = status;
+        imageLogEl.textContent = message;
+      },
+      clear() {
+        imageTaskIdEl.textContent = "No task yet";
+        imageLoader.classList.remove("show");
+        imageResultGrid.replaceChildren();
+      },
+      begin(status, message) {
+        imageLoader.classList.add("show");
+        this.setStatus(status, message);
+      },
+      queue(task, data) {
+        imageTaskIdEl.textContent = task;
+        this.setStatus("Queued", JSON.stringify(data, null, 2));
+      },
+      succeed(message, urls) {
+        imageLoader.classList.remove("show");
+        imageResultGrid.replaceChildren();
+        urls.forEach((url, index) => {
+          const link = document.createElement("a");
+          link.href = url;
+          link.target = "_blank";
+          link.rel = "noopener";
+          const image = document.createElement("img");
+          image.src = url;
+          image.alt = `Generated keyframe ${index + 1}`;
+          link.append(image);
+          imageResultGrid.append(link);
+        });
+        this.setStatus("Succeeded", message);
+      },
+      fail(message) {
+        imageLoader.classList.remove("show");
+        this.setStatus("Error", message);
+      }
+    };
+    const customResult = createResultState({
+      pill: customStatusPill,
+      taskId: customTaskIdEl,
+      log: customLogEl,
+      loader: customLoader,
+      video: customVideoPreview,
+      download: customDownloadLink
+    });
+    const editResult = createResultState({
+      pill: editStatusPill,
+      taskId: editTaskIdEl,
+      log: editLogEl,
+      loader: editLoader,
+      video: editVideoPreview,
+      download: editDownloadLink
+    });
+
+    const templateGrid = document.querySelector("#templateGrid");
+    const activeTemplateName = document.querySelector("#activeTemplateName");
+    const activeTemplateHint = document.querySelector("#activeTemplateHint");
+
+    function getSelectedTemplate() {
+      return templateData.find(item => item.id === selectedTemplateId) || templateData[0];
+    }
+
+    function removeTemplateReferenceAssets() {
+      const next = [];
+      for (const asset of uploadedAssets.reference) {
+        if (asset.kind === "template") {
+          safeRevoke(asset.previewUrl);
+          continue;
+        }
+        next.push(asset);
+      }
+      uploadedAssets.reference = next;
+      renderReferenceList();
+      referenceState.classList.toggle("uploaded", uploadedAssets.reference.length > 0);
+      referenceState.textContent = uploadedAssets.reference.length
+        ? `${uploadedAssets.reference.length} reference image${uploadedAssets.reference.length === 1 ? "" : "s"} uploaded`
+        : "No optional images selected";
+    }
+
+    function ensureTemplateReference(template) {
+      if (!template?.reference) return;
+      const refUrl = `assets/template-videos/${template.reference}`;
+      const exists = uploadedAssets.reference.some(asset => asset.localUrl === refUrl || asset.url === refUrl);
+      if (exists) return;
+      uploadedAssets.reference.push({
+        url: refUrl,
+        localUrl: refUrl,
+        name: `${template.title} reference`,
+        previewUrl: refUrl,
+        kind: "template"
+      });
+      renderReferenceList();
+      referenceState.classList.remove("uploading", "error");
+      referenceState.classList.add("uploaded");
+      referenceState.textContent = `${uploadedAssets.reference.length} reference image${uploadedAssets.reference.length === 1 ? "" : "s"} uploaded`;
+    }
+
+    function setSelectedTemplate(templateId, options = {}) {
+      const template = templateData.find(item => item.id === templateId);
+      if (!template) return;
+      selectedTemplateId = templateId;
+      removeTemplateReferenceAssets();
+      ensureTemplateReference(template);
+      activeTemplateName.textContent = template.title;
+      activeTemplateHint.textContent = "Upload your own portrait reference image. Template preview is style guidance only.";
+      document.querySelectorAll(".template-card").forEach(card => {
+        card.classList.toggle("active", card.dataset.templateId === templateId);
+      });
+      promptInput.value = template.prompt;
+      if (!options.silent) {
+        promptInput.focus({ preventScroll: true });
+      }
+    }
+
+    async function resolveReferenceMediaForSubmit() {
+      const media = [];
+      const userReferences = uploadedAssets.reference.filter(asset => asset.kind !== "template");
+      if (!userReferences.length) {
+        throw new Error("Upload your own portrait reference image before generating. The template preview is style guidance only.");
+      }
+      for (const asset of uploadedAssets.reference) {
+        const currentUrl = String(asset.url || "").trim();
+        if (!currentUrl) {
+          throw new Error(`Reference image "${asset.name}" is empty.`);
+        }
+        if (!/^(https?:\/\/|oss:\/\/|data:image\/)/i.test(currentUrl)) {
+          throw new Error(`Reference image "${asset.name}" is not ready. Please wait for upload to finish.`);
+        }
+        media.push({ type: "reference_image", url: currentUrl });
+      }
+      return media;
+    }
+
+    function renderTemplateGrid() {
+      templateGrid.replaceChildren();
+      for (const template of templateData) {
+        const card = document.createElement("article");
+        card.className = `template-card${template.id === selectedTemplateId ? " active" : ""}`;
+        card.dataset.templateId = template.id;
+
+        const preview = document.createElement("div");
+        preview.className = "template-preview";
+        const image = document.createElement("img");
+        image.src = `assets/template-videos/${template.preview}`;
+        image.alt = `${template.title} preview`;
+        const chip = document.createElement("span");
+        chip.className = "template-chip";
+        chip.textContent = `Prompt ${template.id}`;
+        const open = document.createElement("button");
+        open.type = "button";
+        open.className = "template-open";
+        open.textContent = "Preview";
+        open.addEventListener("click", () => window.open(`assets/template-videos/${template.file}`, "_blank", "noopener"));
+        preview.append(image, chip, open);
+
+        const info = document.createElement("div");
+        info.className = "template-info";
+        const title = document.createElement("strong");
+        title.textContent = template.title;
+        const meta = document.createElement("small");
+        meta.textContent = template.file;
+        const prompt = document.createElement("p");
+        prompt.className = "template-prompt";
+        prompt.textContent = template.prompt;
+        const file = document.createElement("p");
+        file.className = "template-file";
+        file.textContent = `Video file: assets/template-videos/${template.file}`;
+        info.append(title, meta, prompt, file);
+
+        const actions = document.createElement("div");
+        actions.className = "template-actions";
+        const useBtn = document.createElement("button");
+        useBtn.type = "button";
+        useBtn.textContent = "Use prompt";
+        useBtn.addEventListener("click", () => setSelectedTemplate(template.id));
+        const generateBtn = document.createElement("button");
+        generateBtn.type = "button";
+        generateBtn.className = "primary-lite";
+        generateBtn.textContent = "Generate video";
+        generateBtn.addEventListener("click", async () => {
+          setSelectedTemplate(template.id, { silent: true });
+          form.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+          document.querySelector("#videoForm").scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+        actions.append(useBtn, generateBtn);
+
+        card.addEventListener("click", event => {
+          const interactive = event.target.closest("button,a,input,textarea,select");
+          if (interactive) return;
+          setSelectedTemplate(template.id);
+        });
+        card.append(preview, info, actions);
+        templateGrid.append(card);
+      }
+    }
+
+    function getTaskId(data) {
+      return data?.output?.task_id || data?.task_id || data?.output?.id || "";
+    }
+
+    function getTaskStatus(data) {
+      return data?.output?.task_status || data?.task_status || data?.output?.status || data?.status || "UNKNOWN";
+    }
+
+    function formatApiError(data, fallback) {
+      if (!data) return fallback;
+      const parts = [data.error || fallback];
+      if (data.code) parts.push(`[${data.code}]`);
+      if (data.advice) parts.push(data.advice);
+      return parts.join(" ");
+    }
+
+    function getVideoUrl(data) {
+      return data?.output?.video_url || data?.output?.url || data?.output?.results?.[0]?.url || data?.output?.results?.[0]?.video_url || "";
+    }
+
+    function getImageUrls(data) {
+      const urls = [];
+      const visit = value => {
+        if (!value) return;
+        if (Array.isArray(value)) return value.forEach(visit);
+        if (typeof value === "string") {
+          if (/^https?:\/\/.+\.(png|jpe?g|webp)(?:[?#].*)?$/i.test(value)) urls.push(value);
+          return;
+        }
+        if (typeof value === "object") {
+          if (value.url) visit(value.url);
+          if (value.image) visit(value.image);
+          if (value.image_url) visit(value.image_url);
+          if (value.content) visit(value.content);
+          if (value.results) visit(value.results);
+          if (value.choices) visit(value.choices);
+          if (value.output) visit(value.output);
+        }
+      };
+      visit(data?.output || data);
+      return [...new Set(urls)];
+    }
+
+    function safeRevoke(url) {
+      if (String(url || "").startsWith("blob:")) URL.revokeObjectURL(url);
+    }
+
+    async function uploadAsset(file, stateEl, options = {}) {
+      stateEl.classList.remove("uploaded", "error");
+      stateEl.classList.add("uploading");
+      stateEl.textContent = "Uploading...";
+      const formData = new FormData();
+      formData.append("file", file);
+      const query = new URLSearchParams();
+      if (options.model) query.set("model", options.model);
+      if (options.provider) query.set("provider", options.provider);
+      const uploadUrl = `/api/upload${query.toString() ? `?${query.toString()}` : ""}`;
+      const response = await fetch(uploadUrl, { method: "POST", body: formData });
+      const data = await response.json();
+      if (!response.ok) throw new Error(formatApiError(data, "Image upload failed."));
+      stateEl.classList.remove("uploading");
+      stateEl.classList.add("uploaded");
+      stateEl.textContent = "Uploaded";
+      return data.url;
+    }
+
+    function setEditStatus(message, isError = false) {
+      maskHint.textContent = message;
+      maskHint.style.color = isError ? "#ff9ab7" : "";
+    }
+
+    function resetMaskCanvas(width, height) {
+      maskCanvas.width = width;
+      maskCanvas.height = height;
+      frameCanvas.width = width;
+      frameCanvas.height = height;
+      editorStage.style.aspectRatio = `${width} / ${height}`;
+      frameCanvas.style.aspectRatio = `${width} / ${height}`;
+      maskCanvas.style.aspectRatio = `${width} / ${height}`;
+      frameCtx.clearRect(0, 0, width, height);
+      maskCtx.save();
+      maskCtx.globalCompositeOperation = "source-over";
+      maskCtx.fillStyle = "#000";
+      maskCtx.fillRect(0, 0, width, height);
+      maskCtx.restore();
+    }
+
+    function updateFrameCanvasSize(width, height) {
+      if (frameCanvas.width === width && frameCanvas.height === height && maskCanvas.width === width && maskCanvas.height === height) return;
+      frameCanvas.width = width;
+      frameCanvas.height = height;
+      maskCanvas.width = width;
+      maskCanvas.height = height;
+      editorStage.style.aspectRatio = `${width} / ${height}`;
+      frameCanvas.style.aspectRatio = `${width} / ${height}`;
+      maskCanvas.style.aspectRatio = `${width} / ${height}`;
+      clearMaskOnly();
+    }
+
+    function paintCurrentVideoFrame(options = {}) {
+      if (!editSourceVideo.videoWidth || !editSourceVideo.videoHeight) return false;
+      const width = editSourceVideo.videoWidth;
+      const height = editSourceVideo.videoHeight;
+      updateFrameCanvasSize(width, height);
+      const fps = Math.max(1, Number(maskFpsInput.value || 30));
+      const nextFrameId = String(Math.max(1, Math.round(editSourceVideo.currentTime * fps) + 1));
+      if (!options.preserveMask && displayedFrameId && displayedFrameId !== nextFrameId) {
+        clearMaskOnly();
+        activeEditFrameId = "";
+        renderSavedEditFrames();
+      }
+      frameCtx.clearRect(0, 0, width, height);
+      frameCtx.drawImage(editSourceVideo, 0, 0, width, height);
+      maskFrameIdInput.value = nextFrameId;
+      displayedFrameId = nextFrameId;
+      return true;
+    }
+
+    function clearMaskOnly() {
+      if (!maskCanvas.width || !maskCanvas.height) return;
+      maskCtx.save();
+      maskCtx.globalCompositeOperation = "source-over";
+      maskCtx.fillStyle = "#000";
+      maskCtx.fillRect(0, 0, maskCanvas.width, maskCanvas.height);
+      maskCtx.restore();
+      setEditStatus("Mask cleared. Capture a frame and paint the area again.");
+    }
+
+    function snapshotCanvas(canvas, type = "image/png") {
+      return canvas.toDataURL(type);
+    }
+
+    function restoreImageToCanvas(dataUrl, canvas, ctx) {
+      return new Promise((resolve, reject) => {
+        const image = new Image();
+        image.onload = () => {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+          resolve();
+        };
+        image.onerror = reject;
+        image.src = dataUrl;
+      });
+    }
+
+    function renderSavedEditFrames() {
+      editFrameList.replaceChildren();
+      savedEditFrames.forEach((frame, index) => {
+        const item = document.createElement("div");
+        item.className = `frame-item${frame.id === activeEditFrameId ? " active" : ""}`;
+        const image = document.createElement("img");
+        image.src = frame.frameDataUrl;
+        image.alt = `Frame ${frame.frameId}`;
+        const label = document.createElement("span");
+        label.textContent = `Frame ${frame.frameId} · ${frame.time.toFixed(2)}s`;
+        const open = document.createElement("button");
+        open.type = "button";
+        open.textContent = "Edit";
+        open.addEventListener("click", () => loadSavedEditFrame(frame.id));
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.textContent = "Remove";
+        remove.addEventListener("click", () => {
+          savedEditFrames.splice(index, 1);
+          if (activeEditFrameId === frame.id) activeEditFrameId = savedEditFrames[0]?.id || "";
+          renderSavedEditFrames();
+          setEditStatus(savedEditFrames.length ? `${savedEditFrames.length} frame mask${savedEditFrames.length === 1 ? "" : "s"} saved.` : "No frame masks saved yet.");
+        });
+        item.append(image, label, open, remove);
+        editFrameList.append(item);
+      });
+    }
+
+    async function loadSavedEditFrame(id) {
+      const frame = savedEditFrames.find(item => item.id === id);
+      if (!frame) return;
+      activeEditFrameId = id;
+      updateFrameCanvasSize(frame.width, frame.height);
+      await restoreImageToCanvas(frame.frameDataUrl, frameCanvas, frameCtx);
+      await restoreImageToCanvas(frame.maskDataUrl, maskCanvas, maskCtx);
+      maskFrameIdInput.value = String(frame.frameId);
+      if (Number.isFinite(frame.time)) editSourceVideo.currentTime = frame.time;
+      displayedFrameId = String(frame.frameId);
+      renderSavedEditFrames();
+      setEditStatus(`Loaded frame ${frame.frameId}. Adjust the mask or generate.`);
+    }
+
+    function saveCurrentFrameMask() {
+      if (!paintCurrentVideoFrame({ preserveMask: true })) {
+        setEditStatus("Load a video and pause on a frame before saving.", true);
+        return;
+      }
+      const frameId = Number(maskFrameIdInput.value || 1);
+      const id = String(frameId);
+      const next = {
+        id,
+        frameId,
+        time: editSourceVideo.currentTime || 0,
+        width: frameCanvas.width,
+        height: frameCanvas.height,
+        frameDataUrl: snapshotCanvas(frameCanvas, "image/jpeg"),
+        maskDataUrl: snapshotCanvas(maskCanvas, "image/png")
+      };
+      const existingIndex = savedEditFrames.findIndex(frame => frame.id === id);
+      if (existingIndex >= 0) savedEditFrames[existingIndex] = next;
+      else savedEditFrames.push(next);
+      activeEditFrameId = id;
+      renderSavedEditFrames();
+      setEditStatus(`${savedEditFrames.length} frame mask${savedEditFrames.length === 1 ? "" : "s"} saved. Add more frames or generate.`);
+    }
+
+    function getCanvasPoint(event) {
+      const rect = maskCanvas.getBoundingClientRect();
+      const x = (event.clientX - rect.left) * (maskCanvas.width / rect.width);
+      const y = (event.clientY - rect.top) * (maskCanvas.height / rect.height);
+      return { x, y };
+    }
+
+    function drawMaskStroke(from, to) {
+      if (!from || !to) return;
+      const size = Number(brushSizeInput.value || 28);
+      const drawLine = (ctx) => {
+        ctx.save();
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        ctx.strokeStyle = editTool === "erase" ? "#000" : "#fff";
+        ctx.lineWidth = size;
+        ctx.beginPath();
+        ctx.moveTo(from.x, from.y);
+        ctx.lineTo(to.x, to.y);
+        ctx.stroke();
+        ctx.restore();
+      };
+      drawLine(maskCtx);
+    }
+
+    function beginStroke(event) {
+      if (!maskCanvas.width || !maskCanvas.height) return;
+      editDrawing = true;
+      editLastPoint = getCanvasPoint(event);
+      drawMaskStroke(editLastPoint, editLastPoint);
+      maskCanvas.setPointerCapture(event.pointerId);
+    }
+
+    function moveStroke(event) {
+      if (!editDrawing) return;
+      const point = getCanvasPoint(event);
+      drawMaskStroke(editLastPoint, point);
+      editLastPoint = point;
+      event.preventDefault();
+    }
+
+    function endStroke(event) {
+      if (!editDrawing) return;
+      editDrawing = false;
+      editLastPoint = null;
+      try { maskCanvas.releasePointerCapture(event.pointerId); } catch {}
+    }
+
+    async function uploadEditVideo(file) {
+      if (!/\.(mp4|mov)$/i.test(file.name) && !/video\/(mp4|quicktime)/i.test(file.type)) {
+        throw new Error("Video edit supports MP4 or MOV. Convert the source video first.");
+      }
+      if (editVideoObjectUrl) URL.revokeObjectURL(editVideoObjectUrl);
+      editVideoObjectUrl = URL.createObjectURL(file);
+      editSourceVideo.src = editVideoObjectUrl;
+      editSourceVideo.load();
+      editVideoReady = false;
+      editVideoState.classList.remove("uploaded", "error");
+      editVideoState.classList.add("uploading");
+      editVideoState.textContent = "Uploading source video...";
+      const formData = new FormData();
+      formData.append("file", file);
+      const response = await fetch("/api/upload?model=wanx2.1-vace-plus", { method: "POST", body: formData });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Video upload failed.");
+      editVideoReady = true;
+      editVideoState.classList.remove("uploading");
+      editVideoState.classList.add("uploaded");
+      editVideoState.textContent = "Video uploaded";
+      return data.url;
+    }
+
+    async function uploadSavedMaskFrame(frame) {
+      const blob = await fetch(frame.maskDataUrl).then(response => response.blob());
+      return uploadBlob(blob, `mask-frame-${frame.frameId}-${Date.now()}.png`, "image/png", { model: "wanx2.1-vace-plus" });
+    }
+
+    async function handleEditVideoInput() {
+      const file = editVideoInput.files?.[0];
+      if (!file) return;
+      editVideoInput.value = "";
+      try {
+        const uploadedUrl = await uploadEditVideo(file);
+        uploadedAssets.editVideoUrl = uploadedUrl;
+        setEditStatus("Video uploaded. Scrub to the target frame, then click Capture frame.");
+      } catch (error) {
+        editVideoState.classList.remove("uploading", "uploaded");
+        editVideoState.classList.add("error");
+        editVideoState.textContent = error.message;
+        setEditStatus(error.message, true);
+      }
+    }
+
+    function captureCurrentFrame() {
+      if (!editSourceVideo.videoWidth || !editSourceVideo.videoHeight) {
+        setEditStatus("Load a video first so a frame can be captured.", true);
+        return;
+      }
+      const width = editSourceVideo.videoWidth;
+      const height = editSourceVideo.videoHeight;
+      resetMaskCanvas(width, height);
+      frameCtx.drawImage(editSourceVideo, 0, 0, width, height);
+      const fps = Math.max(1, Number(maskFpsInput.value || 30));
+      maskFrameIdInput.value = String(Math.max(1, Math.round(editSourceVideo.currentTime * fps) + 1));
+      displayedFrameId = maskFrameIdInput.value;
+      activeEditFrameId = "";
+      renderSavedEditFrames();
+      setEditStatus(`Captured frame ${maskFrameIdInput.value}. Paint only the detail you want to change.`);
+    }
+
+    async function buildMaskUpload() {
+      const blob = await new Promise(resolve => maskCanvas.toBlob(resolve, "image/png"));
+      if (!blob) throw new Error("Failed to build the mask image.");
+      const file = new File([blob], `mask-${Date.now()}.png`, { type: "image/png" });
+      const formData = new FormData();
+      formData.append("file", file);
+      const response = await fetch("/api/upload?model=wanx2.1-vace-plus", { method: "POST", body: formData });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Mask upload failed.");
+      return data.url;
+    }
+
+    function dataUrlToImage(dataUrl) {
+      return new Promise((resolve, reject) => {
+        const image = new Image();
+        image.onload = () => resolve(image);
+        image.onerror = reject;
+        image.src = dataUrl;
+      });
+    }
+
+    async function uploadBlob(blob, filename, contentType, options = {}) {
+      const file = new File([blob], filename, { type: contentType });
+      const formData = new FormData();
+      formData.append("file", file);
+      const uploadUrl = options.model ? `/api/upload?model=${encodeURIComponent(options.model)}` : "/api/upload";
+      const response = await fetch(uploadUrl, { method: "POST", body: formData });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Upload failed.");
+      return data.url;
+    }
+
+    async function buildMaskVideoUpload() {
+      if (!savedEditFrames.length) return "";
+      const fps = Math.max(1, Math.min(30, Number(maskFpsInput.value || 30)));
+      const duration = Math.max(0.2, Number(editSourceVideo.duration || 0));
+      const response = await fetch("/api/mask-video", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          width: savedEditFrames[0].width,
+          height: savedEditFrames[0].height,
+          fps,
+          duration,
+          frames: savedEditFrames.map(frame => ({
+            frameId: frame.frameId,
+            maskDataUrl: frame.maskDataUrl
+          }))
+        })
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Failed to build mask video.");
+      return data.url;
+    }
+
+    async function handleAssetInput(input, key, stateEl, options = {}) {
+      const file = input.files?.[0];
+      if (!file) return;
+      try {
+        uploadedAssets[key] = await uploadAsset(file, stateEl, options);
+      } catch (error) {
+        stateEl.classList.remove("uploading", "uploaded");
+        stateEl.classList.add("error");
+        stateEl.textContent = error.message;
+      }
+    }
+
+    function renderReferenceList() {
+      referenceList.replaceChildren();
+      uploadedAssets.reference.forEach((asset, index) => {
+        const item = document.createElement("div");
+        item.className = "reference-item";
+        const image = document.createElement("img");
+        image.src = asset.previewUrl;
+        image.alt = asset.name;
+        const name = document.createElement("span");
+        name.textContent = asset.name;
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.className = "reference-remove";
+        remove.setAttribute("aria-label", `Remove ${asset.name}`);
+        remove.title = "Remove image";
+        remove.textContent = "x";
+        remove.addEventListener("click", () => {
+          safeRevoke(asset.previewUrl);
+          uploadedAssets.reference.splice(index, 1);
+          renderReferenceList();
+          referenceState.textContent = uploadedAssets.reference.length
+            ? `${uploadedAssets.reference.length} reference image${uploadedAssets.reference.length === 1 ? "" : "s"} uploaded`
+            : "No optional images selected";
+          referenceState.classList.toggle("uploaded", uploadedAssets.reference.length > 0);
+        });
+        item.append(image, name, remove);
+        referenceList.append(item);
+      });
+    }
+
+    function renderCustomReferenceList() {
+      customReferenceList.replaceChildren();
+      customUploadedAssets.reference.forEach((asset, index) => {
+        const item = document.createElement("div");
+        item.className = "reference-item";
+        const image = document.createElement("img");
+        image.src = asset.previewUrl;
+        image.alt = asset.name;
+        const name = document.createElement("span");
+        name.textContent = asset.name;
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.className = "reference-remove";
+        remove.setAttribute("aria-label", `Remove ${asset.name}`);
+        remove.title = "Remove image";
+        remove.textContent = "x";
+        remove.addEventListener("click", () => {
+          safeRevoke(asset.previewUrl);
+          customUploadedAssets.reference.splice(index, 1);
+          renderCustomReferenceList();
+          customReferenceState.textContent = customUploadedAssets.reference.length
+            ? `${customUploadedAssets.reference.length} reference image${customUploadedAssets.reference.length === 1 ? "" : "s"} uploaded`
+            : "No images selected";
+        });
+        item.append(image, name, remove);
+        customReferenceList.append(item);
+      });
+    }
+
+    function renderProductList() {
+      productList.replaceChildren();
+      uploadedAssets.product.forEach((asset, index) => {
+        const item = document.createElement("div");
+        item.className = "reference-item";
+        const image = document.createElement("img");
+        image.src = asset.previewUrl;
+        image.alt = asset.name;
+        const name = document.createElement("span");
+        name.textContent = asset.name;
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.className = "reference-remove";
+        remove.setAttribute("aria-label", `Remove ${asset.name}`);
+        remove.title = "Remove screenshot";
+        remove.textContent = "x";
+        remove.addEventListener("click", () => {
+          safeRevoke(asset.previewUrl);
+          uploadedAssets.product.splice(index, 1);
+          renderProductList();
+          productState.textContent = uploadedAssets.product.length
+            ? `${uploadedAssets.product.length} product screenshot${uploadedAssets.product.length === 1 ? "" : "s"} uploaded`
+            : "No screenshots selected";
+          productState.classList.toggle("uploaded", uploadedAssets.product.length > 0);
+        });
+        item.append(image, name, remove);
+        productList.append(item);
+      });
+    }
+
+    function renderGeneratedKeyframes() {
+      keyframeOutputList.replaceChildren();
+      generatedKeyframes.forEach((asset, index) => {
+        const item = document.createElement("div");
+        item.className = "reference-item";
+        const image = document.createElement("img");
+        image.src = asset.previewUrl;
+        image.alt = asset.name;
+        const name = document.createElement("span");
+        name.textContent = asset.name;
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.className = "reference-remove";
+        remove.setAttribute("aria-label", `Remove ${asset.name}`);
+        remove.title = "Remove image";
+        remove.textContent = "x";
+        remove.addEventListener("click", () => {
+          generatedKeyframes.splice(index, 1);
+          renderGeneratedKeyframes();
+          keyframeState.textContent = generatedKeyframes.length
+            ? `${generatedKeyframes.length} generated reference image${generatedKeyframes.length === 1 ? "" : "s"}`
+            : "Keyframes will be added below.";
+          keyframeState.classList.toggle("uploaded", generatedKeyframes.length > 0);
+        });
+        item.append(image, name, remove);
+        keyframeOutputList.append(item);
+      });
+    }
+
+    function addReferenceAsset(asset) {
+      if (uploadedAssets.reference.some(item => item.url === asset.url)) return;
+      uploadedAssets.reference.push(asset);
+      renderReferenceList();
+      referenceState.classList.remove("uploading", "error");
+      referenceState.classList.add("uploaded");
+      referenceState.textContent = `${uploadedAssets.reference.length} reference image${uploadedAssets.reference.length === 1 ? "" : "s"} uploaded`;
+    }
+
+    async function handleProductInput() {
+      const files = Array.from(productInput.files || []);
+      if (!files.length) return;
+      productInput.value = "";
+      const remaining = Math.max(0, 3 - uploadedAssets.product.length);
+      const nextFiles = files.slice(0, remaining);
+      if (!nextFiles.length) {
+        productState.classList.add("error");
+        productState.textContent = "Maximum 3 product screenshots.";
+        return;
+      }
+      productState.classList.remove("error", "uploaded");
+      productState.classList.add("uploading");
+      const total = uploadedAssets.product.length + nextFiles.length;
+      productState.textContent = `Uploading ${uploadedAssets.product.length}/${total}...`;
+      try {
+        for (const file of nextFiles) {
+          const url = await uploadAsset(file, productState);
+          uploadedAssets.product.push({ url, name: file.name, previewUrl: URL.createObjectURL(file) });
+          renderProductList();
+          productState.textContent = `Uploading ${uploadedAssets.product.length}/${total}...`;
+        }
+        productState.classList.remove("uploading", "error");
+        productState.classList.add("uploaded");
+        productState.textContent = `${uploadedAssets.product.length} product screenshot${uploadedAssets.product.length === 1 ? "" : "s"} uploaded`;
+        if (files.length > nextFiles.length) keyframeState.textContent = "Only the first 3 screenshots can be used.";
+      } catch (error) {
+        productState.classList.remove("uploading", "uploaded");
+        productState.classList.add("error");
+        productState.textContent = `${uploadedAssets.product.length} uploaded. ${error.message}`;
+      }
+    }
+
+    async function handleReferenceInput() {
+      const files = Array.from(referenceInput.files || []);
+      if (!files.length) return;
+
+      // Reset the native input after reading it so later selections append instead of replacing the list.
+      referenceInput.value = "";
+      referenceState.classList.remove("error", "uploaded");
+      referenceState.classList.add("uploading");
+      const existingNames = new Set(uploadedAssets.reference.map(asset => asset.name));
+      const newFiles = files.filter(file => !existingNames.has(file.name));
+      if (!newFiles.length) {
+        referenceState.classList.remove("uploading");
+        referenceState.classList.add("uploaded");
+        referenceState.textContent = `${uploadedAssets.reference.length} reference images uploaded`;
+        return;
+      }
+      const total = uploadedAssets.reference.length + newFiles.length;
+      referenceState.textContent = `Uploading ${uploadedAssets.reference.length}/${total}...`;
+
+      try {
+        for (const [index, file] of newFiles.entries()) {
+          const url = await uploadAsset(file, referenceState);
+          uploadedAssets.reference.push({ url, name: file.name, previewUrl: URL.createObjectURL(file) });
+          renderReferenceList();
+          referenceState.textContent = `Uploading ${uploadedAssets.reference.length}/${total}...`;
+        }
+        referenceState.classList.remove("uploading", "error");
+        referenceState.classList.add("uploaded");
+        referenceState.textContent = `${uploadedAssets.reference.length} reference image${uploadedAssets.reference.length === 1 ? "" : "s"} uploaded`;
+      } catch (error) {
+        referenceState.classList.remove("uploading", "uploaded");
+        referenceState.classList.add("error");
+        referenceState.textContent = `${uploadedAssets.reference.length} uploaded. ${error.message}`;
+      }
+    }
+
+    async function handleCustomReferenceInput() {
+      const files = Array.from(customReferenceInput.files || []);
+      if (!files.length) return;
+      customReferenceInput.value = "";
+      customReferenceState.classList.remove("error", "uploaded");
+      customReferenceState.classList.add("uploading");
+      const total = customUploadedAssets.reference.length + files.length;
+      customReferenceState.textContent = `Uploading ${customUploadedAssets.reference.length}/${total}...`;
+      try {
+        for (const file of files) {
+          const url = await uploadAsset(file, customReferenceState);
+          customUploadedAssets.reference.push({ url, name: file.name, previewUrl: URL.createObjectURL(file) });
+          renderCustomReferenceList();
+          customReferenceState.textContent = `Uploading ${customUploadedAssets.reference.length}/${total}...`;
+        }
+        customReferenceState.classList.remove("uploading", "error");
+        customReferenceState.classList.add("uploaded");
+        customReferenceState.textContent = `${customUploadedAssets.reference.length} reference image${customUploadedAssets.reference.length === 1 ? "" : "s"} uploaded`;
+      } catch (error) {
+        customReferenceState.classList.remove("uploading", "uploaded");
+        customReferenceState.classList.add("error");
+        customReferenceState.textContent = `${customUploadedAssets.reference.length} uploaded. ${error.message}`;
+      }
+    }
+
+    async function handleCustomFrameInput(input, key, stateEl, options = {}) {
+      const file = input.files?.[0];
+      if (!file) return;
+      try {
+        customUploadedAssets[key] = await uploadAsset(file, stateEl, options);
+      } catch (error) {
+        stateEl.classList.remove("uploading", "uploaded");
+        stateEl.classList.add("error");
+        stateEl.textContent = error.message;
+      }
+    }
+
+    function clearCustomVideoTool() {
+      clearInterval(customVideoPollTimer);
+      customVideoPollTimer = null;
+      delete customSubmitBtn.dataset.pendingTaskId;
+      customSubmitBtn.disabled = false;
+      customSubmitBtn.textContent = "Generate another video";
+      customAssetMode = "reference";
+      document.querySelectorAll("[data-custom-asset-mode]").forEach(button => {
+        button.classList.toggle("active", button.dataset.customAssetMode === "reference");
+      });
+      customReferenceGroup.hidden = false;
+      customFramesGroup.hidden = true;
+      customReferenceInput.value = "";
+      customReferenceState.classList.remove("uploading", "uploaded", "error");
+      customReferenceState.textContent = "No images selected";
+      customReferenceList.replaceChildren();
+      customUploadedAssets.reference.forEach(asset => safeRevoke(asset.previewUrl));
+      customUploadedAssets.reference = [];
+      customFirstFrameInput.value = "";
+      customLastFrameInput.value = "";
+      customUploadedAssets.firstFrame = null;
+      customUploadedAssets.lastFrame = null;
+      customFirstFrameState.classList.remove("uploading", "uploaded", "error");
+      customLastFrameState.classList.remove("uploading", "uploaded", "error");
+      customFirstFrameState.textContent = "Not uploaded";
+      customLastFrameState.textContent = "Not uploaded";
+      customResolutionInput.value = "720P";
+      customRatioInput.value = "adaptive";
+      customDurationInput.value = "-1";
+      customPromptInput.value = "Create a polished vertical social video using the uploaded reference images as the identity and style anchor. Preserve the subject accurately, keep the motion natural and cinematic, and make the final result suitable for short-form sharing.";
+      customResult.clear();
+      customResult.setStatus("Ready", "Upload at least one reference image, then click Generate another video.");
+    }
+
+    async function submitCustomVideo() {
+      clearInterval(customVideoPollTimer);
+      customVideoPollTimer = null;
+      customResult.clear();
+
+      if (customSubmitBtn.dataset.pendingTaskId) {
+        const taskId = customSubmitBtn.dataset.pendingTaskId;
+        customResult.setStatus("Checking", `Checking existing task ${taskId}...`);
+        pollVideoTask(taskId, {
+          buttonEl: customSubmitBtn,
+          idleText: "Generate another video",
+          result: customResult,
+          timer: "custom",
+          manual: true,
+          polling: { value: false }
+        }).catch(error => customResult.fail(error.message));
+        return;
+      }
+
+      if (customAssetMode === "frames" && !customUploadedAssets.firstFrame) {
+        customSubmitBtn.disabled = false;
+        customResult.setStatus("Ready", "Upload a first frame before generating.");
+        return;
+      }
+      if (customAssetMode === "reference" && !customUploadedAssets.reference.length) {
+        customSubmitBtn.disabled = false;
+        customResult.setStatus("Ready", "Upload at least one reference image before generating.");
+        return;
+      }
+
+      customSubmitBtn.disabled = true;
+      customSubmitBtn.textContent = "Submitting...";
+      customResult.begin("Submitting", "Sending custom request to DashScope...");
+
+      try {
+        const media = customAssetMode === "frames"
+          ? [customUploadedAssets.firstFrame && { type: "first_frame", url: customUploadedAssets.firstFrame }, customUploadedAssets.lastFrame && { type: "last_frame", url: customUploadedAssets.lastFrame }].filter(Boolean)
+          : customUploadedAssets.reference.map(asset => ({ type: "reference_image", url: asset.url }));
+        const payload = {
+          prompt: customPromptInput.value.trim(),
+          media,
+          resolution: customResolutionInput.value,
+          ratio: customRatioInput.value,
+          duration: Number(customDurationInput.value),
+          prompt_extend: true
+        };
+        const response = await fetch("/api/video-synthesis", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(formatApiError(data, "Failed to submit custom video task."));
+        const taskId = getTaskId(data);
+        if (!taskId) throw new Error(`Task submitted but task_id was not found: ${JSON.stringify(data)}`);
+        customSubmitBtn.dataset.pendingTaskId = taskId;
+        customResult.queue(taskId, data);
+        customSubmitBtn.textContent = "Generating...";
+        const pollOptions = { buttonEl: customSubmitBtn, idleText: "Generate another video", result: customResult, timer: "custom", polling: { value: false } };
+        customVideoPollStartedAt = Date.now();
+        customVideoPollTimer = setInterval(() => pollVideoTask(taskId, pollOptions).catch(error => {
+          clearInterval(customVideoPollTimer);
+          customVideoPollTimer = null;
+          customResult.fail(error.message);
+          customSubmitBtn.disabled = false;
+          customSubmitBtn.textContent = "Generate another video";
+        }), 10000);
+        pollVideoTask(taskId, pollOptions);
+      } catch (error) {
+        customResult.fail(error.message);
+        customSubmitBtn.disabled = false;
+        customSubmitBtn.textContent = "Generate another video";
+      }
+    }
+
+    document.querySelectorAll("[data-asset-mode]").forEach(button => button.addEventListener("click", () => {
+      assetMode = button.dataset.assetMode;
+      document.querySelectorAll("[data-asset-mode]").forEach(item => item.classList.toggle("active", item === button));
+      referenceGroup.hidden = assetMode !== "reference";
+      framesGroup.hidden = assetMode !== "frames";
+    }));
+    document.querySelectorAll("[data-custom-asset-mode]").forEach(button => button.addEventListener("click", () => {
+      customAssetMode = button.dataset.customAssetMode;
+      document.querySelectorAll("[data-custom-asset-mode]").forEach(item => item.classList.toggle("active", item === button));
+      customReferenceGroup.hidden = customAssetMode !== "reference";
+      customFramesGroup.hidden = customAssetMode !== "frames";
+    }));
+    referenceInput.addEventListener("change", handleReferenceInput);
+    customReferenceInput.addEventListener("change", handleCustomReferenceInput);
+    productInput.addEventListener("change", handleProductInput);
+    firstFrameInput.addEventListener("change", () => handleAssetInput(firstFrameInput, "firstFrame", firstFrameState));
+    lastFrameInput.addEventListener("change", () => handleAssetInput(lastFrameInput, "lastFrame", lastFrameState));
+    customFirstFrameInput.addEventListener("change", () => handleCustomFrameInput(customFirstFrameInput, "firstFrame", customFirstFrameState));
+    customLastFrameInput.addEventListener("change", () => handleCustomFrameInput(customLastFrameInput, "lastFrame", customLastFrameState));
+    editVideoInput.addEventListener("change", handleEditVideoInput);
+    editSourceVideo.addEventListener("loadedmetadata", () => {
+      if (!editSourceVideo.videoWidth || !editSourceVideo.videoHeight) return;
+      resetMaskCanvas(editSourceVideo.videoWidth, editSourceVideo.videoHeight);
+      editVideoReady = true;
+      setEditStatus("Video loaded. Use the scrubber, then capture the current frame.");
+    });
+    editSourceVideo.addEventListener("loadeddata", () => {
+      if (paintCurrentVideoFrame()) setEditStatus("First frame is shown below. Scrub or pause on another frame to edit it.");
+    });
+    editSourceVideo.addEventListener("pause", () => {
+      if (paintCurrentVideoFrame()) setEditStatus(`Paused on frame ${maskFrameIdInput.value}. Paint the area or save this frame mask.`);
+    });
+    editSourceVideo.addEventListener("seeked", () => {
+      if (paintCurrentVideoFrame()) setEditStatus(`Frame ${maskFrameIdInput.value} is shown below. Paint the area or save this frame mask.`);
+    });
+    editSourceVideo.addEventListener("timeupdate", () => {
+      if (!editVideoReady || !editSourceVideo.videoWidth) return;
+      const fps = Math.max(1, Number(maskFpsInput.value || 30));
+      maskFrameIdInput.value = String(Math.max(1, Math.round(editSourceVideo.currentTime * fps) + 1));
+    });
+    brushBtn.addEventListener("click", () => {
+      editTool = "brush";
+      brushBtn.classList.add("active");
+      eraseBtn.classList.remove("active");
+      setEditStatus("Brush mode enabled. Paint white to mark the area to edit.");
+    });
+    eraseBtn.addEventListener("click", () => {
+      editTool = "erase";
+      eraseBtn.classList.add("active");
+      brushBtn.classList.remove("active");
+      setEditStatus("Erase mode enabled. Paint black to remove parts of the mask.");
+    });
+    captureFrameBtn.addEventListener("click", captureCurrentFrame);
+    saveFrameBtn.addEventListener("click", saveCurrentFrameMask);
+    clearMaskBtn.addEventListener("click", clearMaskOnly);
+    maskCanvas.addEventListener("pointerdown", beginStroke);
+    maskCanvas.addEventListener("pointermove", moveStroke);
+    maskCanvas.addEventListener("pointerup", endStroke);
+    maskCanvas.addEventListener("pointerleave", endStroke);
+
+    function clearImageTool() {
+      clearInterval(keyframePollTimer);
+      keyframePollTimer = null;
+      imageResult.clear();
+      uploadedAssets.product.forEach(asset => safeRevoke(asset.previewUrl));
+      uploadedAssets.product = [];
+      generatedKeyframes.length = 0;
+      productInput.value = "";
+      productList.replaceChildren();
+      keyframeOutputList.replaceChildren();
+      productState.classList.remove("uploading", "uploaded", "error");
+      productState.textContent = "No screenshots selected";
+      keyframeState.classList.remove("uploading", "uploaded", "error");
+      keyframeState.textContent = "Keyframes will be added below.";
+      imageResult.setStatus("Ready", "Generate keyframes to preview image API results here.");
+      generateKeyframesBtn.disabled = false;
+      generateKeyframesBtn.textContent = "Generate keyframes";
+    }
+
+    renderTemplateGrid();
+    setSelectedTemplate(selectedTemplateId, { silent: true });
+
+    function clearEditTool() {
+      clearInterval(editPollTimer);
+      editPollTimer = null;
+      editVideoReady = false;
+      if (editVideoObjectUrl) URL.revokeObjectURL(editVideoObjectUrl);
+      editVideoObjectUrl = "";
+      uploadedAssets.editVideoUrl = "";
+      editVideoInput.value = "";
+      editSourceVideo.removeAttribute("src");
+      editSourceVideo.load();
+      editVideoState.classList.remove("uploading", "uploaded", "error");
+      editVideoState.textContent = "Upload a video first";
+      resetMaskCanvas(16, 9);
+      frameCtx.clearRect(0, 0, frameCanvas.width, frameCanvas.height);
+      maskCtx.fillStyle = "#000";
+      maskCtx.fillRect(0, 0, maskCanvas.width, maskCanvas.height);
+      maskFrameIdInput.value = "1";
+      displayedFrameId = "";
+      maskFpsInput.value = "30";
+      maskTypeInput.value = "fixed";
+      expandRatioInput.value = "0.02";
+      editTool = "brush";
+      brushBtn.classList.add("active");
+      eraseBtn.classList.remove("active");
+      brushSizeInput.value = "28";
+      savedEditFrames.length = 0;
+      activeEditFrameId = "";
+      renderSavedEditFrames();
+      setEditStatus("Upload a video, capture a frame, then paint the area to edit.");
+    }
+
+    function clearVideoTool() {
+      clearInterval(videoPollTimer);
+      videoPollTimer = null;
+      mainResult.clear();
+      referenceInput.value = "";
+      uploadedAssets.reference.forEach(asset => safeRevoke(asset.previewUrl));
+      uploadedAssets.reference = [];
+      referenceList.replaceChildren();
+      referenceState.classList.remove("uploading", "uploaded", "error");
+      referenceState.textContent = "No optional images selected";
+      firstFrameInput.value = "";
+      lastFrameInput.value = "";
+      uploadedAssets.firstFrame = null;
+      uploadedAssets.lastFrame = null;
+      firstFrameState.classList.remove("uploading", "uploaded", "error");
+      lastFrameState.classList.remove("uploading", "uploaded", "error");
+      firstFrameState.textContent = "Not uploaded";
+      lastFrameState.textContent = "Not uploaded";
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Generate video";
+      delete submitBtn.dataset.pendingTaskId;
+      mainResult.setStatus("Ready", "Submit the video task to start generating.");
+    }
+
+    async function pollKeyframeTask(taskId) {
+      const response = await fetch(`/api/tasks/${encodeURIComponent(taskId)}`);
+      const data = await response.json();
+      if (!response.ok) throw new Error(formatApiError(data, "Failed to query keyframe task."));
+      const status = getTaskStatus(data);
+      keyframeState.textContent = `Keyframe task: ${status}`;
+      imageResult.setStatus(status, JSON.stringify(data, null, 2));
+      const imageUrls = getImageUrls(data);
+      if (imageUrls.length) {
+        clearInterval(keyframePollTimer);
+        keyframePollTimer = null;
+        generateKeyframesBtn.disabled = false;
+        generateKeyframesBtn.textContent = "Generate keyframes";
+        const baseIndex = generatedKeyframes.length;
+        imageUrls.forEach((url, index) => generatedKeyframes.push({
+          url,
+          name: `Reference image ${baseIndex + index + 1}`,
+          previewUrl: url
+        }));
+        renderGeneratedKeyframes();
+        keyframeState.classList.remove("uploading", "error");
+        keyframeState.classList.add("uploaded");
+        keyframeState.textContent = `${imageUrls.length} reference image${imageUrls.length === 1 ? "" : "s"} generated`;
+        imageResult.succeed(`${imageUrls.length} image${imageUrls.length === 1 ? "" : "s"} ready. Open any result for the full image.`, imageUrls);
+        return;
+      }
+      if (/FAILED|CANCELED|UNKNOWN/i.test(status)) {
+        clearInterval(keyframePollTimer);
+        keyframePollTimer = null;
+        generateKeyframesBtn.disabled = false;
+        generateKeyframesBtn.textContent = "Generate keyframes";
+        keyframeState.classList.remove("uploading");
+        keyframeState.classList.add("error");
+        imageResult.fail(`Task failed: ${status}`);
+      }
+    }
+
+    generateKeyframesBtn.addEventListener("click", async () => {
+      if (!uploadedAssets.product.length) {
+        keyframeState.classList.add("error");
+        keyframeState.textContent = "Upload at least one product screenshot first.";
+        imageResult.setStatus("Ready", "Upload at least one product screenshot first.");
+        return;
+      }
+      clearInterval(keyframePollTimer);
+      imageResult.clear();
+      generateKeyframesBtn.disabled = true;
+      generateKeyframesBtn.textContent = "Generating...";
+      keyframeState.classList.remove("uploaded", "error");
+      keyframeState.classList.add("uploading");
+      keyframeState.textContent = "Submitting keyframe generation...";
+      imageResult.begin("Submitting", "Sending image request to DashScope...");
+      try {
+        const response = await fetch("/api/keyframe-generation", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            prompt: keyframePrompt.value.trim(),
+            images: uploadedAssets.product.map(asset => asset.url),
+            n: Number(keyframeCount.value),
+            size: keyframeFormat.value,
+            prompt_extend: false
+          })
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(formatApiError(data, "Failed to submit keyframe task."));
+        const taskId = getTaskId(data);
+        if (!taskId) throw new Error(`Task submitted but task_id was not found: ${JSON.stringify(data)}`);
+        keyframeState.textContent = `Keyframe task queued: ${taskId}`;
+        imageResult.queue(taskId, data);
+        keyframePollTimer = setInterval(() => pollKeyframeTask(taskId).catch(error => {
+          clearInterval(keyframePollTimer);
+          keyframePollTimer = null;
+          generateKeyframesBtn.disabled = false;
+          generateKeyframesBtn.textContent = "Generate keyframes";
+          keyframeState.classList.remove("uploading", "uploaded");
+          keyframeState.classList.add("error");
+          keyframeState.textContent = error.message;
+          imageResult.fail(error.message);
+        }), 4000);
+        pollKeyframeTask(taskId);
+      } catch (error) {
+        generateKeyframesBtn.disabled = false;
+        generateKeyframesBtn.textContent = "Generate keyframes";
+        keyframeState.classList.remove("uploading", "uploaded");
+        keyframeState.classList.add("error");
+        keyframeState.textContent = error.message;
+        imageResult.fail(error.message);
+      }
+    });
+
+    clearKeyframesBtn.addEventListener("click", clearImageTool);
+    resetEditBtn.addEventListener("click", clearEditTool);
+    customClearBtn.addEventListener("click", clearCustomVideoTool);
+    customSubmitBtn.addEventListener("click", submitCustomVideo);
+    submitEditBtn.addEventListener("click", async () => {
+      if (!uploadedAssets.editVideoUrl) {
+        setEditStatus("Upload a source video first.", true);
+        return;
+      }
+      if (!maskCanvas.width || !maskCanvas.height) {
+        setEditStatus("Capture a frame before submitting the edit.", true);
+        return;
+      }
+      submitEditBtn.disabled = true;
+      submitEditBtn.textContent = "Submitting...";
+      editResult.clear();
+      editResult.begin("Submitting", "Sending the mask edit request to DashScope...");
+      try {
+        if (savedEditFrames.length > 1) setEditStatus(`Uploading ${savedEditFrames.length} saved frame masks as a mask video...`);
+        const maskVideoUrl = savedEditFrames.length > 1 ? await buildMaskVideoUpload() : "";
+        const singleSavedFrame = savedEditFrames.length === 1 ? savedEditFrames[0] : null;
+        const maskUrl = maskVideoUrl ? "" : singleSavedFrame ? await uploadSavedMaskFrame(singleSavedFrame) : await buildMaskUpload();
+        const maskFrameId = singleSavedFrame ? singleSavedFrame.frameId : Number(maskFrameIdInput.value || 1);
+        const response = await fetch("/api/video-edit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            prompt: editPrompt.value.trim(),
+            video_url: uploadedAssets.editVideoUrl,
+            mask_image_url: maskUrl,
+            mask_video_url: maskVideoUrl,
+            mask_frame_id: maskFrameId,
+            mask_type: maskTypeInput.value,
+            expand_ratio: Number(expandRatioInput.value || 0.02),
+            prompt_extend: true,
+            resolution: resolutionInput.value,
+            ratio: ratioInput.value
+          })
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(formatApiError(data, "Failed to submit video edit task."));
+        const taskId = getTaskId(data);
+        if (!taskId) throw new Error(`Task submitted but task_id was not found: ${JSON.stringify(data)}`);
+        editResult.queue(taskId, data);
+        submitEditBtn.textContent = "Generating...";
+        editPollTimer = setInterval(() => pollEditTask(taskId).catch(error => {
+          clearInterval(editPollTimer);
+          editPollTimer = null;
+          editResult.fail(error.message);
+          submitEditBtn.disabled = false;
+          submitEditBtn.textContent = "Generate edited video";
+        }), 5000);
+        pollEditTask(taskId);
+      } catch (error) {
+        editResult.fail(error.message);
+        submitEditBtn.disabled = false;
+        submitEditBtn.textContent = "Generate edited video";
+        setEditStatus(error.message, true);
+      }
+    });
+
+    async function pollVideoTask(taskId, options = {}) {
+      const buttonEl = options.buttonEl || submitBtn;
+      const idleText = options.idleText || "Generate video";
+      const result = options.result || mainResult;
+      const startedAt = options.timer === "custom" ? customVideoPollStartedAt : mainVideoPollStartedAt;
+      const maxPollMs = 10 * 60 * 1000;
+      if (!options.manual && startedAt && Date.now() - startedAt > maxPollMs) {
+        if (options.timer === "custom") {
+          clearInterval(customVideoPollTimer);
+          customVideoPollTimer = null;
+          customVideoPollStartedAt = 0;
+        } else {
+          clearInterval(videoPollTimer);
+          videoPollTimer = null;
+          mainVideoPollStartedAt = 0;
+        }
+        buttonEl.dataset.pendingTaskId = taskId;
+        result.setStatus("Paused", `This task has been processing for more than 10 minutes.\nTask ID: ${taskId}\nAutomatic polling stopped to avoid endless requests. Click “Check status” to query it once.`);
+        buttonEl.disabled = false;
+        buttonEl.textContent = "Check status";
+        return;
+      }
+      if (options.polling) {
+        if (options.polling.value) return;
+        options.polling.value = true;
+      }
+      try {
+        const response = await fetch(`/api/tasks/${encodeURIComponent(taskId)}`);
+        const data = await response.json();
+        if (!response.ok) throw new Error(formatApiError(data, "Failed to query task."));
+
+        const status = getTaskStatus(data);
+        const elapsed = startedAt ? Math.round((Date.now() - startedAt) / 1000) : 0;
+        result.setStatus(status, `${elapsed ? `Elapsed: ${elapsed}s\n` : ""}${JSON.stringify(data, null, 2)}`);
+
+        const videoUrl = getVideoUrl(data);
+        if (videoUrl) {
+          if (options.timer === "custom") {
+            clearInterval(customVideoPollTimer);
+            customVideoPollTimer = null;
+            customVideoPollStartedAt = 0;
+          } else {
+            clearInterval(videoPollTimer);
+            videoPollTimer = null;
+            mainVideoPollStartedAt = 0;
+          }
+          buttonEl.disabled = false;
+          buttonEl.textContent = idleText;
+          delete buttonEl.dataset.pendingTaskId;
+          result.succeed(`Video is ready:\n${videoUrl}`, videoUrl);
+          return;
+        }
+
+        if (/FAILED|CANCELED/i.test(status)) {
+          if (options.timer === "custom") {
+            clearInterval(customVideoPollTimer);
+            customVideoPollTimer = null;
+            customVideoPollStartedAt = 0;
+          } else {
+            clearInterval(videoPollTimer);
+            videoPollTimer = null;
+            mainVideoPollStartedAt = 0;
+          }
+          const errorDetail = data?.output?.error ? `\n${String(data.output.error)}` : "";
+          const guidance = data?.output?.advice ? `\n${data.output.advice}` : "";
+          const code = data?.output?.error_code ? ` [${data.output.error_code}]` : "";
+          result.fail(`Task failed: ${status}${code}${errorDetail}${guidance}`);
+          buttonEl.disabled = false;
+          buttonEl.textContent = idleText;
+          delete buttonEl.dataset.pendingTaskId;
+        }
+      } finally {
+        if (options.polling) options.polling.value = false;
+      }
+    }
+
+    // Compatibility for browsers that still have an older inline handler cached.
+    const pollTask = pollVideoTask;
+
+    async function pollEditTask(taskId) {
+      const response = await fetch(`/api/tasks/${encodeURIComponent(taskId)}`);
+      const data = await response.json();
+      if (!response.ok) throw new Error(formatApiError(data, "Failed to query task."));
+
+      const status = getTaskStatus(data);
+      editResult.setStatus(status, JSON.stringify(data, null, 2));
+
+      const videoUrl = getVideoUrl(data);
+      if (videoUrl) {
+        clearInterval(editPollTimer);
+        editPollTimer = null;
+        submitEditBtn.disabled = false;
+        submitEditBtn.textContent = "Generate edited video";
+        editResult.succeed(`Edited video is ready:\n${videoUrl}`, videoUrl);
+        return;
+      }
+
+      if (/FAILED|CANCELED/i.test(status)) {
+        clearInterval(editPollTimer);
+        editPollTimer = null;
+        submitEditBtn.disabled = false;
+        submitEditBtn.textContent = "Generate edited video";
+        const errorDetail = data?.output?.error ? `\n${String(data.output.error)}` : "";
+        const guidance = data?.output?.advice ? `\n${data.output.advice}` : "";
+        const code = data?.output?.error_code ? ` [${data.output.error_code}]` : "";
+        editResult.fail(`Task failed: ${status}${code}${errorDetail}${guidance}`);
+      }
+    }
+
+    form.addEventListener("submit", async event => {
+      event.preventDefault();
+      clearInterval(videoPollTimer);
+      if (submitBtn.dataset.pendingTaskId) {
+        const taskId = submitBtn.dataset.pendingTaskId;
+        mainResult.setStatus("Checking", `Checking existing task ${taskId}...`);
+        pollVideoTask(taskId, {
+          buttonEl: submitBtn,
+          idleText: "Generate video",
+          result: mainResult,
+          manual: true,
+          polling: { value: false }
+        }).catch(error => mainResult.fail(error.message));
+        return;
+      }
+      mainResult.clear();
+      if (assetMode === "frames" && !uploadedAssets.firstFrame) {
+        submitBtn.disabled = false;
+        mainResult.setStatus("Ready", "Upload a first frame before generating.");
+        return;
+      }
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Submitting...";
+      mainResult.begin("Submitting", "Sending request to DashScope...");
+
+      try {
+        const media = assetMode === "frames"
+          ? [uploadedAssets.firstFrame && { type: "first_frame", url: uploadedAssets.firstFrame }, uploadedAssets.lastFrame && { type: "last_frame", url: uploadedAssets.lastFrame }].filter(Boolean)
+          : await resolveReferenceMediaForSubmit();
+        const payload = {
+          prompt: promptInput.value.trim(),
+          media,
+          resolution: resolutionInput.value,
+          ratio: ratioInput.value,
+          duration: Number(durationInput.value),
+          prompt_extend: true
+        };
+        const response = await fetch("/api/video-synthesis", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(formatApiError(data, "Failed to submit video task."));
+
+        const taskId = getTaskId(data);
+        if (!taskId) throw new Error(`Task submitted but task_id was not found: ${JSON.stringify(data)}`);
+        submitBtn.dataset.pendingTaskId = taskId;
+        mainResult.queue(taskId, data);
+        submitBtn.textContent = "Generating...";
+        mainVideoPollStartedAt = Date.now();
+        const pollOptions = { result: mainResult, polling: { value: false } };
+      videoPollTimer = setInterval(() => pollVideoTask(taskId, pollOptions).catch(error => {
+          clearInterval(videoPollTimer);
+          videoPollTimer = null;
+          mainResult.fail(error.message);
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Generate video";
+        }), 10000);
+        pollVideoTask(taskId, pollOptions);
+      } catch (error) {
+        mainResult.fail(error.message);
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Generate video";
+      }
+    });
+
+    clearBtn.addEventListener("click", () => {
+      clearVideoTool();
+    });
+  </script>
+</body>
+</html>

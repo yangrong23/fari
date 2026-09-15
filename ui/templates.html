@@ -1,0 +1,1518 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>fari | Create</title>
+  <script defer src="ui/tracking.js"></script>
+  <style>
+    :root{
+      --bg:#050507;
+      --panel:#101015;
+      --line:#ffffff24;
+      --muted:#b8b3bd;
+      --text:#fff;
+      --pink:#ff2d6f;
+      --pink2:#ff6a99;
+      --green:#a8ff48;
+      --font:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:var(--font);letter-spacing:0}
+    body{min-height:100vh;overflow-x:hidden}
+    button,input{font:inherit;color:inherit}
+    button{cursor:pointer}
+    a{color:inherit;text-decoration:none}
+    img{display:block;max-width:100%}
+    .container{width:min(calc(100% - 56px),1180px);margin:0 auto}
+    .page-bg{position:fixed;inset:0;z-index:-2;background:#050507}
+    .page-bg:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 34%,rgba(255,45,111,.08),transparent 38%),#050507}
+    .page-bg:after{content:"";position:absolute;inset:0;background:rgba(0,0,0,.26);backdrop-filter:blur(22px)}
+    .shell{min-height:100vh;display:grid;grid-template-rows:auto 1fr}
+    .nav{position:fixed;z-index:20;inset:0 0 auto;height:74px;background:transparent}
+    .nav-inner{height:100%;display:flex;align-items:center;justify-content:space-between}
+    .logo{display:block;width:74px;height:40px;overflow:hidden}
+    .logo img{width:100%;height:100%;object-fit:contain}
+    .nav-links{display:flex;align-items:center;gap:28px;color:#f3f3f5;font-size:14px;font-weight:700}
+    .nav-links a{opacity:.92;transition:opacity .2s}
+    .nav-links a:hover{opacity:.65}
+    .stage{position:relative;padding:92px 18px 18px}
+    .workspace{width:min(calc(100% - 20px),620px);margin:0 auto;position:relative}
+    .workspace-grid{display:block}
+    .preview-column,.control-panel{min-width:0}
+    .preview-shell{position:relative;padding:18px;border:1px solid rgba(255,255,255,.12);border-radius:24px;background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.012));box-shadow:0 28px 80px rgba(0,0,0,.34)}
+    .preview-topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:14px}
+    .preview-kicker{font-size:13px;font-weight:700;color:rgba(255,255,255,.74);letter-spacing:.02em;text-transform:uppercase}
+    .icon-btn{display:grid;place-items:center;width:42px;height:42px;padding:0;border:1px solid rgba(255,255,255,.18);border-radius:999px;background:rgba(6,6,8,.38);backdrop-filter:blur(14px);line-height:0}
+    .icon-btn svg{display:block;width:19px;height:19px;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;fill:none}
+    .mini-logo{width:58px;height:32px;object-fit:contain;filter:drop-shadow(0 8px 20px rgba(0,0,0,.45))}
+    .preview{position:relative;overflow:hidden;aspect-ratio:9/16;max-height:calc(100vh - 180px);border-radius:22px;background:#0b0b10}
+    .preview img{display:block;width:100%;height:100%;object-fit:cover;object-position:center;filter:saturate(1.04) contrast(1.04);transition:transform .55s ease,filter .55s ease}
+    .workspace.generating .preview img{transform:scale(1.035);filter:saturate(1.2) contrast(1.08) brightness(.82)}
+    .workspace.generating .control-panel{opacity:0;pointer-events:none;transform:translateY(10px)}
+    .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.3) 0%,rgba(0,0,0,.03) 34%,rgba(0,0,0,.12) 60%,rgba(0,0,0,.86) 100%)}
+    .loader{display:none;position:absolute;z-index:6;inset:0;place-items:center;overflow:hidden;background:linear-gradient(180deg,rgba(4,4,6,.66),rgba(4,4,7,.9));border-radius:inherit}
+    .loader:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 34%,rgba(255,45,111,.12),transparent 30%),radial-gradient(circle at 58% 44%,rgba(178,128,255,.1),transparent 28%);pointer-events:none}
+    .workspace.generating .loader{display:grid}
+    .resume-banner{display:none!important;position:absolute;z-index:7;left:16px;right:16px;bottom:16px;min-height:62px;padding:13px 14px;border:1px solid rgba(168,255,72,.34);border-radius:18px;background:rgba(9,10,13,.9);box-shadow:0 16px 38px rgba(0,0,0,.36),0 0 28px rgba(168,255,72,.1);backdrop-filter:blur(18px);color:#fff}
+    .resume-banner.show{display:block;animation:toast .24s ease both}
+    .resume-banner strong{display:block;font-size:13px;line-height:1.2;font-weight:820}
+    .resume-banner span{display:block;margin-top:4px;color:rgba(255,255,255,.72);font-size:11px;line-height:1.35}
+    .loader-card{position:relative;z-index:1;display:grid;justify-items:center;width:min(390px,calc(100% - 32px));padding:0;text-align:center}
+    .motion-mark{position:relative;width:190px;height:190px;margin:0 auto;filter:drop-shadow(0 0 24px rgba(255,45,111,.24));animation:starFloat 3.25s cubic-bezier(.42,0,.18,1) infinite}
+    .motion-star{position:absolute;left:50%;top:50%;width:112px;height:112px;transform:translate(-50%,-50%);background:conic-gradient(from 18deg,#fff 0 8%,#ffc5d8 12% 18%,#ff4f8d 25% 34%,#fff 42% 48%,#b280ff 58% 68%,#ff8db3 76% 84%,#fff 92% 100%);clip-path:polygon(50% 0,56% 36%,86% 14%,64% 44%,100% 50%,64% 56%,86% 86%,56% 64%,50% 100%,44% 64%,14% 86%,36% 56%,0 50%,36% 44%,14% 14%,44% 36%);box-shadow:0 0 22px rgba(255,45,111,.38),0 0 54px rgba(178,128,255,.2);animation:starSpin 3s cubic-bezier(.5,0,.15,1) infinite}
+    .motion-star:before{content:"";position:absolute;inset:22px;background:linear-gradient(135deg,#fff,#ffd3e1 48%,#ff6a99);clip-path:inherit;filter:blur(.2px);opacity:.92;animation:starInner 1.8s ease-in-out infinite}
+    .motion-star:after{content:"";position:absolute;inset:43px;border-radius:50%;background:#fff;box-shadow:0 0 16px rgba(255,255,255,.74);opacity:.72}
+    .motion-orbit{position:absolute;left:50%;top:50%;width:160px;height:160px;margin:-80px 0 0 -80px;border:1px solid rgba(255,255,255,.08);border-top-color:rgba(255,255,255,.3);border-right-color:rgba(255,106,153,.38);border-bottom-color:rgba(178,128,255,.28);border-radius:48% 52% 46% 54%;animation:sparkOrbit 3.1s linear infinite}
+    .motion-orbit:before,.motion-orbit:after,.motion-spark:before{content:"";position:absolute;border-radius:50%;background:#fff;box-shadow:0 0 14px rgba(255,106,153,.62)}
+    .motion-orbit:before{left:47%;top:-3px;width:5px;height:5px}.motion-orbit:after{right:13px;bottom:25px;width:3px;height:3px;background:#ff9ab7;box-shadow:0 0 12px rgba(255,106,153,.62)}
+    .motion-spark{position:absolute;left:50%;top:50%;display:block;width:172px;height:172px;margin:-86px 0 0 -86px;border-radius:50%;animation:sparkOrbitReverse 4.4s linear infinite}
+    .motion-spark:before{left:25px;top:51px;width:4px;height:4px;background:#fff2f7}.motion-spark.b{animation-duration:5.4s;transform:scale(.78) rotate(32deg)}.motion-spark.c{animation-duration:3.35s;transform:scale(.58) rotate(-24deg)}
+    .loader-copy{position:relative;z-index:2;display:grid!important;gap:7px;width:min(330px,100%);margin:18px auto 0;padding:12px 14px;border:1px solid rgba(255,255,255,.1);border-radius:18px;background:rgba(5,5,9,.42);box-shadow:0 16px 40px rgba(0,0,0,.26);backdrop-filter:blur(14px);text-align:center}
+    .loader-copy strong{display:block!important;color:#fff;font-size:24px;line-height:1.08;font-weight:680;text-shadow:0 4px 24px rgba(0,0,0,.86)}
+    .loader-copy span{display:block!important;color:rgba(255,255,255,.68);font-size:13px;font-weight:520;line-height:1.45;text-shadow:0 3px 18px rgba(0,0,0,.82)}
+    .loader-card .progress,.loader-card .steps{display:none}
+    .control-panel{display:grid;gap:12px;width:min(100%,620px);margin:18px auto 0;padding:0;text-align:center}
+    .control-copy{display:none}
+    .upload-slot{display:contents}
+    .control-panel.two-uploads{display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-start;gap:8px}
+    .control-panel.two-uploads .control-copy,
+    .control-panel.two-uploads > .hint,
+    .control-panel.two-uploads > .photo-guidance,
+    .control-panel.two-uploads .two-upload-summary{flex-basis:100%;width:100%}
+    .control-panel.two-uploads .upload-slot{margin-top:6px}
+    .photo-guidance{margin:0;color:rgba(255,255,255,.75);font-size:12px;line-height:1.45;text-align:left}
+    .selected-text span:empty{display:none}
+    #hint:empty{display:none}
+    .control-panel.two-uploads .selected-card{min-width:0;width:64px;height:64px;min-height:64px;gap:0;padding:0;align-items:center;justify-content:center;justify-self:center;border-radius:14px}
+    .control-panel.two-uploads .selected-text{display:none}
+    .control-panel.two-uploads .selected-thumb{flex:0 0 38px;width:38px;height:38px}
+    .slot-description{display:none;color:rgba(255,255,255,.78);font-size:11px;line-height:1.3;text-align:center}
+    .two-upload-summary{display:none;color:rgba(255,255,255,.88);font-size:16px;font-weight:600;line-height:1.35;text-align:center}
+    .control-panel.two-uploads .two-upload-summary{display:block}
+    .control-panel.two-uploads .upload-slot{display:grid;grid-template-rows:64px auto;gap:5px;min-width:0;justify-items:center}
+    @media(max-width:480px){
+      .control-panel.two-uploads .selected-card{width:58px;height:58px;min-height:58px;padding:0}
+      .control-panel.two-uploads .selected-thumb{flex:0 0 34px;width:34px;height:34px}
+      .control-panel.two-uploads .upload-slot{grid-template-rows:58px auto}
+      .two-upload-summary{font-size:15px}
+    }
+    #selectPhoto2{display:none!important}
+    #selectPhoto2.show-secondary{display:flex!important}
+    .selected-card{display:flex;align-items:center;justify-content:flex-start;justify-content:flex-start!important;gap:12px;width:100%;min-height:64px;text-align:left;padding:8px 16px;border:1px solid rgba(255,255,255,.2);border-radius:16px;background:linear-gradient(135deg,#ff2d6f,#ff5e93);box-shadow:0 18px 44px rgba(255,45,111,.24);text-align:left;cursor:pointer;transition:filter .2s,transform .2s}
+    .selected-card:hover{filter:brightness(1.08);transform:translateY(-1px)}
+    .selected-card.is-loading{pointer-events:none;filter:saturate(1.08) brightness(.98)}
+    .selected-thumb{position:relative;display:grid;place-items:center;flex:0 0 38px;width:38px;height:38px;overflow:hidden;border-radius:11px;background:rgba(255,255,255,.16);border:1px dashed rgba(255,255,255,.48)}
+    .selected-thumb:after{content:"";position:absolute;inset:9px;border-radius:50%;border:2px solid rgba(255,255,255,.32);border-top-color:#fff;border-right-color:#ffbfd2;opacity:0;transform:scale(.8);animation:miniSpin .9s linear infinite}
+    .selected-card.is-loading .selected-thumb:after{opacity:1}
+    .selected-card.is-loading .selected-thumb .plus{opacity:0}
+    .selected-thumb img{display:none;width:100%;height:100%;object-fit:cover}
+    .selected-thumb.has-image{border-style:solid}
+    .selected-thumb.has-image img{display:block}
+    .plus{position:relative;display:block;width:18px;height:18px;color:#fff;font-size:0;line-height:0}
+    .plus:before,.plus:after{content:"";position:absolute;left:50%;top:50%;width:18px;height:3px;border-radius:999px;background:currentColor;transform:translate(-50%,-50%)}
+    .plus:after{width:3px;height:18px}
+    .selected-thumb.has-image .plus{display:none}
+    .selected-text{min-width:0}
+    .selected-text strong{display:block;font-size:15px;line-height:1.15;font-weight:850}
+    .selected-text span{display:block;margin-top:3px;color:rgba(255,255,255,.82);font-size:12px;line-height:1.35}
+    .hint{margin:12px 0 0;color:#cbc5cf;font-size:12px;text-align:center}
+    .sheet-layer{position:absolute;z-index:8;inset:0;display:none;align-items:end;background:rgba(0,0,0,.54)}
+    .sheet-layer.open{display:flex;animation:fadeIn .18s ease both}
+    .sheet{width:100%;padding:18px 16px 18px;border:1px solid rgba(255,255,255,.12);border-bottom:0;border-radius:28px 28px 0 0;background:linear-gradient(180deg,rgba(17,17,23,.96),rgba(8,8,12,.96));color:#fff;box-shadow:0 -22px 50px rgba(0,0,0,.42);animation:sheetIn .25s ease both}
+    .grab{width:44px;height:5px;margin:0 auto 18px;border-radius:999px;background:rgba(255,255,255,.22)}
+    .sheet-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:16px}
+    .sheet h2{margin:0;font-size:20px;line-height:1.16;letter-spacing:-.01em;font-weight:560}
+    #resultSheet .sheet-head h2,#videoSheet .sheet-head h2{padding:9px 12px;border:1px solid rgba(255,255,255,.14);border-radius:14px;background:rgba(7,7,11,.42);box-shadow:0 12px 30px rgba(0,0,0,.34),0 0 32px rgba(168,255,72,.08);backdrop-filter:blur(16px);text-shadow:0 2px 14px rgba(0,0,0,.55)}
+    .close{position:relative;display:grid;place-items:center;width:34px;height:34px;padding:0;border:0;border-radius:999px;background:rgba(255,255,255,.1);color:#f7f1f4;font-size:0;line-height:0}
+    .close:before,.close:after{content:"";position:absolute;left:50%;top:50%;width:15px;height:2px;border-radius:999px;background:currentColor}
+    .close:before{transform:translate(-50%,-50%) rotate(45deg)}
+    .close:after{transform:translate(-50%,-50%) rotate(-45deg)}
+    .choice-grid{display:grid;grid-template-columns:1fr;gap:12px}
+    .choice{min-height:96px;padding:14px;border:1px solid rgba(255,255,255,.14);border-radius:20px;background:rgba(255,255,255,.06);text-align:left;color:#fff;box-shadow:0 10px 24px rgba(0,0,0,.18)}
+    .choice-icon{position:relative;display:grid;place-items:center;width:48px;height:48px;margin-bottom:12px;border-radius:16px;background:linear-gradient(135deg,var(--green),#7dffbc);color:#12150d;font-size:0;line-height:0}
+    .choice-icon:before,.choice-icon:after{content:"";position:absolute;left:50%;top:50%;width:19px;height:3px;border-radius:999px;background:currentColor;transform:translate(-50%,-50%)}
+    .choice-icon:after{width:3px;height:19px}
+    .choice strong{display:block;font-size:15px;line-height:1.2}
+    .choice span{display:block;margin-top:5px;color:#c8c1cb;font-size:12px;line-height:1.35}
+    .payment-card,.result-card{display:grid;gap:12px}
+    .payment-methods{display:grid;gap:10px}
+    .payment-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center center;z-index:0;filter:saturate(.8) brightness(.24) contrast(1.08)}
+    .payment-sheet-overlay{position:absolute;inset:0;background:radial-gradient(circle at 50% 34%,rgba(255,45,111,.14),transparent 36%),linear-gradient(180deg,rgba(4,4,8,.54),rgba(5,5,8,.9) 58%,#050507 100%);z-index:1}
+    .payment-nav{position:absolute;z-index:3;top:0;left:0;right:0;height:74px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;border-bottom:1px solid rgba(255,255,255,.1);background:rgba(5,5,8,.42);backdrop-filter:blur(18px)}
+    .payment-nav .brand img{width:74px;height:40px;object-fit:contain}
+    .payment-nav-links{display:flex;align-items:center;gap:28px;color:rgba(255,255,255,.82);font-size:13px;font-weight:750}
+    .payment-content{position:relative;z-index:2;width:min(100% - 32px,540px);margin:auto;text-align:center}
+    .payment-step{display:none}
+    .payment-step.is-visible{display:block;animation:fadeUp .28s ease both}
+    .purchase-card{position:relative;overflow:hidden;padding:24px 20px 20px;border:1px solid rgba(255,255,255,.14);border-radius:28px;background:linear-gradient(180deg,rgba(245,239,255,.98),rgba(238,228,251,.98));box-shadow:0 28px 88px rgba(0,0,0,.42),0 0 0 1px rgba(255,255,255,.72) inset;backdrop-filter:blur(26px);text-align:center}
+    .purchase-card:before{content:"";position:absolute;width:360px;height:250px;left:50%;top:135px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(circle,rgba(228,76,255,.18),transparent 68%);pointer-events:none}
+    .purchase-topline{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:18px}
+    .purchase-badge{display:inline-flex;align-items:center;gap:8px;min-height:28px;padding:0 11px;border:1px solid rgba(138,99,255,.18);border-radius:999px;background:rgba(255,255,255,.72);color:#8c4ed5;font-size:10px;font-weight:850;letter-spacing:.08em;text-transform:uppercase}
+    .purchase-badge:before{content:"";width:7px;height:7px;border-radius:50%;background:linear-gradient(135deg,var(--pink),#d74cff);box-shadow:0 0 12px rgba(255,52,126,.45)}
+    .purchase-step{color:#936f9c;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+    .purchase-card h2{position:relative;z-index:1;margin:0;color:#322c38;font-size:30px;line-height:1.02;letter-spacing:-.05em}
+    .purchase-card h2 span{display:block;background:linear-gradient(90deg,#df4fe3,#ff7290,#ff9a3d);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .purchase-card .purchase-copy{position:relative;z-index:1;margin:10px auto 0;max-width:350px;color:#7a7283;font-size:13px;line-height:1.5}
+    .price-offer{position:relative;z-index:1;width:min(100%,350px);margin:22px auto 22px;padding:20px 16px 18px;border-radius:24px;background:linear-gradient(180deg,#fff,rgba(255,245,250,.96));box-shadow:0 18px 38px rgba(255,92,143,.16),0 0 0 1px rgba(255,255,255,.85) inset}
+    .price-offer strong{display:block;color:#57505d;font-size:12px;font-weight:850;letter-spacing:.08em;text-transform:uppercase}
+    .purchase-price{display:flex;align-items:baseline;justify-content:center;gap:7px;margin:7px 0 0;background:linear-gradient(90deg,#ff3f81,#ff7a51 56%,#df4fe3);-webkit-background-clip:text;background-clip:text;color:transparent;font-size:64px;font-weight:820;line-height:.95;letter-spacing:-.055em}
+    .purchase-price small{font-size:24px;font-weight:720;letter-spacing:0;color:#ff5c8f}
+    .purchase-note{margin:8px auto 0;max-width:230px;color:#756d7d;font-size:12px;font-weight:650;line-height:1.45}
+    .purchase-cta{position:relative;display:block;width:min(100%,410px);min-height:58px;margin:0 auto;border:0;border-radius:18px;background:linear-gradient(100deg,#ff913b,#ff5f91 50%,#dc3df0);color:#fff;font-size:16px;font-weight:900;box-shadow:0 16px 32px rgba(255,45,111,.28)}
+    .purchase-terms{position:relative;z-index:1;margin:14px 0 0;color:#766e7c;font-size:10px;text-decoration:underline}
+    .payment-methods-wrap{padding:26px 20px 20px;border:1px solid rgba(255,255,255,.62);border-radius:28px;background:linear-gradient(180deg,rgba(246,242,255,.98),rgba(238,230,251,.98));box-shadow:0 24px 62px rgba(0,0,0,.28),0 0 0 1px rgba(255,255,255,.7) inset;backdrop-filter:blur(24px)}
+    .payment-kicker{display:inline-flex;align-items:center;justify-content:center;gap:8px;margin-bottom:12px;color:#a132d0;font-size:10px;font-weight:850;letter-spacing:.12em;text-transform:uppercase}
+    .payment-kicker:before{content:"";width:7px;height:7px;border-radius:50%;background:linear-gradient(135deg,var(--pink),#d74cff);box-shadow:0 0 12px rgba(255,45,111,.36)}
+    .payment-step-title{margin:0;color:#2f2935;font-size:30px;line-height:1.02;letter-spacing:-.055em;text-align:center}
+    .payment-step-title span{display:block;background:linear-gradient(90deg,#d944e3,#ff6d91 48%,#ff9a3d);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .payment-copy{max-width:370px;margin:14px auto 18px;color:#786f81;font-size:13px;line-height:1.55;text-align:center}
+    .secure{margin:18px 0 0;color:#837a8b;font-size:10px;text-align:center}
+    .terms{margin:18px auto 0;color:#7a7182;font-size:10px;text-decoration:underline;text-align:center}
+    .field{width:100%;min-height:52px;padding:0 15px;border:1px solid #eadfe6;border-radius:17px;background:#fff;color:#161116;outline:none}
+    .field:focus{border-color:#ff7ba6;box-shadow:0 0 0 4px rgba(255,45,111,.14)}
+    .primary{min-height:56px;border:0;border-radius:18px;background:#181216;color:#fff;font-weight:900}
+    #continueVideoBtn{
+      min-height:64px;
+      margin-bottom:24px;
+      background:#fff;
+      color:#171018;
+      box-shadow:0 18px 44px rgba(255,255,255,.18),0 12px 30px rgba(255,45,111,.2);
+      transition:transform .2s ease,box-shadow .2s ease,filter .2s ease;
+    }
+    #continueVideoBtn:hover{transform:translateY(-1px);filter:brightness(1.02);box-shadow:0 22px 54px rgba(255,255,255,.22),0 14px 34px rgba(255,45,111,.24)}
+    .secondary{min-height:48px;border:1px solid #e8dce4;border-radius:16px;background:#fff;color:#161116;font-weight:850}
+    .social-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .soft-copy{margin:0;color:#c8c1cb;font-size:13px;line-height:1.45}
+    .payment-pack{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;padding:16px;border:1px solid #f3b5ca;border-radius:22px;background:#fff;color:#151116;text-align:left}
+    .payment-pack strong{display:block;font-size:17px}
+    .payment-pack span{display:block;margin-top:4px;color:#746b72;font-size:12px}
+    .price{color:#ff2d6f;font-size:26px;font-weight:950;letter-spacing:-.04em}
+    .result-preview{overflow:hidden;border-radius:22px;background:#151116}
+    .result-preview img{width:100%;aspect-ratio:4/5;object-fit:cover}
+    .preview-composite{position:relative}
+    .preview-composite:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 42%,rgba(0,0,0,.56));pointer-events:none}
+    .preview-play{position:absolute;z-index:2;left:14px;bottom:13px;padding:7px 10px;border-radius:999px;background:rgba(0,0,0,.46);color:#fff;font-size:11px;font-weight:850;backdrop-filter:blur(12px)}
+    .keyframe-strip{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+    .keyframe{position:relative;overflow:hidden;border-radius:16px;background:#151116;border:1px solid rgba(255,255,255,.1)}
+    .keyframe img{width:100%;aspect-ratio:1.2;object-fit:cover;filter:saturate(1.08) contrast(1.02)}
+    .keyframe span{position:absolute;left:8px;bottom:7px;padding:5px 7px;border-radius:999px;background:rgba(0,0,0,.46);color:#fff;font-size:9px;font-weight:850;backdrop-filter:blur(10px)}
+    .upgrade-panel{display:none!important;
+      position:relative;
+      display:none;
+      gap:13px;
+      padding:16px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.16);
+      border-radius:22px;
+      background:
+        radial-gradient(circle at 10% 0%,rgba(255,72,139,.28),transparent 34%),
+        radial-gradient(circle at 95% 15%,rgba(178,128,255,.24),transparent 32%),
+        linear-gradient(180deg,rgba(255,255,255,.105),rgba(255,255,255,.045));
+      box-shadow:0 18px 46px rgba(0,0,0,.3),0 0 0 1px rgba(255,255,255,.04) inset;
+    }
+    .upgrade-panel.is-visible{display:grid;animation:fadeUp .24s ease both}
+    .upgrade-panel:before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(120deg,transparent,rgba(255,255,255,.12),transparent);
+      transform:translateX(-75%);
+      animation:upgradeGlow 4.8s ease-in-out infinite;
+      pointer-events:none;
+    }
+    .upgrade-panel > *{position:relative;z-index:1}
+    .upgrade-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .upgrade-panel h3{margin:0;font-size:19px;line-height:1.12;font-weight:680;letter-spacing:0}
+    .upgrade-panel p{margin:5px 0 0;color:#d6cfd9;font-size:12px;line-height:1.45}
+    .upgrade-badge{flex:0 0 auto;padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.92);color:#151018;font-size:10px;font-weight:850;box-shadow:0 10px 24px rgba(255,72,139,.22)}
+    .benefits{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+    .benefit{
+      display:grid;
+      grid-template-columns:auto 1fr;
+      align-items:center;
+      gap:8px;
+      min-height:46px;
+      padding:10px;
+      border:1px solid rgba(255,255,255,.13);
+      border-radius:15px;
+      background:rgba(255,255,255,.085);
+      color:#fff;
+      text-align:left;
+      box-shadow:0 10px 22px rgba(0,0,0,.13);
+    }
+    .benefit-mark{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#ff347e,#b280ff);color:#fff;font-size:12px;font-weight:900;box-shadow:0 8px 18px rgba(255,52,126,.2)}
+    .benefit-text{display:block;color:#fbf7fb;font-size:12px;line-height:1.15;font-weight:760}
+    .benefit-note{display:block;margin-top:2px;color:#bdb6c3;font-size:10px;line-height:1.18;font-weight:560}
+    .upgrade-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border-radius:15px;background:rgba(0,0,0,.22);color:#f2edf3;font-size:11px;line-height:1.35}
+    .upgrade-foot strong{font-size:13px;color:#fff}
+    .video-preview{position:relative;overflow:hidden;border-radius:22px;background:#151116}
+    .video-preview img,.video-preview video{display:block;width:100%;aspect-ratio:9/16;object-fit:cover;background:#151116;filter:saturate(1.12) contrast(1.04)}
+    .video-preview video{height:auto}
+    .video-preview:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 42%,rgba(0,0,0,.54))}
+    .play-badge{position:absolute;z-index:2;left:50%;top:50%;display:grid;place-items:center;width:68px;height:68px;border-radius:50%;background:rgba(255,255,255,.88);color:#121016;font-size:0;line-height:0;transform:translate(-50%,-50%);box-shadow:0 18px 48px rgba(0,0,0,.32)}
+    .play-badge:before{content:"";display:block;width:0;height:0;margin-left:4px;border-top:11px solid transparent;border-bottom:11px solid transparent;border-left:17px solid currentColor}
+    .video-stamp{position:absolute;z-index:2;left:14px;bottom:13px;padding:7px 10px;border-radius:999px;background:rgba(0,0,0,.45);color:#fff;font-size:11px;font-weight:850;backdrop-filter:blur(12px)}
+    .share-panel{display:grid;gap:14px}
+    .video-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .platform-picker{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+    .platform-choice{
+      position:relative;
+      display:grid;
+      place-items:center;
+      gap:9px;
+      min-height:98px;
+      padding:8px 4px;
+      overflow:hidden;
+      border:0;
+      border-radius:18px;
+      background:transparent;
+      color:#f7f1f6;
+      text-align:center;
+      box-shadow:none;
+      transition:background .2s,border-color .2s,transform .2s,box-shadow .2s,filter .2s;
+    }
+    .platform-choice:hover{transform:translateY(-2px);filter:brightness(1.04)}
+    .platform-choice.is-active{box-shadow:none}
+    .platform-icon{
+      position:relative;
+      display:grid;
+      place-items:center;
+      width:62px;
+      height:62px;
+      border-radius:50%;
+      background:rgba(255,255,255,.08);
+      color:#fff;
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),0 10px 22px rgba(0,0,0,.2);
+      transition:transform .2s, box-shadow .2s, background .2s;
+    }
+    .platform-icon:before{
+      content:"";
+      position:absolute;
+      inset:1px;
+      border-radius:inherit;
+      background:radial-gradient(circle at 30% 28%,rgba(255,255,255,.22),transparent 40%);
+      pointer-events:none;
+    }
+    .platform-icon svg{position:relative;z-index:1;width:62px;height:62px;display:block;filter:drop-shadow(0 4px 8px rgba(0,0,0,.22))}
+    .platform-label{display:block;color:#b7b9c1;font-size:12px;line-height:1.15;font-weight:650}
+    .platform-choice:hover .platform-icon{transform:translateY(-1px) scale(1.03)}
+    .platform-choice.is-active .platform-icon{transform:scale(1.06)}
+    .platform-choice[data-platform="TikTok"] .platform-icon{background:#090a0d}
+    .platform-choice[data-platform="Instagram"] .platform-icon{background:linear-gradient(135deg,#833ab4,#fd1d1d 54%,#fcb045)}
+    .platform-choice[data-platform="WhatsApp"] .platform-icon{background:#25d366}
+    .platform-choice.is-active[data-platform="TikTok"]{border-color:rgba(255,45,111,.42);box-shadow:0 16px 34px rgba(255,45,111,.08),0 0 0 1px rgba(255,45,111,.16) inset}
+    .platform-choice.is-active[data-platform="Instagram"]{border-color:rgba(255,122,90,.42);box-shadow:0 16px 34px rgba(255,122,90,.08),0 0 0 1px rgba(255,122,90,.16) inset}
+    .platform-choice.is-active[data-platform="WhatsApp"]{box-shadow:none}
+    .share-hero{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:14px;border:1px solid rgba(255,255,255,.12);border-radius:22px;background:rgba(0,0,0,.22)}
+    .share-hero strong{display:block;font-size:14px;line-height:1.25}
+    .share-hero span{display:block;margin-top:5px;color:#cfc8d2;font-size:12px;line-height:1.45}
+    .share-hero .mini-art{display:grid;place-items:center;width:82px;height:82px;border-radius:22px;background:radial-gradient(circle at 32% 30%,rgba(168,255,72,.4),transparent 36%),radial-gradient(circle at 70% 70%,rgba(255,45,111,.28),transparent 34%),rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),0 16px 34px rgba(0,0,0,.22)}
+    .share-hero .mini-art img{width:42px;height:42px;object-fit:contain;filter:drop-shadow(0 10px 18px rgba(0,0,0,.42))}
+    .reward-box{padding:14px;border:1px solid rgba(255,255,255,.12);border-radius:20px;background:rgba(255,255,255,.05)}
+    .reward-box h4{margin:0;font-size:15px;line-height:1.15}
+    .app-sim{display:grid;gap:14px}
+    .app-transition{display:grid;place-items:center;min-height:260px;text-align:center}
+    .app-transition-mark{display:grid;place-items:center;width:68px;height:68px;margin-bottom:14px;border-radius:22px;background:#111;color:#fff;font-size:14px;font-weight:900;box-shadow:0 20px 46px rgba(0,0,0,.34);animation:appPop 1.05s cubic-bezier(.34,1.56,.64,1) infinite}
+    .app-transition strong{display:block;font-size:18px;line-height:1.15}
+    .app-transition span{display:block;margin-top:7px;color:#bdb7c3;font-size:12px;line-height:1.4}
+    .app-composer{display:none;gap:12px}
+    .app-composer.show{display:grid;animation:fadeUp .24s ease both}
+    .composer-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .composer-account{display:flex;align-items:center;gap:10px}
+    .composer-avatar{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--green),#7dffbc);color:#111;font-size:13px;font-weight:950}
+    .composer-account strong{display:block;font-size:13px;line-height:1.2}
+    .composer-account span{display:block;margin-top:2px;color:#aaa4af;font-size:11px}
+    .composer-post{min-height:34px;padding:0 14px;border:0;border-radius:999px;background:#fff;color:#111;font-size:12px;font-weight:900}
+    .composer-media{position:relative;overflow:hidden;border-radius:18px;background:#111}
+    .composer-media img{width:100%;max-height:220px;object-fit:cover;filter:saturate(1.08) contrast(1.03)}
+    .composer-media:after{content:"Attached video";position:absolute;left:10px;bottom:10px;padding:6px 9px;border-radius:999px;background:rgba(0,0,0,.48);color:#fff;font-size:10px;font-weight:800;backdrop-filter:blur(10px)}
+    .composer-caption{width:100%;min-height:152px;padding:13px 14px;border:1px solid rgba(255,255,255,.14);border-radius:18px;background:rgba(255,255,255,.07);color:#fff;font-size:13px;line-height:1.5;resize:none;outline:none}
+    .composer-caption:focus{border-color:rgba(168,255,72,.42);box-shadow:0 0 0 4px rgba(168,255,72,.08)}
+    .composer-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .composer-actions button{min-height:46px;border-radius:15px;font-size:12px;font-weight:850}
+    .composer-actions .secondary{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14);color:#fff}
+    .permission-card{display:grid;gap:13px;text-align:center}
+    .permission-icon{display:grid;place-items:center;width:58px;height:58px;margin:2px auto 4px;border-radius:20px;background:linear-gradient(135deg,var(--green),#7dffbc);color:#111;line-height:0;box-shadow:0 18px 42px rgba(168,255,72,.18)}
+    .permission-icon svg{display:block;width:24px;height:24px;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;fill:none}
+    .permission-card h3{margin:0;color:#fff;font-size:21px;line-height:1.12;font-weight:760}
+    .permission-card p{width:min(320px,100%);margin:0 auto;color:#c8c1cb;font-size:13px;line-height:1.48}
+    .permission-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
+    .exit-card{display:grid;gap:14px;text-align:center}
+    .exit-visual{display:grid;place-items:center;width:74px;height:74px;margin:2px auto 0;border-radius:24px;background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.05));box-shadow:0 20px 48px rgba(255,45,111,.18),0 0 0 1px rgba(255,255,255,.16) inset}
+    .exit-visual img{width:34px;height:52px;object-fit:contain;filter:drop-shadow(0 10px 20px rgba(0,0,0,.35))}
+    .exit-card h3{margin:0;color:#fff;font-size:24px;line-height:1.08;font-weight:760}
+    .exit-card p{width:min(330px,100%);margin:0 auto;color:#cfc8d2;font-size:13px;line-height:1.48}
+    .exit-actions{display:grid;gap:10px;margin-top:4px}
+    .exit-actions .primary{background:linear-gradient(100deg,#ff347e,#ff7ca7 52%,#b280ff);color:#fff}
+    .exit-actions .secondary{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.22);color:#fff}
+    .sheet-layer#exitConfirmSheet{align-items:center;justify-content:center;background:rgba(2,2,5,.62);backdrop-filter:blur(9px)}
+    .sheet-layer#exitConfirmSheet .sheet{width:min(350px,calc(100% - 32px));padding:25px 20px 20px;border:1px solid rgba(255,255,255,.16);border-radius:24px;background:linear-gradient(180deg,rgba(34,32,44,.97),rgba(17,16,24,.98));box-shadow:0 28px 70px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.04) inset;animation:exitCardIn .24s cubic-bezier(.2,.8,.2,1) both}
+    .watermark-badge{position:absolute;right:12px;bottom:12px;z-index:3;display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:14px;background:rgba(0,0,0,.46);backdrop-filter:blur(14px);box-shadow:0 10px 24px rgba(0,0,0,.2)}
+    .watermark-badge img{width:22px;height:22px;object-fit:contain}
+    .watermark-badge span{display:block;color:#fff;font-size:10px;font-weight:850;letter-spacing:.08em;text-transform:uppercase}
+    .watermark-badge.is-hidden{display:none}
+    .sheet-layer#shareSheet .sheet{max-height:calc(100vh - 32px);overflow:auto}
+    .toast{position:absolute;z-index:12;left:50%;bottom:96px;display:none;max-width:calc(100% - 40px);padding:11px 14px;border-radius:999px;background:rgba(10,10,12,.78);color:#fff;font-size:12px;font-weight:800;transform:translateX(-50%);backdrop-filter:blur(16px)}
+    .toast.show{display:block;animation:toast .22s ease both}
+    #assetInput{display:none}
+    @media(max-width:900px){
+      body{height:100vh;overflow:hidden;background:#050507}
+      .container{width:min(calc(100% - 34px),1180px)}
+      .nav{display:none}
+      .shell{min-height:100vh;display:block}
+      .stage{height:100vh;padding:0}
+      .workspace{width:100%;height:100vh;overflow:hidden}
+      .workspace-grid{display:block;height:100%}
+      .preview-column,.preview-shell,.preview{height:100%}
+      .preview-shell{padding:0;border:0;border-radius:0;background:#08080b;box-shadow:none}
+      .preview{aspect-ratio:auto;max-height:none;border-radius:0}
+      .loader-card{width:calc(100% - 48px);transform:translateY(-10px)}
+      .motion-mark{width:150px;height:150px}
+      .loader-copy{width:min(292px,100%);margin-top:14px;padding:11px 12px}
+      .loader-copy strong{font-size:21px}
+      .loader-copy span{font-size:12px;line-height:1.42}
+      .preview-topbar{position:absolute;z-index:5;left:0;right:0;top:0;margin:0;padding:16px;display:flex}
+      .preview-kicker{visibility:hidden}
+      .control-panel{position:absolute;z-index:4;left:16px;right:16px;bottom:max(32px,env(safe-area-inset-bottom));width:auto;margin:0;gap:8px}
+      .resume-banner{left:16px;right:16px;bottom:calc(max(32px,env(safe-area-inset-bottom)) + 92px);min-height:62px}
+      .control-copy{display:none}
+      .selected-card{min-height:68px;border-radius:18px}
+      .choice{min-height:142px}
+      .selected-text strong{font-size:15px}
+      .selected-text span{font-size:11px;color:rgba(255,255,255,.82)}
+      .selected-thumb{flex-basis:42px;width:42px;height:42px;border-radius:12px}
+      .hint{margin:0;font-size:11px}
+      .sheet-layer#paymentSheet{display:none;align-items:stretch;background:rgba(0,0,0,.72)}
+      .sheet-layer#paymentSheet .sheet{position:relative;height:100%;padding:0;border:0;border-radius:0;display:flex;align-items:center;justify-content:center;background:transparent;box-shadow:none}
+      .sheet-layer#paymentSheet .sheet-head{display:none}
+      .sheet-layer#paymentSheet .payment-card{display:block}
+      .payment-nav{height:62px;padding:0 16px}
+      .payment-nav .brand img{width:58px;height:32px}
+      .payment-nav-links{gap:12px;font-size:11px}
+      .payment-content{width:calc(100% - 28px)}
+      .purchase-card{padding:22px 16px 18px;border-radius:22px;background:linear-gradient(180deg,rgba(245,239,255,.98),rgba(238,228,251,.98))}
+      .purchase-card h2{font-size:27px}
+      .price-offer{margin:18px auto 18px;padding:18px 14px 16px;border-radius:22px}
+      .purchase-price{font-size:58px}
+      .pay-icons{gap:7px}
+      .pay-icon{min-height:78px;padding:10px 4px;border-radius:14px}
+      .pay-icon .pay-mark{width:30px;height:30px;margin-bottom:7px}
+      .sheet-layer{align-items:stretch;background:rgba(0,0,0,.8)}
+      .sheet-layer#resultSheet .sheet,
+      .sheet-layer#videoSheet .sheet{height:100%;padding:0;border:0;border-radius:0;display:flex;flex-direction:column;background:#050507;box-shadow:none}
+      .sheet-layer#resultSheet .grab,
+      .sheet-layer#videoSheet .grab{display:none}
+      .sheet-layer#resultSheet .sheet-head,
+      .sheet-layer#videoSheet .sheet-head{position:absolute;z-index:4;top:16px;left:16px;right:16px;margin:0}
+      .sheet-layer#resultSheet .close,
+      .sheet-layer#videoSheet .close{background:rgba(0,0,0,.38);backdrop-filter:blur(14px)}
+      .sheet-layer#resultSheet .result-card,
+      .sheet-layer#videoSheet .result-card{position:relative;flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:0 16px max(18px,env(safe-area-inset-bottom));gap:10px}
+      .sheet-layer#resultSheet .result-preview,
+      .sheet-layer#videoSheet .video-preview{position:absolute;inset:0;border-radius:0}
+      .sheet-layer#resultSheet .soft-copy,
+      .sheet-layer#videoSheet .soft-copy{position:relative;z-index:2;margin:0 0 10px;padding:10px 12px;border-radius:14px;background:rgba(0,0,0,.34);backdrop-filter:blur(14px);font-size:12px;color:rgba(255,255,255,.9)}
+      .sheet-layer#resultSheet .keyframe-strip,
+      .sheet-layer#resultSheet .upgrade-panel{display:none!important;position:relative;z-index:2}
+      .sheet-layer#resultSheet .upgrade-panel{display:none!important;backdrop-filter:blur(16px)}
+      .sheet-layer#resultSheet .benefit{background:rgba(255,255,255,.11)}
+      .sheet-layer#resultSheet .primary,
+      .sheet-layer#resultSheet .secondary,
+      .sheet-layer#videoSheet .primary,
+      .sheet-layer#videoSheet .secondary{position:relative;z-index:2}
+      .sheet-layer#exitConfirmSheet{align-items:center;justify-content:center;background:rgba(2,2,5,.66);backdrop-filter:blur(8px)}
+      .sheet-layer#exitConfirmSheet .sheet{width:calc(100% - 44px);height:auto;min-height:0;padding:23px 18px 18px;border:1px solid rgba(255,255,255,.16);border-radius:22px;background:linear-gradient(180deg,rgba(34,32,44,.98),rgba(17,16,24,.99));box-shadow:0 26px 64px rgba(0,0,0,.56);display:block}
+      .sheet-layer#exitConfirmSheet .grab{display:none}
+      .sheet-layer#exitConfirmSheet .exit-card{gap:12px}
+      .sheet-layer#exitConfirmSheet .exit-visual{width:62px;height:62px;margin:0 auto 2px;border-radius:20px}
+      .sheet-layer#exitConfirmSheet .exit-card h3{font-size:20px}
+      .sheet-layer#exitConfirmSheet .exit-card p{font-size:12px;line-height:1.45}
+      .sheet-layer#exitConfirmSheet .exit-actions{gap:9px;margin-top:2px}
+      .sheet-layer#exitConfirmSheet .exit-actions button{min-height:48px;border-radius:14px;font-size:14px}
+      .sheet-layer#videoSheet .result-card{gap:10px}
+      .sheet-layer#videoSheet #shareBtn{min-height:54px;border-radius:16px}
+      .sheet-layer#videoSheet #newVideoBtn{display:none}
+      .sheet-layer#shareSheet{align-items:flex-end;background:rgba(0,0,0,.3)}
+      .sheet-layer#shareSheet .sheet{
+        padding:18px 16px max(20px,env(safe-area-inset-bottom));
+        border-color:rgba(255,255,255,.12);
+        border-radius:24px 24px 0 0;
+        background:linear-gradient(180deg,rgba(35,37,47,.985),rgba(20,21,29,.99));
+        box-shadow:0 -20px 54px rgba(0,0,0,.42),0 0 0 1px rgba(255,255,255,.035) inset;
+        backdrop-filter:blur(24px);
+      }
+      .sheet-layer#shareSheet .grab{
+        width:42px;
+        height:4px;
+        margin-bottom:18px;
+        background:rgba(255,255,255,.26);
+      }
+      .sheet-layer#shareSheet .sheet-head{
+        position:static;
+        align-items:center;
+        margin-bottom:12px;
+      }
+      .sheet-layer#shareSheet .sheet-head h2{
+        font-size:18px;
+        line-height:1.14;
+        font-weight:680;
+        letter-spacing:0;
+      }
+      .sheet-layer#shareSheet .close{
+        width:30px;
+        height:30px;
+        background:rgba(0,0,0,.28);
+        color:rgba(255,255,255,.9);
+        font-size:0;
+        line-height:0;
+      }
+      .sheet-layer#shareSheet .sheet{
+        max-height:calc(100vh - 28px);
+        background:#252a33;
+        overflow:auto;
+      }
+      .sheet-layer#shareSheet .share-panel{
+        padding-bottom:4px;
+      }
+      .sheet-layer#shareSheet .platform-picker{
+        grid-template-columns:repeat(3,minmax(0,1fr));
+        gap:10px;
+      }
+      .sheet-layer#shareSheet .platform-choice{
+        min-height:70px;
+        padding:4px;
+        border-radius:16px;
+      }
+      .sheet-layer#shareSheet .platform-icon{
+        width:46px;
+        height:46px;
+        border-radius:50%;
+      }
+      .sheet-layer#shareSheet .platform-icon svg{
+        width:46px;
+        height:46px;
+      }
+      .sheet-layer#shareSheet .platform-label{font-size:10px}
+    }
+    @media(max-width:360px){
+      .choice-grid,.social-row{grid-template-columns:1fr}
+      .choice{min-height:112px}
+      .create-btn{min-height:58px;border-radius:19px}
+    }
+    @keyframes sheetIn{from{transform:translateY(28px);opacity:.4}to{transform:translateY(0);opacity:1}}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    @keyframes starFloat{0%,100%{transform:translate3d(0,9px,0) scale(.94)}28%{transform:translate3d(-10px,-15px,0) scale(1.06)}56%{transform:translate3d(11px,-7px,0) scale(.98)}78%{transform:translate3d(4px,4px,0) scale(1.02)}}
+    @keyframes starSpin{0%{transform:translate(-50%,-50%) rotate(0deg) scale(.78)}38%{transform:translate(-50%,-50%) rotate(146deg) scale(1.13)}66%{transform:translate(-50%,-50%) rotate(236deg) scale(.92)}100%{transform:translate(-50%,-50%) rotate(360deg) scale(.78)}}
+    @keyframes starInner{0%,100%{transform:scale(.7) rotate(0deg);opacity:.62}46%{transform:scale(1.08) rotate(-36deg);opacity:1}}
+    @keyframes sparkOrbit{from{transform:rotate(0deg) scale(.9)}50%{transform:rotate(180deg) scale(1.08)}to{transform:rotate(360deg) scale(.9)}}
+    @keyframes sparkOrbitReverse{from{transform:rotate(360deg) scale(.8)}50%{transform:rotate(180deg) scale(1.08)}to{transform:rotate(0deg) scale(.8)}}
+    @keyframes upgradeGlow{0%,64%,100%{transform:translateX(-80%);opacity:0}78%{opacity:.9}92%{transform:translateX(80%);opacity:0}}
+    @keyframes appPop{0%,100%{transform:translateY(0) scale(.96);opacity:.86}45%{transform:translateY(-8px) scale(1.06);opacity:1}}
+    @keyframes exitCardIn{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+    @keyframes miniSpin{to{transform:scale(1) rotate(360deg)}}
+    @keyframes progress{0%{transform:translateX(-115%);width:35%}55%{width:70%}100%{transform:translateX(285%);width:35%}}
+    @keyframes pulse{0%,100%{color:#8e8791}45%{color:#fff}}
+    @keyframes toast{from{opacity:0;transform:translate(-50%,8px)}to{opacity:1;transform:translate(-50%,0)}}
+
+    /* Keep the preview and its upload controls within the available screen. */
+    .stage{height:100dvh;box-sizing:border-box;padding:82px 16px 12px}
+    .workspace{height:100%;min-height:0}
+    .workspace-grid{height:100%;min-height:0;display:grid;grid-template-rows:minmax(0,1fr) auto;gap:10px}
+    .preview-column{min-height:0}
+    .preview-shell{height:100%;min-height:0;display:flex;flex-direction:column;padding:12px}
+    .preview-topbar{flex-shrink:0;margin-bottom:10px}
+    .preview{flex:1;min-height:0;max-height:none;aspect-ratio:auto}
+    .preview > img{object-fit:contain;object-position:center}
+    .control-panel{position:static;width:100%;margin:0;gap:8px}
+    .control-panel.two-uploads .selected-card,
+    .control-panel.two-uploads #selectPhoto2.show-secondary{
+      display:grid!important;grid-template-columns:minmax(0,1fr);grid-template-rows:1fr;
+      justify-items:center;align-items:center;align-content:center;gap:0;
+      width:64px;height:64px;min-height:64px;padding:0;justify-self:center;border-radius:14px;
+    }
+    .control-panel.two-uploads .selected-thumb{width:38px;height:38px;margin:0}
+    .control-panel.two-uploads .selected-text{display:none!important}
+    .photo-guidance{font-size:11px;line-height:1.35}
+    .two-upload-summary{font-size:15px}
+    @media(max-width:900px){
+      body,.shell,.stage,.workspace{height:100dvh;min-height:0}
+      .stage{padding:0 12px max(12px,env(safe-area-inset-bottom));height:100dvh}
+      .workspace{height:100%}
+      .preview-shell{padding:0}
+      .preview-topbar{top:0;padding:10px}
+      .preview{height:auto}
+      .control-panel{position:static;width:100%;margin:0}
+    }
+    @media(max-height:600px){
+      .control-panel.two-uploads .selected-card,
+      .control-panel.two-uploads #selectPhoto2.show-secondary{grid-template-rows:1fr;width:58px;height:58px;min-height:58px;padding:0;gap:0}
+      .control-panel.two-uploads .selected-thumb{width:32px;height:32px}
+      .workspace-grid{gap:6px}
+      .control-panel{gap:4px}
+    }
+  </style>
+</head>
+<body>
+  <div class="page-bg" id="pageBg"></div>
+  <div class="shell">
+    <header class="nav">
+      <div class="container nav-inner">
+        <a class="logo" href="index.html" aria-label="fari home"><img src="assets/fari-logo-symbol.png" alt="fari"></a>
+        <nav class="nav-links" aria-label="Navigation">
+          <a href="template-gallery.html">Modelos</a>
+          <a href="index.html#how">How it works</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="stage">
+      <section class="workspace" id="workspace" aria-label="Create video">
+        <div class="workspace-grid">
+          <div class="preview-column">
+            <div class="preview-shell">
+              <div class="preview-topbar">
+                <a class="icon-btn" id="backBtn" href="template-gallery.html" aria-label="Back to templates">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18 9 12l6-6"/></svg>
+                </a>
+                <div class="preview-kicker">Template preview</div>
+                <button class="icon-btn" id="shareTopBtn" type="button" aria-label="Compartilhar template">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7"/><path d="M9 7h8v8"/></svg>
+                </button>
+              </div>
+              <div class="preview">
+                <img id="templateImage" src="assets/production-templates/posters/da-barriga.jpg" alt="Template preview">
+                <div class="shade"></div>
+                <div class="loader" aria-live="polite">
+                  <div class="loader-card">
+                    <div class="motion-mark" aria-hidden="true">
+                      <span class="motion-star"></span>
+                      <span class="motion-orbit"></span>
+                      <i class="motion-spark a"></i>
+                      <i class="motion-spark b"></i>
+                      <i class="motion-spark c"></i>
+                    </div>
+                    <div class="loader-copy" aria-live="polite">
+                      <strong id="loaderTitle">Generating...</strong>
+                      <span id="loaderCopy">Your preview image usually takes within 3 minutes. Please keep this page open.</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="sheet-layer" id="exitConfirmSheet">
+                  <div class="sheet">
+                    <div class="grab"></div>
+                    <div class="exit-card">
+                      <div class="exit-visual" aria-hidden="true"><img src="assets/fari-logo-symbol.png" alt=""></div>
+                      <h3 id="exitTitle">Are you sure you want to quit?</h3>
+                      <p id="exitCopy">Leaving now will discard your uploaded photo and any preview that has not been saved.</p>
+                      <div class="exit-actions">
+                        <button class="primary" id="stayBtn" type="button">Stay</button>
+                        <button class="secondary" id="exitBtn" type="button">Exit</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <aside class="control-panel">
+            <div class="control-copy">
+              <h1>Mobile Web / PWA template studio for personal stories.</h1>
+              <p>Upload anonymously, preview the feeling, then choose how to bring it to life.</p>
+            </div>
+            <div class="upload-slot">
+            <button class="selected-card" id="selectPhoto" type="button" aria-describedby="photoGuidance">
+              <span class="selected-thumb" id="selectedThumb"><span class="plus">+</span><img id="selectedImage" alt="Selected upload"></span>
+              <span class="selected-text">
+                <strong id="selectedTitle">Envie uma foto de uma única pessoa</strong>
+                <span id="selectedHint"></span>
+              </span>
+            </button><span class="slot-description" id="slotDescription1"></span>
+            </div>
+            <div class="upload-slot">
+            <button class="selected-card" id="selectPhoto2" type="button" aria-describedby="photoGuidance" hidden><span class="selected-thumb"><span class="plus">+</span></span><span class="selected-text"><strong id="selectedTitle2">2 · Upload photo</strong><span id="selectedHint2"></span></span></button><span class="slot-description" id="slotDescription2"></span>
+            </div>
+            <p class="two-upload-summary" id="twoUploadSummary">Upload two pet photos</p>
+            <p class="photo-guidance" id="photoGuidance">Use uma foto de frente, com o rosto da pessoa ou do pet inteiro, nítido e em destaque. Evite fotos de perfil, rostos cortados ou muito pequenos.</p>
+            <p class="hint" id="hint" role="status"></p>
+          </aside>
+        </div>
+
+        <div class="sheet-layer" id="selectSheet">
+          <div class="sheet">
+            <div class="grab"></div>
+            <div class="sheet-head"><h2>Upload image</h2><button class="close" type="button" data-close="selectSheet" aria-label="Close">×</button></div>
+            <div class="choice-grid">
+              <button class="choice" id="galleryChoice" type="button">
+                <span class="choice-icon">+</span>
+                <strong>Upload photo</strong>
+                <span>Choose one image from this device.</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="sheet-layer" id="paymentSheet">
+          <div class="sheet">
+            <video class="payment-bg" src="assets/fari-hero-home.mp4" poster="assets/fari/fari 首页主视觉 - 家庭生日庆祝.webp" autoplay muted loop playsinline aria-hidden="true"></video>
+            <div class="payment-sheet-overlay"></div>
+            <header class="payment-nav">
+              <a class="brand" href="index.html" aria-label="fari home"><img src="assets/fari-logo-symbol.png" alt="fari"></a>
+              <nav class="payment-nav-links" aria-label="Navigation">
+                <a href="template-gallery.html">Modelos</a>
+                <a href="index.html#how">How it works</a>
+              </nav>
+            </header>
+            <div class="payment-content">
+              <div class="payment-step is-visible" id="purchaseStep">
+                <div class="purchase-card">
+                <h2>Unlock the final<br><span>HD video.</span></h2>
+                <div class="price-offer">
+                  <strong>HD final video</strong>
+                  <div class="purchase-price"><small>$</small>9.90</div>
+                  <p class="purchase-note">Music, no watermark, and a share-ready video they will want to keep.</p>
+                </div>
+                <button class="purchase-cta" id="completePaymentBtn" type="button">Create video</button>
+                <p class="purchase-terms"><a href="ui/terms.html">Terms</a> · <a href="ui/privacy.html">Privacy Policy</a> · <a href="ui/refund.html">Refund Policy</a></p>
+              </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sheet-layer" id="resultSheet">
+          <div class="sheet">
+            <div class="grab"></div>
+            <div class="sheet-head"><h2>Prévia gratuita pronta</h2><button class="close" type="button" data-close="resultSheet" aria-label="Close">×</button></div>
+              <div class="result-card">
+                <div class="result-preview preview-composite">
+                  <img id="resultImage" src="assets/production-templates/posters/da-barriga.jpg" alt="Generated preview">
+                </div>
+                <div class="keyframe-strip" aria-label="Generated keyframes">
+                  <div class="keyframe"><img id="keyFrameOne" src="assets/production-templates/posters/da-barriga.jpg" alt="Preview start image"></div>
+                  <div class="keyframe"><img id="keyFrameTwo" src="assets/production-templates/posters/da-barriga.jpg" alt="Preview end image"></div>
+                </div>
+                <button class="primary" id="continueVideoBtn" type="button">Criar vídeo final</button>
+              </div>
+          </div>
+        </div>
+
+        <div class="sheet-layer" id="videoSheet">
+          <div class="sheet">
+            <div class="grab"></div>
+            <div class="sheet-head"><h2>Vídeo pronto</h2><button class="close" type="button" data-close="videoSheet" aria-label="Close">×</button></div>
+            <div class="result-card">
+              <div class="video-preview">
+                <img id="videoImage" src="assets/production-templates/posters/da-barriga.jpg" alt="Generated video preview">
+                <video id="videoPlayer" controls playsinline hidden aria-label="Generated video preview"></video>
+                <span class="play-badge">▶</span>
+                <span class="video-stamp">Final video · 0:12</span>
+              </div>
+              <div class="video-actions">
+                <button class="primary" id="shareBtn" type="button">Compartilhar</button>
+                <button class="secondary" id="downloadBtn" type="button">Baixar</button>
+              </div>
+              <button class="secondary" id="newVideoBtn" type="button">Criar outro</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="sheet-layer" id="shareSheet">
+          <div class="sheet">
+            <div class="grab"></div>
+            <div class="sheet-head"><h2>Compartilhar this video to</h2><button class="close" type="button" data-close="shareSheet" aria-label="Close">×</button></div>
+            <div class="share-panel">
+              <div class="platform-picker" aria-label="Choose a social platform">
+                <button class="platform-choice is-active" type="button" data-platform="WhatsApp" aria-label="WhatsApp" title="WhatsApp">
+                  <span class="platform-icon" aria-hidden="true">
+                    <svg viewBox="0 0 48 48">
+                      <circle cx="24" cy="24" r="22" fill="#25d366"/>
+                      <path fill="#fff" d="M24.1 10.4a13.3 13.3 0 0 0-11.3 20.3l-1.5 6.9 7-1.7a13.3 13.3 0 1 0 5.8-25.5Zm0 2.7a10.6 10.6 0 0 1 9 16.2 10.6 10.6 0 0 1-13.9 3.6l-.5-.3-3.4.8.8-3.3-.3-.5A10.6 10.6 0 0 1 24.1 13.1Zm-4 5.6c-.3 0-.7.1-1 .5-.4.4-1.4 1.3-1.4 3.2 0 1.9 1.4 3.7 1.6 4 .2.3 2.7 4.3 6.7 5.8 3.3 1.3 4 .9 4.7.9.7-.1 2.3-1 2.6-1.9.3-.9.3-1.7.2-1.9-.1-.2-.4-.3-.8-.5l-2.7-1.3c-.4-.1-.6-.2-.9.2-.3.4-1 1.3-1.3 1.5-.2.3-.5.3-.9.1-.4-.2-1.7-.6-3.2-2-.9-.9-1.6-2-1.8-2.3-.2-.4 0-.6.2-.8.2-.2.4-.5.6-.7.2-.2.3-.4.4-.7.1-.3.1-.5 0-.7l-1.2-3c-.4-.8-.7-.7-.9-.7h-.8Z"/>
+                    </svg>
+                  </span>
+                  <span class="platform-label">Whatsapp</span>
+                </button>
+                <button class="platform-choice" type="button" data-platform="TikTok" aria-label="TikTok" title="TikTok">
+                  <span class="platform-icon" aria-hidden="true">
+                    <svg viewBox="0 0 48 48">
+                      <path fill="#25f4ee" transform="translate(-1 1)" d="M27.7 7h5.4c.4 2.8 1.4 5 3.1 6.7 1.7 1.7 3.8 2.7 6.3 3v5.6a17 17 0 0 1-9.2-2.7v11.6a12.2 12.2 0 1 1-12.2-12.2c.8 0 1.6.1 2.4.3v5.8a6.5 6.5 0 1 0 4.2 6.1V7Z"/>
+                      <path fill="#fe2c55" transform="translate(1 -1)" d="M27.7 7h5.4c.4 2.8 1.4 5 3.1 6.7 1.7 1.7 3.8 2.7 6.3 3v5.6a17 17 0 0 1-9.2-2.7v11.6a12.2 12.2 0 1 1-12.2-12.2c.8 0 1.6.1 2.4.3v5.8a6.5 6.5 0 1 0 4.2 6.1V7Z"/>
+                      <path fill="#fff" d="M27.7 7h5.4c.4 2.8 1.4 5 3.1 6.7 1.7 1.7 3.8 2.7 6.3 3v5.6a17 17 0 0 1-9.2-2.7v11.6a12.2 12.2 0 1 1-12.2-12.2c.8 0 1.6.1 2.4.3v5.8a6.5 6.5 0 1 0 4.2 6.1V7Z"/>
+                    </svg>
+                  </span>
+                  <span class="platform-label">Tiktok</span>
+                </button>
+                <button class="platform-choice" type="button" data-platform="Instagram" aria-label="Instagram" title="Instagram">
+                  <span class="platform-icon" aria-hidden="true">
+                    <svg viewBox="0 0 48 48">
+                      <rect x="10" y="10" width="28" height="28" rx="9" fill="none" stroke="#fff" stroke-width="3.4"/>
+                      <circle cx="24" cy="24" r="6.5" fill="none" stroke="#fff" stroke-width="3.4"/>
+                      <circle cx="32.6" cy="15.6" r="2.15" fill="#fff"/>
+                    </svg>
+                  </span>
+                  <span class="platform-label">Ins</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sheet-layer" id="downloadPermissionSheet">
+          <div class="sheet">
+            <div class="grab"></div>
+            <div class="sheet-head"><h2>Baixar access</h2><button class="close" type="button" data-close="downloadPermissionSheet" aria-label="Close">×</button></div>
+            <div class="permission-card">
+              <div class="permission-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg>
+              </div>
+              <h3>Allow file access</h3>
+              <p>Your browser will ask for permission before saving. The video downloads only after you choose a folder or confirm the save location.</p>
+              <div class="permission-actions">
+                <button class="secondary" type="button" data-close="downloadPermissionSheet">Cancel</button>
+                <button class="primary" id="allowBaixarBtn" type="button">Allow download</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sheet-layer" id="appSheet">
+          <div class="sheet">
+            <div class="grab"></div>
+            <div class="sheet-head"><h2 id="appSheetTitle">Opening app</h2><button class="close" type="button" data-close="appSheet" aria-label="Close">×</button></div>
+            <div class="app-sim">
+              <div class="app-transition" id="appTransition">
+                <div class="app-transition-mark" id="appTransitionMark">App</div>
+                <strong id="appTransitionTitle">Opening TikTok</strong>
+                <span>Preparing your video and placing the caption into the post editor.</span>
+              </div>
+              <div class="app-composer" id="appComposer">
+                <div class="composer-top">
+                  <div class="composer-account">
+                    <span class="composer-avatar" id="composerAvatar">T</span>
+                    <span><strong id="composerTitle">TikTok post</strong><span id="composerSubtitle">Draft editor</span></span>
+                  </div>
+                  <button class="composer-post" id="composerPostBtn" type="button">Post</button>
+                </div>
+                <div class="composer-media"><img id="composerImage" src="assets/production-templates/posters/da-barriga.jpg" alt="Video attached"></div>
+                <textarea class="composer-caption" id="composerCaption" aria-label="Generated post caption"></textarea>
+                <div class="composer-actions">
+                  <button class="secondary" id="composerCopyBtn" type="button">Copy caption</button>
+                  <button class="primary" id="composerDoneBtn" type="button">Done</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="toast" id="toast">Copied</div>
+        <input id="assetInput" type="file" accept="image/*">
+      </section>
+    </main>
+  </div>
+
+  <script src="ui/template-catalog.js?v=20260915"></script>
+  <script>
+    const scenes = window.FARI_TEMPLATES;
+
+    const workspace = document.querySelector("#workspace");
+    const pageBg = document.querySelector("#pageBg");
+    const templateImage = document.querySelector("#templateImage");
+    const selectedThumb = document.querySelector("#selectedThumb");
+    const selectedImage = document.querySelector("#selectedImage");
+    const selectPhoto = document.querySelector("#selectPhoto");
+    const selectedTitle = document.querySelector("#selectedTitle");
+    const selectPhoto2 = document.querySelector("#selectPhoto2");
+    const selectedTitle2 = document.querySelector("#selectedTitle2");
+    const selectedHint2 = document.querySelector("#selectedHint2");
+    const selectedHint = document.querySelector("#selectedHint");
+    const hint = document.querySelector("#hint");
+    const assetInput = document.querySelector("#assetInput");
+    const resultImage = document.querySelector("#resultImage");
+    const keyFrameOne = document.querySelector("#keyFrameOne");
+    const keyFrameTwo = document.querySelector("#keyFrameTwo");
+    const videoImage = document.querySelector("#videoImage");
+    const videoPlayer = document.querySelector("#videoPlayer");
+    const toast = document.querySelector("#toast");
+    const downloadBtn = document.querySelector("#downloadBtn");
+    const platformButtons = Array.from(document.querySelectorAll(".platform-choice"));
+    const sheets = {
+      select: document.querySelector("#selectSheet"),
+      payment: document.querySelector("#paymentSheet"),
+      result: document.querySelector("#resultSheet"),
+      video: document.querySelector("#videoSheet"),
+      share: document.querySelector("#shareSheet"),
+      downloadPermission: document.querySelector("#downloadPermissionSheet"),
+      exitConfirm: document.querySelector("#exitConfirmSheet"),
+      app: document.querySelector("#appSheet")
+    };
+
+    let selectedUrl = "";
+    let selectedName = "";
+    let pendingUnlock = "";
+    let paid = false;
+    let imageReady = false;
+    let videoReady = false;
+    let shareBusy = false;
+    let generationInProgress = false;
+    let downloadCompleted = false;
+    let uploadLoading = false;
+    let hasUnsavedUpload = false;
+    let finalBenefitsVisible = false;
+    const pendingBaixarKey = "fariPendingBaixar";
+    const requestedTemplate = Number(new URLSearchParams(window.location.search).get("template"));
+    const activeIndex = Number.isInteger(requestedTemplate) && requestedTemplate >= 0 && requestedTemplate < scenes.length ? requestedTemplate : 0;
+    const scene = scenes[activeIndex];
+    const uploadedPhotos = scene.uploadLabels.map(() => null);
+    let activeUploadSlot = 0;
+    assetInput.multiple = false;
+    function renderUploadSlots() {
+      document.querySelector(".control-panel").classList.toggle("two-uploads", uploadedPhotos.length === 2);
+      selectPhoto2.hidden = uploadedPhotos.length === 1;
+      selectPhoto2.classList.toggle('show-secondary', uploadedPhotos.length === 2);
+      const controls = [[selectPhoto, selectedTitle, selectedHint], [selectPhoto2, selectedTitle2, selectedHint2]];
+      scene.uploadLabels.forEach((label, i) => {
+        const [button, title, copy] = controls[i];
+        const description = document.querySelector(`#slotDescription${i + 1}`);
+        title.textContent = label;
+        button.setAttribute('aria-label', label);
+        if (description) description.textContent = label;
+        copy.textContent = uploadedPhotos[i] ? `${uploadedPhotos[i].name} · Toque para trocar` : "";
+        const thumb = button.querySelector('.selected-thumb');
+        let img = thumb.querySelector('img');
+        if (!img) { img = document.createElement('img'); img.alt = 'Selected pet photo'; thumb.append(img); }
+        thumb.classList.toggle('has-image', Boolean(uploadedPhotos[i]));
+        if (uploadedPhotos[i]) img.src = uploadedPhotos[i].url;
+        else img.removeAttribute('src');
+      });
+      const summary = document.querySelector('#twoUploadSummary');
+      if (summary) summary.textContent = scene.title === 'Dupla Chef Pet IA' ? 'Upload two pet photos' : 'Upload two photos';
+    }
+    renderUploadSlots();
+    const shareContext = buildCompartilharContext();
+    let selectedCompartilharPlatform = shareContext.channel;
+
+    function setVideoPreviewSource(source) {
+      const url = String(source || "");
+      const isVideo = /\.(mp4|webm|mov)(?:[?#].*)?$/i.test(url);
+      if (isVideo) {
+        videoImage.hidden = true;
+        videoPlayer.hidden = false;
+        videoPlayer.src = url;
+        videoPlayer.load();
+        return;
+      }
+      videoPlayer.pause();
+      videoPlayer.removeAttribute("src");
+      videoPlayer.load();
+      videoPlayer.hidden = true;
+      videoImage.hidden = false;
+      videoImage.onerror = () => {
+        videoImage.onerror = null;
+        videoImage.src = scene.image;
+      };
+      videoImage.src = url || scene.image;
+    }
+
+    function setTemplatePreviewSource(source) {
+      const url = String(source || "");
+      if (/\.(mp4|webm|mov)(?:[?#].*)?$/i.test(url)) {
+        templateImage.src = scene.image;
+        return;
+      }
+      templateImage.onerror = () => {
+        templateImage.onerror = null;
+        templateImage.src = scene.image;
+      };
+      templateImage.src = url || scene.image;
+    }
+
+    function openSheet(name) {
+      if (name === "share" && videoReady) {
+        sheets.share.classList.remove("open");
+        sheets[name].classList.add("open");
+        return;
+      }
+      Object.values(sheets).filter(Boolean).forEach(sheet => sheet.classList.remove("open"));
+      sheets[name].classList.add("open");
+    }
+
+    function closeSheets() {
+      Object.values(sheets).filter(Boolean).forEach(sheet => sheet.classList.remove("open"));
+    }
+
+    function buildCompartilharContext() {
+      const params = new URLSearchParams(window.location.search);
+      const forced = String(params.get("source") || params.get("from") || "").toLowerCase();
+      const referrer = document.referrer || "";
+      const host = (() => {
+        try { return referrer ? new URL(referrer).hostname : location.hostname; } catch { return location.hostname; }
+      })();
+      if (forced.includes("whatsapp") || host.includes("whatsapp.com") || host.includes("wa.me")) return shareCopyFor("WhatsApp");
+      if (forced.includes("instagram") || forced.includes("reels") || host.includes("instagram.com")) return shareCopyFor("Instagram");
+      return shareCopyFor("TikTok");
+    }
+
+    function syncCompartilharSheet() {
+      setCompartilharPlatform(selectedCompartilharPlatform || shareContext.channel);
+      document.querySelector("#shareSheet .sheet-head h2").textContent = videoReady ? "Compartilhar this video to" : "Compartilhar this template to";
+    }
+
+    function setCompartilharPlatform(platform) {
+      const next = normalizeCompartilharPlatform(platform || shareContext.channel);
+      selectedCompartilharPlatform = next;
+      platformButtons.forEach((button) => {
+        const active = normalizeCompartilharPlatform(button.dataset.platform) === next;
+        button.classList.toggle("is-active", active);
+      });
+    }
+
+    function normalizeCompartilharPlatform(value) {
+      const next = String(value || "").toLowerCase();
+      if (next.includes("whatsapp") || next.includes("wa.me")) return "WhatsApp";
+      if (next.includes("instagram") || next.includes("reels")) return "Instagram";
+      if (next.includes("tiktok")) return "TikTok";
+      return "TikTok";
+    }
+
+    function shareCopyFor(platform) {
+      if (platform === "WhatsApp") {
+        return {
+          channel: "WhatsApp",
+          caption: buildCompartilharCaption("WhatsApp"),
+          url: "https://wa.me/",
+          appUrl: "whatsapp://send",
+          source: "WhatsApp"
+        };
+      }
+      if (platform === "Instagram") {
+        return {
+          channel: "Instagram",
+          caption: buildCompartilharCaption("Instagram"),
+          url: "https://www.instagram.com/reels/",
+          appUrl: "instagram://camera",
+          source: "Instagram"
+        };
+      }
+      return {
+        channel: "TikTok",
+        caption: buildCompartilharCaption("TikTok"),
+        url: "https://www.tiktok.com/upload",
+        appUrl: "snssdk1233://upload",
+        source: "TikTok"
+      };
+    }
+
+    function buildCompartilharCaption(platform) {
+      const stories = [
+        ['An AI-made journey from pregnancy memories to a riverside moment together.', '#ParentAndChild #AICreation'],
+        ['Two tiny chefs. One very messy pasta dinner. An AI kitchen adventure for my pets.', '#PetChefs #FunnyPets #AICreation'],
+        ['A little AI daydream of our future family. Just for fun, and full of love.', '#CoupleMoments #AICreation'],
+        ['My pet takes the racing seat in this playful AI motorcycle adventure.', '#PetRacer #PetLife #AICreation'],
+        ['Pool lights, birthday balloons and an AI celebration starring me.', '#BirthdayReel #PoolParty #AICreation'],
+        ['An AI-made mirror selfie with an imaginary partner. Just for fun.', '#AISelfie #AICreation'],
+        ['Stepping into a black-and-white cinema scene with a little AI magic.', '#CinemaStyle #AICreation'],
+        ['A playful AI imagining of growing up, from childhood to today.', '#GrowingUp #AICreation'],
+        ['A football spin and a Brazil-inspired look, created with AI.', '#FootballSkills #AICreation'],
+        ['An AI-made dance in the stands. Bringing the fan energy!', '#FanDance #Football #AICreation']
+      ];
+      const [caption, tags] = stories[activeIndex];
+      if (platform === 'WhatsApp') return caption;
+      if (platform === 'Instagram') return `${caption}\n\n${tags}`;
+      return `${caption} Which scene would you try?\n\n${tags}`;
+    }
+
+    function composerTheme(platform) {
+      if (platform === "WhatsApp") return { label: "WA", title: "WhatsApp Status", subtitle: "Status editor", color: "#25d366" };
+      if (platform === "Instagram") return { label: "IG", title: "Instagram Reels", subtitle: "Reels caption", color: "linear-gradient(135deg,#833ab4,#fd1d1d 54%,#fcb045)" };
+      return { label: "TT", title: "TikTok upload", subtitle: "Post caption", color: "#090a0d" };
+    }
+
+    function getFileExtension(url) {
+      const match = String(url || "").match(/\.([a-z0-9]+)(?:$|\?)/i);
+      return match ? match[1].toLowerCase() : "mp4";
+    }
+
+    function getMimeTypeFromExtension(extension) {
+      if (extension === "webm") return "video/webm";
+      if (extension === "mov") return "video/quicktime";
+      if (extension === "png") return "image/png";
+      if (extension === "jpg" || extension === "jpeg") return "image/jpeg";
+      return "video/mp4";
+    }
+
+    function getExtensionFromMimeType(mimeType, fallback) {
+      if (mimeType === "video/webm") return "webm";
+      if (mimeType === "video/quicktime") return "mov";
+      if (mimeType === "image/png") return "png";
+      if (mimeType === "image/jpeg") return "jpg";
+      if (mimeType === "video/mp4") return "mp4";
+      return fallback || "mp4";
+    }
+
+    async function saveCurrentVideo() {
+      const source = videoPlayer.src || videoImage.src || resultImage.src;
+      const extension = getFileExtension(source);
+      const fallbackMimeType = getMimeTypeFromExtension(extension);
+      const filename = `fari-video.${extension}`;
+
+      if (!("showDirectoryPicker" in window) && !("showSaveFilePicker" in window)) {
+        showToast("File access is not supported in this browser");
+        return;
+      }
+
+      try {
+        if ("showDirectoryPicker" in window) {
+          showToast("Requesting file access");
+          const directory = await window.showDirectoryPicker({ mode: "readwrite" });
+          const response = await fetch(source);
+          const blob = await response.blob();
+          const mimeType = blob.type || fallbackMimeType;
+          const finalExtension = getExtensionFromMimeType(mimeType, extension);
+          const fileHandle = await directory.getFileHandle(`fari-video.${finalExtension}`, { create: true });
+          const writable = await fileHandle.createWritable();
+          await writable.write(blob);
+          await writable.close();
+          markVideoBaixared();
+          showToast("Video saved");
+          return;
+        }
+
+        if ("showSaveFilePicker" in window) {
+          showToast("Requesting download permission");
+          const handle = await window.showSaveFilePicker({
+            suggestedName: filename,
+            types: [{
+              description: "Video file",
+              accept: { [fallbackMimeType]: [`.${extension}`] }
+            }]
+          });
+          const response = await fetch(source);
+          const blob = await response.blob();
+          const writable = await handle.createWritable();
+          await writable.write(blob);
+          await writable.close();
+          markVideoBaixared();
+          showToast("Video saved");
+          return;
+        }
+      } catch (error) {
+        if (error && error.name === "AbortError") {
+          showToast("Save canceled");
+          return;
+        }
+        showToast("File access was not granted");
+        return;
+      }
+    }
+
+    async function copyCompartilharCaption(content = shareCopyFor(selectedCompartilharPlatform)) {
+      return copyText(`${content.caption}\n${window.location.href}`);
+    }
+
+    function openPublisher(content) {
+      const theme = composerTheme(content.channel);
+      const shareText = `${content.caption}\n${window.location.href}`;
+      const transition = document.querySelector("#appTransition");
+      const composer = document.querySelector("#appComposer");
+      const mark = document.querySelector("#appTransitionMark");
+      const title = document.querySelector("#appTransitionTitle");
+      const caption = document.querySelector("#composerCaption");
+      const avatar = document.querySelector("#composerAvatar");
+
+      document.querySelector("#appSheetTitle").textContent = `Opening ${content.channel}`;
+      title.textContent = `Opening ${content.channel}`;
+      mark.textContent = theme.label;
+      mark.style.background = theme.color;
+      avatar.textContent = theme.label;
+      avatar.style.background = theme.color;
+      document.querySelector("#composerTitle").textContent = theme.title;
+      document.querySelector("#composerSubtitle").textContent = theme.subtitle;
+      document.querySelector("#composerPostBtn").textContent = content.channel === "WhatsApp" ? "Send" : "Post";
+      document.querySelector("#composerImage").src = videoPlayer.src || videoImage.src || resultImage.src || scene.image;
+      caption.value = "";
+      transition.style.display = "grid";
+      composer.classList.remove("show");
+      openSheet("app");
+
+      window.setTimeout(() => {
+        document.querySelector("#appSheetTitle").textContent = theme.title;
+        transition.style.display = "none";
+        composer.classList.add("show");
+        caption.value = shareText;
+        caption.focus();
+        caption.setSelectionRange(caption.value.length, caption.value.length);
+        showToast(`${content.channel} editor filled`);
+      }, 780);
+    }
+
+    async function runCompartilharFlow(platform = selectedCompartilharPlatform) {
+      if (shareBusy) return;
+      shareBusy = true;
+      try {
+        const content = shareCopyFor(normalizeCompartilharPlatform(platform));
+        const copied = await copyCompartilharCaption(content).catch(() => false);
+        showToast(copied ? `${content.channel} caption copied` : "Caption ready");
+        window.setTimeout(() => openPublisher(content), 180);
+      } finally {
+        shareBusy = false;
+      }
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      window.setTimeout(() => toast.classList.remove("show"), 1700);
+    }
+
+    function setSelectedImage(url, name) {
+      selectedUrl = url;
+      selectedName = name;
+      hasUnsavedUpload = true;
+      selectedImage.src = url;
+      selectedThumb.classList.add("has-image");
+      selectedTitle.textContent = "Image selected";
+      selectedHint.textContent = name;
+      hint.textContent = "Creating your personalized preview...";
+    }
+
+    function setUploadLoading(active) {
+      uploadLoading = active;
+      selectPhoto.classList.toggle("is-loading", active);
+      selectedTitle.textContent = active ? "Preparando imagem" : selectedUrl ? "Image selected" : scene.requirement;
+      selectedHint.textContent = active ? "Lendo sua foto..." : selectedUrl ? selectedName : "Choose the photo format shown in this template to start a preview.";
+      hint.textContent = active ? "Preparing your image for preview..." : hint.textContent;
+    }
+
+    function setLoader(mode) {
+      const title = document.querySelector("#loaderTitle");
+      const copy = document.querySelector("#loaderCopy");
+      if (mode === "video") {
+        title.textContent = "Generating...";
+        copy.textContent = "The final video usually takes up to 10 minutes. Please keep this page open.";
+        hint.textContent = "Rendering your final video. This usually takes up to 10 minutes. Do not close this page.";
+        return;
+      }
+      title.textContent = "Preparing preview...";
+      copy.textContent = "Your preview image usually takes within 3 minutes. Please keep this page open.";
+      hint.textContent = "Creating your preview image. This usually takes within 3 minutes.";
+    }
+
+    function rememberPendingVideo(source) {
+      downloadCompleted = false;
+      localStorage.setItem(pendingBaixarKey, JSON.stringify({
+        source,
+        scene: scene.title,
+        template: activeIndex,
+        createdAt: new Date().toISOString(),
+        downloaded: false
+      }));
+    }
+
+    function markVideoBaixared() {
+      downloadCompleted = true;
+      hasUnsavedUpload = false;
+      localStorage.removeItem(pendingBaixarKey);
+      document.querySelector("#resumeBanner")?.classList.remove("show");
+    }
+
+    function shouldConfirmExit() {
+      return hasUnsavedUpload || uploadLoading || generationInProgress || imageReady || videoReady;
+    }
+
+    function hasOpenVideoSubflow() {
+      return videoReady && ["shareSheet", "appSheet", "downloadPermissionSheet"].some((id) => {
+        return document.querySelector(`#${id}`)?.classList.contains("open");
+      });
+    }
+
+    function requestExit() {
+      if (hasOpenVideoSubflow()) {
+        closeSheets();
+        openSheet("video");
+        return;
+      }
+      if (!shouldConfirmExit()) {
+        window.location.href = "template-gallery.html";
+        return;
+      }
+      const exitTitle = document.querySelector("#exitTitle");
+      const exitCopy = document.querySelector("#exitCopy");
+      if (generationInProgress) {
+        exitTitle.textContent = "Generation is still running";
+        exitCopy.textContent = "Generation is still running. Closing this page now may interrupt your creation.";
+      } else if (videoReady && !downloadCompleted) {
+        exitTitle.textContent = "Baixar before you leave?";
+        exitCopy.textContent = "Your video is ready but has not been downloaded yet. Leaving now may make it harder to recover.";
+      } else if (videoReady) {
+        exitTitle.textContent = "Leave this video?";
+        exitCopy.textContent = "Your finished video is still here. Stay to download, share, or create another version.";
+      } else {
+        exitTitle.textContent = "Are you sure you want to quit?";
+        exitCopy.textContent = "Leaving now will discard your uploaded photo and any preview that has not been saved.";
+      }
+      closeSheets();
+      openSheet("exitConfirm");
+    }
+
+    function getOpenSheetId() {
+      const sheetPriority = [
+        "appSheet",
+        "downloadPermissionSheet",
+        "shareSheet",
+        "exitConfirmSheet",
+        "videoSheet",
+        "resultSheet",
+        "paymentSheet",
+        "selectSheet"
+      ];
+      return sheetPriority.find((id) => document.querySelector(`#${id}`)?.classList.contains("open")) || "";
+    }
+
+    function restorePendingVideoNotice() {
+      let record = null;
+      try { record = JSON.parse(localStorage.getItem(pendingBaixarKey) || "null"); } catch {}
+      if (!record || record.downloaded || !record.source) return;
+      const banner = document.querySelector("#resumeBanner");
+      if (banner) {
+        banner.classList.add("show");
+        banner.addEventListener("click", () => {
+          setVideoPreviewSource(record.source);
+          videoReady = true;
+          downloadCompleted = false;
+          hint.textContent = "Your last video is ready but has not been downloaded yet.";
+          openSheet("video");
+        }, { once: true });
+      }
+    }
+
+    function startImageGeneration() {
+      if (generationInProgress || !uploadedPhotos.every(Boolean)) return;
+      closeSheets();
+      setLoader("image");
+      generationInProgress = true;
+      workspace.classList.add("generating");
+      hint.textContent = "Creating your preview image. This usually takes within 3 minutes. Keep this page open.";
+      window.setTimeout(() => {
+        const finalUrl = selectedUrl || scene.image;
+        resultImage.src = finalUrl;
+        keyFrameOne.src = finalUrl;
+        keyFrameTwo.src = uploadedPhotos[1]?.url || scene.image;
+        setTemplatePreviewSource(finalUrl);
+        workspace.classList.remove("generating");
+        generationInProgress = false;
+        imageReady = true;
+        finalBenefitsVisible = false;
+        document.querySelector(".upgrade-panel")?.classList.remove("is-visible");
+        document.querySelector("#continueVideoBtn").textContent = "Criar vídeo final";
+        hint.textContent = "Your free personalized preview is ready. Create the final video when it feels right.";
+        openSheet("result");
+      }, 3200);
+    }
+
+    function startVideoGeneration() {
+      if (generationInProgress || !imageReady) return;
+      closeSheets();
+      setLoader("video");
+      generationInProgress = true;
+      workspace.classList.add("generating");
+      hint.textContent = "Rendering your video. This usually takes up to 10 minutes. Do not close this page.";
+      window.setTimeout(() => {
+        const finalUrl = resultImage.src || selectedUrl || scene.image;
+        setVideoPreviewSource(finalUrl);
+        setTemplatePreviewSource(finalUrl);
+        workspace.classList.remove("generating");
+        generationInProgress = false;
+        videoReady = true;
+        rememberPendingVideo(finalUrl);
+        hint.textContent = "Final video is ready. Baixar it before leaving this page.";
+        openSheet("video");
+      }, 4200);
+    }
+
+    function unlock(action) {
+      completeUnlockedAction(action);
+    }
+
+    function completeUnlockedAction(action) {
+      pendingUnlock = "";
+      if (action === "video") {
+        startVideoGeneration();
+        return;
+      }
+      openSheet("share");
+    }
+
+    function resetCreation() {
+      uploadedPhotos.forEach((photo, i) => { if (photo) URL.revokeObjectURL(photo.url); uploadedPhotos[i] = null; });
+      closeSheets();
+      selectedUrl = "";
+      selectedName = "";
+      selectedImage.removeAttribute("src");
+      selectedThumb.classList.remove("has-image");
+      selectPhoto.classList.remove("is-loading");
+      uploadLoading = false;
+      selectedTitle.textContent = scene.requirement;
+      selectedHint.textContent = "";
+      templateImage.src = scene.image;
+      templateImage.style.objectPosition = scene.position;
+      hint.textContent = `${scene.requirement} Preview the feeling before creating the final video.`;
+      assetInput.value = "";
+      paid = false;
+      pendingUnlock = "";
+      imageReady = false;
+      videoReady = false;
+      generationInProgress = false;
+      hasUnsavedUpload = false;
+      finalBenefitsVisible = false;
+      document.querySelector(".upgrade-panel")?.classList.remove("is-visible");
+      document.querySelector("#continueVideoBtn").textContent = "Criar vídeo final";
+      markVideoBaixared();
+      renderUploadSlots();
+    }
+
+    templateImage.src = scene.image;
+    templateImage.alt = scene.title;
+    templateImage.style.objectPosition = scene.position;
+    pageBg.style.backgroundImage = `url("${scene.image}")`;
+    setCompartilharPlatform(selectedCompartilharPlatform);
+
+    function choosePhoto(slot) {
+      if (uploadLoading || generationInProgress) return;
+      activeUploadSlot = slot;
+      assetInput.value = '';
+      assetInput.click();
+    }
+    selectPhoto.addEventListener('click', () => choosePhoto(0));
+    selectPhoto2.addEventListener('click', () => choosePhoto(1));
+    document.querySelector('#galleryChoice').addEventListener('click', () => choosePhoto(0));
+    assetInput.addEventListener('change', async () => {
+      const file = assetInput.files?.[0];
+      if (!file) return;
+      if (!file.type.startsWith('image/') || file.size > 20 * 1024 * 1024) {
+        showToast('Choose an image smaller than 20 MB.'); return;
+      }
+      const slot = activeUploadSlot;
+      const url = URL.createObjectURL(file);
+      uploadLoading = true;
+      try {
+        const probe = new Image(); probe.src = url;
+        await probe.decode();
+        if (uploadedPhotos[slot]) URL.revokeObjectURL(uploadedPhotos[slot].url);
+        uploadedPhotos[slot] = {url, name:file.name};
+        selectedUrl = uploadedPhotos[0]?.url || '';
+        selectedName = uploadedPhotos[0]?.name || '';
+        hasUnsavedUpload = true;
+        renderUploadSlots();
+        if (uploadedPhotos.every(Boolean)) { closeSheets(); startImageGeneration(); }
+        else hint.textContent = 'Upload the other pet photo to create your preview.';
+      } catch { URL.revokeObjectURL(url); showToast('This image could not be opened. Please choose another.'); }
+      finally { uploadLoading = false; }
+    });
+
+    function completeOneTimePayment() {
+      paid = true;
+      localStorage.setItem("fariLastPurchase", "one-time");
+      window.fariTrack?.("purchase", { value: 9.9, currency: "USD", method: "one-time" });
+      showToast("Video generation started");
+      completeUnlockedAction(pendingUnlock || "video");
+    }
+
+    document.querySelector("#completePaymentBtn").addEventListener("click", completeOneTimePayment);
+
+    document.querySelector("#continueVideoBtn").addEventListener("click", () => {
+      startVideoGeneration();
+    });
+    document.querySelector("#shareBtn").addEventListener("click", () => {
+      syncCompartilharSheet();
+      unlock("share");
+    });
+    downloadBtn.addEventListener("click", () => openSheet("downloadPermission"));
+    document.querySelector("#allowBaixarBtn").addEventListener("click", async () => {
+      closeSheets();
+      await saveCurrentVideo();
+      if (videoReady) openSheet("video");
+    });
+    document.querySelector("#composerCopyBtn").addEventListener("click", async () => {
+      const copied = await copyText(document.querySelector("#composerCaption").value).catch(() => false);
+      showToast(copied ? "Caption copied" : "Copy failed");
+    });
+    document.querySelector("#composerDoneBtn").addEventListener("click", () => {
+      closeNamedSheet("appSheet");
+    });
+    document.querySelector("#composerPostBtn").addEventListener("click", () => {
+      showToast("Post simulated");
+    });
+    window.addEventListener("beforeunload", (event) => {
+      if (generationInProgress || (videoReady && !downloadCompleted)) {
+        event.preventDefault();
+        event.returnValue = "Your fari video is still generating or has not been downloaded yet.";
+      }
+    });
+    restorePendingVideoNotice();
+    document.querySelector("#newVideoBtn").addEventListener("click", resetCreation);
+    platformButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        setCompartilharPlatform(button.dataset.platform);
+        runCompartilharFlow(button.dataset.platform);
+      });
+    });
+    async function copyText(value) {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(value);
+        return true;
+      }
+      const temp = document.createElement("textarea");
+      temp.value = value;
+      temp.setAttribute("readonly", "");
+      temp.style.position = "fixed";
+      temp.style.left = "-999px";
+      document.body.appendChild(temp);
+      temp.select();
+      const copied = document.execCommand("copy");
+      temp.remove();
+      return copied;
+    }
+
+    document.querySelector("#shareTopBtn").addEventListener("click", () => {
+      syncCompartilharSheet();
+      openSheet("share");
+    });
+    document.querySelector("#backBtn").addEventListener("click", (event) => {
+      event.preventDefault();
+      requestExit();
+    });
+    document.querySelector("#stayBtn").addEventListener("click", () => closeNamedSheet("exitConfirmSheet"));
+    document.querySelector("#exitBtn").addEventListener("click", () => {
+      hasUnsavedUpload = false;
+      generationInProgress = false;
+      window.location.href = "template-gallery.html";
+    });
+
+    function closeNamedSheet(id) {
+      if (id === "videoSheet" && videoReady) {
+        requestExit();
+        return;
+      }
+      const target = document.querySelector(`#${id}`);
+      if (target) target.classList.remove("open");
+      if ((id === "shareSheet" || id === "appSheet" || id === "downloadPermissionSheet") && videoReady) openSheet("video");
+    }
+
+    document.querySelectorAll("[data-close]").forEach(button => {
+      button.addEventListener("click", () => closeNamedSheet(button.dataset.close));
+    });
+
+    Object.values(sheets).filter(Boolean).forEach(sheet => {
+      sheet.addEventListener("click", event => {
+        if (event.target === sheet) closeNamedSheet(sheet.id);
+      });
+    });
+
+    document.addEventListener("keydown", event => {
+      if (event.key !== "Escape") return;
+      const openId = getOpenSheetId();
+      if (openId) closeNamedSheet(openId);
+    });
+  </script>
+</body>
+</html>

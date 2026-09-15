@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>fari | Account</title>
+  <script defer src="ui/tracking.js"></script>
+  <style>
+    :root{--bg:#090910;--fg:#fff;--muted:rgba(255,255,255,.72);--subtle:rgba(255,255,255,.46);--accent:#ff347e;--accent2:#ff6a3d;--line:rgba(255,255,255,.14);--grad:linear-gradient(135deg,#ff347e 0%,#ff4f72 52%,#ff7745 100%);--font:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    *{box-sizing:border-box}
+    [hidden]{display:none!important}
+    html,body{margin:0;min-height:100%;background:var(--bg);color:var(--fg);font-family:var(--font);letter-spacing:0}
+    body{overflow-x:hidden}
+    a{color:inherit;text-decoration:none}
+    button,input{font:inherit}
+    button{cursor:pointer}
+    .video-bg{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;z-index:0;filter:saturate(1.1)}
+    .overlay{position:fixed;inset:0;z-index:1;background:radial-gradient(ellipse 56% 70% at 50% 50%,rgba(18,18,27,.48),rgba(8,8,13,.72) 58%,rgba(5,5,9,.9) 100%),linear-gradient(90deg,rgba(0,0,0,.26),transparent 45%,rgba(0,0,0,.26))}
+    .nav{position:fixed;z-index:3;top:22px;left:0;right:0;height:74px;background:transparent}
+    .nav-inner{height:100%;padding:0 42px;display:flex;align-items:center;justify-content:space-between;gap:30px}
+    .logo{display:block;width:74px;height:40px;overflow:hidden}
+    .logo img{width:100%;height:100%;object-fit:contain;display:block}
+    .nav-links{display:flex;align-items:center;gap:8px}
+    .nav-links a{display:inline-flex;align-items:center;min-height:38px;padding:0 20px;border-radius:999px;color:var(--muted);font-size:14px;font-weight:600;transition:background .2s,color .2s}
+    .nav-links a:hover{background:rgba(255,255,255,.08);color:#fff}
+    .page{position:relative;z-index:2;min-height:100vh;display:grid;place-items:center;padding:110px 24px}
+    .card{width:min(470px,100%);padding:36px 34px 30px;border:1px solid rgba(255,255,255,.14);border-radius:24px;background:rgba(18,18,24,.72);box-shadow:0 30px 78px rgba(0,0,0,.46),0 0 0 1px rgba(255,255,255,.04) inset;backdrop-filter:blur(24px);animation:fadeInUp .55s ease both;text-align:center}
+    h1{margin:0 0 10px;font-size:clamp(28px,4vw,38px);line-height:1.04;letter-spacing:-.05em}
+    .copy{margin:0 0 24px;color:var(--muted);font-size:14px;line-height:1.6}
+    .social-login{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:8px 0 18px}
+    .social-login button{display:grid;place-items:center;height:54px;border:1px solid rgba(255,255,255,.11);border-radius:16px;background:rgba(255,255,255,.055);color:#fff;transition:transform .2s,border-color .2s,background .2s;flex:0 0 auto}
+    .social-login button:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.09)}
+    .social-login svg{width:23px;height:23px;display:block}
+    .fields{display:grid;gap:14px;margin-bottom:14px;text-align:left}
+    .field label{display:block;margin:0 0 7px;color:rgba(255,255,255,.72);font-size:13px;font-weight:600}
+    .field input{width:100%;min-height:50px;padding:0 15px;border:1px solid rgba(255,255,255,.1);border-radius:14px;background:rgba(255,255,255,.05);color:#fff;text-align:left;outline:none;transition:border-color .2s,box-shadow .2s,background .2s}
+    .field input::placeholder{color:rgba(255,255,255,.4)}
+    .field input:focus{border-color:rgba(255,79,135,.6);background:rgba(255,79,135,.05);box-shadow:0 0 0 3px rgba(255,79,135,.12)}
+    .account-note{padding:12px 14px;border:1px solid rgba(255,255,255,.09);border-radius:14px;background:rgba(255,255,255,.04);color:var(--muted);font-size:13px;line-height:1.5}
+    .primary{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;min-height:54px;border:0;border-radius:999px;background:var(--grad);color:#fff;font-size:15px;font-weight:850;box-shadow:0 12px 30px rgba(255,52,126,.34);transition:transform .2s,filter .2s}
+    .primary:hover{filter:brightness(1.06);transform:translateY(-2px)}
+    .switch{text-align:center;color:var(--muted);font-size:13px;line-height:1.5}
+    .switch button{border:0;background:transparent;color:#ff78a5;font-weight:850}
+    .footer{margin-top:20px;text-align:center;color:rgba(255,255,255,.66);font-size:12px;text-shadow:0 1px 6px #000}
+    @keyframes fadeInUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+    @media(max-width:620px){.nav{top:16px}.nav-inner{padding:0 20px}.logo{width:64px;height:34px}.nav-links a{padding:0 12px;font-size:12px}.page{padding:96px 16px}.card{padding:28px 22px 22px;border-radius:20px}.copy{margin-bottom:20px}.social-login{gap:8px;margin-top:10px}.social-login button{height:50px;border-radius:14px}.fields{gap:12px}.account-note{font-size:12px}}
+  </style>
+</head>
+<body>
+  <video class="video-bg" src="assets/fari-hero.mp4" autoplay muted loop playsinline poster="assets/fari/fari 首页主视觉 - 家庭生日庆祝.webp"></video>
+  <div class="overlay"></div>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a class="logo" href="index.html" aria-label="fari home"><img src="assets/fari-logo-symbol.png" alt="fari"></a>
+      <div class="nav-links">
+        <a href="template-gallery.html">Templates</a>
+        <a href="index.html#how">How it works</a>
+      </div>
+    </div>
+  </nav>
+  <main class="page">
+    <section>
+      <form class="card" id="authForm">
+        <h1 id="title">Your creations</h1>
+        <p class="copy" id="copy" hidden></p>
+        <div class="social-login" aria-label="Social sign in options">
+          <button type="button" data-provider-button="tiktok" aria-label="Continue with TikTok" title="TikTok">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M14.25 3.6h2.03c.17 1.05.64 1.94 1.39 2.67.72.7 1.6 1.12 2.63 1.28v2.1a6.1 6.1 0 0 1-3.62-1.2v5.92a5.2 5.2 0 1 1-5.2-5.2c.3 0 .58.02.86.07v2.18a3.1 3.1 0 1 0 2.02 2.9L14.25 3.6Z"/></svg>
+          </button>
+          <button type="button" data-provider-button="instagram" aria-label="Continue with Instagram" title="Instagram">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7.8 3.7h8.4a4.1 4.1 0 0 1 4.1 4.1v8.4a4.1 4.1 0 0 1-4.1 4.1H7.8a4.1 4.1 0 0 1-4.1-4.1V7.8a4.1 4.1 0 0 1 4.1-4.1Zm0 1.75A2.35 2.35 0 0 0 5.45 7.8v8.4a2.35 2.35 0 0 0 2.35 2.35h8.4a2.35 2.35 0 0 0 2.35-2.35V7.8a2.35 2.35 0 0 0-2.35-2.35H7.8Zm4.2 3.15a3.4 3.4 0 1 1 0 6.8 3.4 3.4 0 0 1 0-6.8Zm0 1.7a1.7 1.7 0 1 0 0 3.4 1.7 1.7 0 0 0 0-3.4Zm4.37-2.98a1.02 1.02 0 1 1 0 2.04 1.02 1.02 0 0 1 0-2.04Z"/></svg>
+          </button>
+          <button type="button" data-provider-button="whatsapp" aria-label="Continue with WhatsApp" title="WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12.04 3.5a8.44 8.44 0 0 0-7.2 12.84L3.9 20.5l4.25-1.02a8.47 8.47 0 1 0 3.89-15.98Zm0 1.7a6.77 6.77 0 0 1 5.74 10.36 6.76 6.76 0 0 1-8.94 2.32l-.3-.17-2.1.5.47-2.06-.19-.31A6.76 6.76 0 0 1 12.04 5.2Zm-2.5 3.57c-.16 0-.43.06-.66.31-.23.26-.87.85-.87 2.06s.89 2.39 1.01 2.55c.13.17 1.72 2.74 4.27 3.73 2.12.83 2.55.67 3.01.63.46-.04 1.48-.61 1.69-1.2.21-.58.21-1.08.14-1.19-.06-.11-.23-.18-.49-.31-.25-.13-1.48-.73-1.71-.81-.23-.09-.4-.13-.57.13-.17.25-.66.81-.81.98-.15.17-.3.19-.55.06-.26-.13-1.08-.4-2.05-1.26-.76-.68-1.27-1.51-1.42-1.77-.15-.25-.02-.39.11-.52.12-.12.26-.3.39-.45.13-.15.17-.26.26-.43.08-.17.04-.32-.02-.45-.07-.13-.57-1.37-.78-1.88-.2-.49-.41-.42-.57-.43h-.48Z"/></svg>
+          </button>
+        </div>
+        <div class="fields">
+          <div class="field">
+            <label for="emailField">Email address</label>
+            <input id="emailField" type="email" placeholder="you@email.com" autocomplete="email">
+          </div>
+          <div class="field" id="nameFieldWrap" hidden>
+            <label for="nameField">Full name</label>
+            <input class="field-input" id="nameField" type="text" placeholder="Your name" autocomplete="name">
+          </div>
+          <div class="field">
+            <label for="passwordField">Password</label>
+            <input id="passwordField" type="password" placeholder="••••••••" autocomplete="current-password">
+          </div>
+          <div class="account-note" id="providerNote">Anonymous uploads and one-time payment stay available without an account.</div>
+        </div>
+        <button class="primary" id="submit" type="submit">Continue <span>→</span></button>
+        <div class="switch"><span id="switchCopy">Need a new account?</span> <button id="switchMode" type="button">Register instead</button></div>
+      </form>
+      <div class="footer">© 2026 fari. All rights reserved. <a href="ui/contact.html">Contact &amp; Support</a>.</div>
+    </section>
+  </main>
+  <script>
+    const authForm = document.querySelector("#authForm");
+    const title = document.querySelector("#title");
+    const copy = document.querySelector("#copy");
+    const submit = document.querySelector("#submit");
+    const switchCopy = document.querySelector("#switchCopy");
+    const switchMode = document.querySelector("#switchMode");
+    const providerNote = document.querySelector("#providerNote");
+    const fields = document.querySelector(".fields");
+    const socialLogin = document.querySelector(".social-login");
+    const nameFieldWrap = document.querySelector("#nameFieldWrap");
+    const nameField = document.querySelector("#nameField");
+    const emailField = document.querySelector("#emailField");
+    const passwordField = document.querySelector("#passwordField");
+    const socialButtons = Array.from(document.querySelectorAll("[data-provider-button]"));
+
+    const provider = new URLSearchParams(window.location.search).get("provider");
+    const modeParam = new URLSearchParams(window.location.search).get("mode");
+    const from = new URLSearchParams(window.location.search).get("from");
+    let mode = modeParam === "register" ? "register" : "signIn";
+    const providerCopy = {
+      tiktok: {
+        title: "Continue with TikTok",
+        copy: "Authorize fari to continue with your account.",
+        note: "You will be returned to fari after TikTok authorization.",
+        button: "Authorize TikTok"
+      },
+      instagram: {
+        title: "Continue with Instagram",
+        copy: "Authorize fari to continue with your account.",
+        note: "You will be returned to fari after Instagram authorization.",
+        button: "Authorize Instagram"
+      },
+      whatsapp: {
+        title: "Continue with WhatsApp",
+        copy: "Use your WhatsApp-linked account to continue.",
+        note: "WhatsApp access uses the configured account authorization flow.",
+        button: "Authorize WhatsApp"
+      }
+    };
+
+    if (providerCopy[provider]) {
+      title.textContent = providerCopy[provider].title;
+      copy.textContent = providerCopy[provider].copy;
+      copy.hidden = false;
+      providerNote.textContent = providerCopy[provider].note;
+      fields.hidden = true;
+      socialLogin.hidden = true;
+      submit.innerHTML = `${providerCopy[provider].button} <span>→</span>`;
+      switchCopy.textContent = "Prefer a separate account?";
+      switchMode.textContent = "Register or sign in with email";
+    }
+
+    function setMode(nextMode) {
+      mode = nextMode === "register" ? "register" : "signIn";
+      nameFieldWrap.hidden = mode !== "register";
+      nameField.hidden = mode !== "register";
+      title.textContent = mode === "register" ? "Create your account" : (providerCopy[provider]?.title || "Sign in");
+      copy.hidden = !providerCopy[provider];
+      copy.textContent = providerCopy[provider]?.copy || "";
+      submit.innerHTML = mode === "register" ? "Create account <span>→</span>" : `${providerCopy[provider]?.button || "Continue"} <span>→</span>`;
+      switchCopy.textContent = mode === "register" ? "Already have an account?" : "Need a new account?";
+      switchMode.textContent = mode === "register" ? "Sign in instead" : "Register instead";
+    }
+
+    switchMode.addEventListener("click", () => {
+      if (providerCopy[provider]) {
+        const next = new URL("login.html", window.location.href);
+        next.searchParams.set("from", "templates");
+        if (new URLSearchParams(window.location.search).get("intent")) next.searchParams.set("intent", "save");
+        location.href = next.toString();
+        return;
+      }
+      setMode(mode === "register" ? "signIn" : "register");
+    });
+
+    socialButtons.forEach(button => {
+      button.addEventListener("click", () => {
+        const providerName = button.dataset.providerButton;
+        const next = new URL("login.html", window.location.href);
+        next.searchParams.set("provider", providerName);
+        next.searchParams.set("from", "templates");
+        if (new URLSearchParams(window.location.search).get("intent")) next.searchParams.set("intent", "save");
+        location.href = next.toString();
+      });
+    });
+
+    authForm.addEventListener("submit", event => {
+      event.preventDefault();
+      const next = new URL("templates.html", window.location.href);
+      if (provider) next.searchParams.set("provider", provider);
+      next.searchParams.set("mode", mode);
+      location.href = next.toString();
+    });
+
+    setMode(mode);
+  </script>
+</body>
+</html>

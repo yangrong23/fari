@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>fari | Unlock your video</title>
+  <script defer src="ui/tracking.js"></script>
+  <style>
+    :root{
+      --bg:#f6f1ff;
+      --ink:#231f29;
+      --muted:#716a7d;
+      --line:#e7ddf6;
+      --pink:#ff4f8d;
+      --coral:#ff7a5a;
+      --violet:#8a63ff;
+      --amber:#ffb347;
+      --mint:#bff36a;
+      --card:rgba(255,255,255,.76);
+      --font:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:var(--font);letter-spacing:0}
+    body{background:
+      radial-gradient(circle at 50% 14%,rgba(255,255,255,.95),rgba(255,255,255,.68) 18%,transparent 42%),
+      radial-gradient(circle at 18% 0%,rgba(255,122,90,.12),transparent 25%),
+      radial-gradient(circle at 82% 18%,rgba(138,99,255,.16),transparent 28%),
+      linear-gradient(180deg,#f7f3ff,#efe8fb 62%,#efe7f8)}
+    a{color:inherit;text-decoration:none}
+    button{font:inherit;cursor:pointer}
+    .page{width:min(100%,560px);min-height:100vh;margin:auto;padding:20px 18px 26px}
+    .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+    .logo{display:block;width:56px;height:32px}
+    .logo img{width:100%;height:100%;object-fit:contain}
+    .close{display:grid;place-items:center;width:34px;height:34px;border:0;border-radius:999px;background:rgba(255,255,255,.6);color:#7a7288;font-size:28px;font-weight:300;box-shadow:0 8px 20px rgba(111,83,150,.08)}
+
+    .offer,.payment-screen{text-align:center}
+    .offer{padding-top:10px}
+    .eyebrow{display:inline-flex;align-items:center;gap:7px;color:#a22fd7;font-size:11px;font-weight:850;letter-spacing:.12em;text-transform:uppercase}
+    .eyebrow:before{content:"";width:7px;height:7px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--coral))}
+    .offer h1,.payment-screen h1{margin:14px auto 0;font-size:clamp(34px,8vw,58px);line-height:.96;letter-spacing:-.07em}
+    .offer h1 span,.payment-screen h1 span{display:block;background:linear-gradient(90deg,var(--pink),var(--coral),var(--amber));-webkit-background-clip:text;background-clip:text;color:transparent}
+    .offer-copy,.payment-copy{max-width:430px;margin:14px auto 0;color:var(--muted);font-size:14px;line-height:1.56}
+
+    .hero-visual{
+      position:relative;
+      width:min(100%,430px);
+      aspect-ratio:1/1.06;
+      margin:26px auto 0;
+      overflow:hidden;
+      border-radius:32px;
+      background:linear-gradient(180deg,rgba(255,255,255,.82),rgba(255,255,255,.38));
+      box-shadow:0 20px 50px rgba(111,83,150,.16),0 0 0 1px rgba(255,255,255,.62) inset;
+    }
+    .hero-visual:before{
+      content:"";
+      position:absolute;inset:0;
+      background:
+        radial-gradient(circle at 50% 18%,rgba(255,122,90,.18),transparent 18%),
+        radial-gradient(circle at 50% 64%,rgba(255,79,141,.18),transparent 22%),
+        linear-gradient(180deg,rgba(255,255,255,.2),rgba(255,255,255,0));
+    }
+    .topline{position:absolute;left:18px;right:18px;top:18px;display:flex;justify-content:space-between;color:#80758e;font-size:12px;font-weight:700}
+    .chart{position:absolute;left:0;right:0;top:58px;height:200px}
+    .chart svg{width:100%;height:100%}
+    .sale-badge{
+      position:absolute;left:50%;top:92px;display:grid;place-items:center;
+      width:112px;height:158px;transform:translateX(-50%);
+      background:linear-gradient(180deg,#ffa640,#ff5e93 60%,#cc46ff);
+      clip-path:polygon(18% 0,82% 0,82% 60%,100% 60%,50% 100%,0 60%,18% 60%);
+      box-shadow:0 16px 36px rgba(255,92,135,.24);
+    }
+    .sale-badge strong{color:#fff;font-size:17px;font-weight:900;letter-spacing:.08em}
+    .price-card{
+      position:absolute;left:50%;bottom:92px;transform:translateX(-50%);
+      width:min(88%,330px);padding:16px 16px 14px;border-radius:22px;
+      background:rgba(255,255,255,.88);box-shadow:0 16px 34px rgba(111,83,150,.12)
+    }
+    .price-card .label{color:#6f677b;font-size:12px;font-weight:750}
+    .price{margin-top:4px;font-size:34px;line-height:1;font-weight:820;letter-spacing:-.04em;color:#ff4f8d}
+    .price small{font-size:16px}
+    .price-sub{margin-top:4px;color:#766f80;font-size:12px}
+
+    .countdown{margin:22px auto 0}
+    .countdown-label{color:#6d6478;font-size:12px;font-weight:750}
+    .timer{display:flex;justify-content:center;gap:10px;margin-top:10px}
+    .box{min-width:48px;padding:8px 10px 7px;border-radius:13px;background:linear-gradient(180deg,rgba(138,99,255,.2),rgba(255,255,255,.84));box-shadow:0 10px 20px rgba(111,83,150,.1)}
+    .num{display:block;font-size:18px;font-weight:900;line-height:1}
+    .unit{display:block;margin-top:4px;color:#887f94;font-size:9px;font-weight:750;letter-spacing:.08em}
+    .colon{display:grid;place-items:center;color:#8d829c;font-size:18px;font-weight:900}
+
+    .buy-button,.payment-cta,.method{
+      transition:transform .2s,box-shadow .2s,filter .2s,border-color .2s,background .2s;
+    }
+    .buy-button{
+      width:min(100%,410px);min-height:58px;margin:22px auto 0;border:0;border-radius:18px;
+      background:linear-gradient(90deg,var(--violet),var(--pink) 52%,var(--coral));
+      color:#fff;font-size:16px;font-weight:900;box-shadow:0 16px 34px rgba(173,68,220,.22)
+    }
+    .buy-button:hover,.payment-cta:hover{transform:translateY(-2px);filter:brightness(1.03)}
+    .microcopy{margin:12px 0 0;color:#8b8395;font-size:10px}
+    .reassurance{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;margin:20px auto 0;color:#6f6978;font-size:10px;font-weight:700}
+    .reassurance span{display:inline-flex;align-items:center;gap:5px}
+    .reassurance span:before{content:"✓";color:#7a51dc;font-weight:900}
+
+    .payment-screen{display:none;padding-top:4px}
+    .payment-screen.is-visible{display:block;animation:fadeUp .28s ease both}
+    .offer.is-hidden{display:none}
+    .payment-shell{
+      width:min(100%,430px);margin:24px auto 0;padding:24px 18px 18px;border-radius:30px;
+      background:linear-gradient(180deg,rgba(24,22,31,.96),rgba(11,11,15,.98));
+      box-shadow:0 26px 72px rgba(0,0,0,.32),0 0 0 1px rgba(255,255,255,.04) inset;
+      color:#fff;text-align:center
+    }
+    .payment-kicker{display:inline-flex;align-items:center;gap:7px;color:#ffabca;font-size:10px;font-weight:850;letter-spacing:.12em;text-transform:uppercase}
+    .payment-kicker:before{content:"";width:7px;height:7px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--mint));box-shadow:0 0 14px rgba(255,79,141,.42)}
+    .payment-screen h1{margin-top:12px;color:#fff}
+    .payment-screen h1 span{background:linear-gradient(90deg,#ff76a5,#ffc0d4 42%,#d3ff8a)}
+    .selected-price{margin:16px 0 18px;font-size:48px;font-weight:820;letter-spacing:-.045em;color:#fff;text-shadow:0 0 26px rgba(255,79,141,.18)}
+    .selected-price small{font-size:18px}
+    .payment-methods{display:block;margin-top:10px;text-align:center}
+    .payment-cta{width:100%;min-height:56px;border:0;border-radius:17px;background:linear-gradient(90deg,var(--violet),var(--pink) 52%,var(--coral));color:#fff;font-size:15px;font-weight:900;box-shadow:0 16px 34px rgba(173,68,220,.22)}
+    .secure{margin:16px 0 0;color:rgba(255,255,255,.62);font-size:10px}
+    .terms{margin:16px auto 0;color:rgba(255,255,255,.62);font-size:10px;text-decoration:underline}
+    .footer{margin-top:30px;padding-top:14px;border-top:1px solid rgba(109,94,136,.14);color:#8c8593;font-size:10px;text-align:center}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+    @media(max-width:480px){
+      .page{padding:16px 14px 24px}
+      .offer h1,.payment-screen h1{font-size:38px}
+      .hero-visual{margin-top:22px;border-radius:28px}
+      .chart{top:52px;height:186px}
+      .sale-badge{top:86px;width:100px;height:144px}
+      .price-card{bottom:86px;width:88%}
+      .price{font-size:32px}
+      .payment-shell{padding:22px 14px 16px;border-radius:26px}
+      .selected-price{font-size:44px}
+      .reassurance{gap:10px;font-size:9px}
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <a class="logo" href="index.html" aria-label="fari home"><img src="assets/fari-logo-symbol.png" alt="fari"></a>
+      <button class="close" id="closeBtn" type="button" aria-label="Close">×</button>
+    </header>
+
+    <section class="offer" id="offerScreen">
+      <div class="eyebrow">Your preview is ready</div>
+      <h1>Make the final<br><span>video feel alive.</span></h1>
+      <p class="offer-copy">Create the finished fari video with motion, timing, and emotion that is ready to share in one tap.</p>
+
+      <div class="hero-visual" aria-hidden="true">
+        <div class="topline"><span>Normal fee</span><span>Back to normal</span></div>
+        <div class="chart">
+          <svg viewBox="0 0 430 200" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#ff9a2f"/>
+                <stop offset="45%" stop-color="#ff5e93"/>
+                <stop offset="100%" stop-color="#c84cff"/>
+              </linearGradient>
+            </defs>
+            <path d="M0,68 C80,68 86,68 112,68 L145,68 L185,155 L215,171 L245,155 L286,68 L430,68" fill="none" stroke="url(#lineGrad)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="112" cy="68" r="8" fill="#ff9a2f"/>
+            <circle cx="215" cy="171" r="10" fill="#d94cff"/>
+            <circle cx="286" cy="68" r="8" fill="#ff9a2f"/>
+          </svg>
+        </div>
+        <div class="sale-badge"><strong>SALE</strong></div>
+        <div class="price-card">
+          <div class="label">Lowest price now</div>
+          <div class="price"><small>$</small>9.90</div>
+          <div class="price-sub">One finished emotional video · HD export</div>
+        </div>
+      </div>
+
+      <div class="countdown">
+        <div class="countdown-label">Time is limited</div>
+        <div class="timer" aria-label="Countdown">
+          <span class="box"><span class="num">08</span><span class="unit">DAYS</span></span>
+          <span class="colon">:</span>
+          <span class="box"><span class="num">24</span><span class="unit">HOURS</span></span>
+          <span class="colon">:</span>
+          <span class="box"><span class="num">56</span><span class="unit">MIN</span></span>
+        </div>
+      </div>
+
+      <button class="buy-button" id="buyButton" type="button">Create video</button>
+      <p class="microcopy">No account required.</p>
+      <div class="reassurance"><span>Personalized</span><span>Fast generation</span><span>Share-ready</span></div>
+    </section>
+
+    <section class="payment-screen" id="paymentScreen" aria-live="polite">
+      <div class="eyebrow">Complete your video</div>
+      <div class="payment-shell">
+        <div class="payment-kicker">Video generation</div>
+        <h1>Unlock the final<br><span>HD video.</span></h1>
+        <p class="payment-copy">Your final video starts generating now.</p>
+        <div class="selected-price"><small>$</small>9.90</div>
+        <div class="payment-methods is-single" aria-label="One-time payment">
+          <button class="payment-cta" id="completePaymentBtn" type="button">Create video</button>
+        </div>
+        <p class="secure">Final video generation begins automatically</p>
+        <div class="terms"><a href="ui/terms.html">Terms</a> · <a href="ui/privacy.html">Privacy Policy</a> · <a href="ui/refund.html">Refund Policy</a></div>
+      </div>
+    </section>
+
+    <footer class="footer"><a href="ui/contact.html">Contact &amp; Support</a></footer>
+  </main>
+  <script>
+    const offerScreen=document.querySelector("#offerScreen");
+    const paymentScreen=document.querySelector("#paymentScreen");
+    document.querySelector("#buyButton").addEventListener("click",()=>{
+      offerScreen.classList.add("is-hidden");
+      paymentScreen.classList.add("is-visible");
+      window.scrollTo({top:0,behavior:"smooth"});
+    });
+    document.querySelector("#closeBtn").addEventListener("click",()=>{location.href="templates.html"});
+    document.querySelector("#completePaymentBtn").addEventListener("click",()=>{
+      localStorage.setItem("fariLastPurchase","one-time");
+      window.fariTrack?.("purchase", { value: 9.9, currency: "USD", method: "one-time" });
+      location.href="templates.html";
+    });
+  </script>
+</body>
+</html>

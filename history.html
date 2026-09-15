@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>fari | History</title>
+  <style>
+    :root{--bg:#08090d;--ink:#f7f6f8;--muted:#9a98a2;--pink:#ec2464;--line:rgba(255,255,255,.14);--max:1940px;--font:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    *{box-sizing:border-box}
+    html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);letter-spacing:0}
+    body{min-width:320px;min-height:100vh}
+    a{color:inherit;text-decoration:none}
+    button{font:inherit;color:inherit;cursor:pointer}
+    img{display:block;max-width:100%}
+    .nav{position:fixed;z-index:20;inset:0 0 auto;height:74px;background:linear-gradient(180deg,rgba(8,9,13,.72),transparent);backdrop-filter:blur(10px)}
+    .nav-inner{width:min(calc(100% - 56px),var(--max));height:100%;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:28px}
+    .brand{display:block;width:74px;height:40px;overflow:hidden}
+    .brand img{width:100%;height:100%;object-fit:contain}
+    .links{display:flex;align-items:center;gap:30px;margin-left:auto;font-size:14px;font-weight:700}
+    .links a{padding:6px 0;color:#f1eef4;opacity:.9}
+    .links .active{color:var(--pink);border-bottom:3px solid var(--pink)}
+    main{width:min(calc(100% - 56px),var(--max));margin:0 auto;padding:106px 0 128px}
+    .hero{display:flex;align-items:end;justify-content:space-between;gap:28px;margin-bottom:28px}
+    .hero h1{margin:0;font-size:clamp(38px,6vw,92px);line-height:.92;letter-spacing:-.06em;white-space:nowrap}
+    .hero p{max-width:440px;margin:0;color:var(--muted);font-size:15px;line-height:1.6}
+    .gallery{width:100%;column-count:4;column-gap:22px}
+    .history-card{display:inline-block;width:100%;margin:0 0 22px;break-inside:avoid}
+    .thumb{position:relative;display:block;overflow:hidden;aspect-ratio:var(--ratio,1.42);border:1px solid var(--line);border-radius:18px;background:#15161b;box-shadow:0 18px 42px rgba(0,0,0,.24)}
+    .thumb:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 56%,rgba(8,9,13,.76))}
+    .thumb img{width:100%;height:100%;object-fit:cover}
+    .badge{position:absolute;z-index:1;left:12px;top:12px;padding:7px 10px;border-radius:999px;background:rgba(0,0,0,.44);color:#fff;font-size:10px;font-weight:850;text-transform:uppercase;letter-spacing:.08em;backdrop-filter:blur(12px)}
+    .play{position:absolute;z-index:1;left:50%;top:50%;width:54px;height:54px;display:grid;place-items:center;border-radius:50%;background:rgba(255,255,255,.22);color:white;font-size:19px;transform:translate(-50%,-50%);backdrop-filter:blur(8px)}
+    .label{display:block;min-height:24px;margin:12px 6px 0;color:#fff;font-size:17px;font-weight:760;line-height:1.12}
+    .meta{display:block;min-height:34px;margin:5px 6px 0;color:var(--muted);font-size:13px;line-height:1.35}
+    .empty{padding:42px;border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.04);text-align:center}
+    .empty h2{margin:0;font-size:28px;letter-spacing:-.04em}
+    .empty p{margin:10px auto 22px;max-width:420px;color:var(--muted);line-height:1.55}
+    .button{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 22px;border:0;border-radius:16px;background:#fff;color:#111;font-weight:850}
+    @media(max-width:1100px){.gallery{column-count:2}.hero{align-items:start;flex-direction:column}}
+    @media(max-width:700px){.nav-inner,main{width:calc(100% - 28px)}.nav{height:64px}.brand{width:64px;height:34px}.links{gap:14px;font-size:12px}.links a{white-space:nowrap}main{padding:86px 0 60px}.hero{margin-bottom:20px}.hero h1{font-size:clamp(34px,10vw,44px)}.gallery{column-count:2;column-gap:12px}.history-card{margin-bottom:14px}.thumb{border-radius:12px;aspect-ratio:1.28}.label{min-height:18px;margin:7px 3px 0;font-size:12px;line-height:1.15}.meta{min-height:24px;margin:3px 3px 0;font-size:10px;line-height:1.25}.play{width:34px;height:34px;font-size:11px}}
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="index.html" aria-label="fari home"><img src="assets/fari-logo-symbol.png" alt="fari"></a>
+      <nav class="links" aria-label="Main navigation">
+        <a href="index.html#how">How it works</a>
+        <a href="template-gallery.html">Templates</a>
+        <a class="active" href="history.html">History</a>
+      </nav>
+    </div>
+  </header>
+  <main>
+    <section class="hero">
+      <h1>Creation history</h1>
+      <p>Your generated videos and previews appear here after you sign in or connect a social account.</p>
+    </section>
+    <section class="gallery" id="historyGrid" aria-label="Creation history"></section>
+  </main>
+  <script>
+    const fallback = [
+      { title:"Birthday", kind:"video", image:"assets/template-gallery/fari 模板缩略图 - Feliz aniversário.png", createdAt:new Date().toISOString() },
+      { title:"Mother's Day", kind:"preview", image:"assets/template-gallery/fari 模板缩略图 - Dia das Mães.png", createdAt:new Date(Date.now() - 86400000).toISOString() },
+      { title:"Graduation", kind:"video", image:"assets/template-gallery/fari 模板缩略图 - Formatura.png", createdAt:new Date(Date.now() - 172800000).toISOString() }
+    ];
+    const grid = document.querySelector("#historyGrid");
+    let records = [];
+    try { records = JSON.parse(localStorage.getItem("fariGeneratedHistory") || "[]"); } catch {}
+    const items = records.length ? records : fallback;
+    const ratios = ["1.18","1.52","1.12","1.63","1.26","1.44"];
+    grid.innerHTML = items.length ? items.map((item, index) => `
+      <article class="history-card" style="--ratio:${ratios[index % ratios.length]}">
+        <span class="thumb">
+          <img src="${item.image}" alt="${item.title}">
+          <span class="badge">${item.kind || "video"}</span>
+          <span class="play">▶</span>
+        </span>
+        <span class="label">${item.title || "Generated video"}</span>
+        <span class="meta">${formatDate(item.createdAt)} · Ready to reopen</span>
+      </article>
+    `).join("") : `
+      <div class="empty">
+        <h2>No saved creations yet</h2>
+        <p>Generate a video, then save your creation history after download or sharing.</p>
+        <a class="button" href="template-gallery.html">Choose a template</a>
+      </div>
+    `;
+    function formatDate(value) {
+      const date = value ? new Date(value) : new Date();
+      return date.toLocaleDateString(undefined, { month:"short", day:"numeric", year:"numeric" });
+    }
+  </script>
+</body>
+</html>
