@@ -353,7 +353,7 @@
     .watermark-badge span{display:block;color:#fff;font-size:10px;font-weight:850;letter-spacing:.08em;text-transform:uppercase}
     .watermark-badge.is-hidden{display:none}
     .sheet-layer#shareSheet .sheet{max-height:calc(100vh - 32px);overflow:auto}
-    .toast{position:absolute;z-index:12;left:50%;bottom:96px;display:none;max-width:calc(100% - 40px);padding:11px 14px;border-radius:999px;background:rgba(10,10,12,.78);color:#fff;font-size:12px;font-weight:800;transform:translateX(-50%);backdrop-filter:blur(16px)}
+    .toast{position:fixed;z-index:12;left:50%;top:50%;display:none;max-width:calc(100% - 40px);padding:11px 14px;border-radius:999px;background:rgba(10,10,12,.78);color:#fff;font-size:12px;font-weight:800;transform:translate(-50%,-50%);backdrop-filter:blur(16px)}
     .toast.show{display:block;animation:toast .22s ease both}
     #assetInput{display:none}
     @media(max-width:900px){
@@ -513,7 +513,7 @@
     @keyframes miniSpin{to{transform:scale(1) rotate(360deg)}}
     @keyframes progress{0%{transform:translateX(-115%);width:35%}55%{width:70%}100%{transform:translateX(285%);width:35%}}
     @keyframes pulse{0%,100%{color:#8e8791}45%{color:#fff}}
-    @keyframes toast{from{opacity:0;transform:translate(-50%,8px)}to{opacity:1;transform:translate(-50%,0)}}
+    @keyframes toast{from{opacity:0;transform:translate(-50%,calc(-50% + 8px))}to{opacity:1;transform:translate(-50%,-50%)}}
 
     /* Keep the preview and its upload controls within the available screen. */
     .stage{height:100dvh;box-sizing:border-box;padding:82px 16px 12px}
@@ -1105,6 +1105,27 @@
       }
     }
 
+    async function downloadCurrentVideo() {
+      const source = videoPlayer.src || videoImage.src || resultImage.src;
+      if (!source) return false;
+      try {
+        const blob = await (await fetch(source)).blob();
+        const extension = getFileExtension(source) || "mp4";
+        const url = URL.createObjectURL(blob);
+        const anchor = document.createElement("a");
+        anchor.href = url;
+        anchor.download = `fari-video.${extension}`;
+        document.body.appendChild(anchor);
+        anchor.click();
+        anchor.remove();
+        URL.revokeObjectURL(url);
+        markVideoBaixared();
+        return true;
+      } catch {
+        return false;
+      }
+    }
+
     async function copyCompartilharCaption(content = shareCopyFor(selectedCompartilharPlatform)) {
       return copyText(`${content.caption}\n${window.location.href}`);
     }
@@ -1151,8 +1172,13 @@
       try {
         const content = shareCopyFor(normalizeCompartilharPlatform(platform));
         const copied = await copyCompartilharCaption(content).catch(() => false);
-        showToast(copied ? `${content.channel} caption copied` : "Caption ready");
-        window.setTimeout(() => openPublisher(content), 180);
+        let downloaded = downloadCompleted;
+        if (videoReady && !downloaded) downloaded = await downloadCurrentVideo();
+        const ready = [];
+        if (copied) ready.push("Caption copied");
+        if (videoReady && downloaded) ready.push("Video downloaded");
+        showToast(ready.length ? `${ready.join(" · ")} — opening ${content.channel}` : `Opening ${content.channel}`);
+        window.setTimeout(() => openPublisher(content), 1500);
       } finally {
         shareBusy = false;
       }
