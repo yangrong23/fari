@@ -109,6 +109,25 @@
     .result-head p{margin:4px 0 0;color:var(--muted);font-size:11px;line-height:1.45}
     .download{display:none;margin-top:12px;min-height:48px;border:0;border-radius:16px;background:#fff;color:#111;font-weight:900;place-items:center}
     .download.show{display:grid}
+    .share{display:none;margin-top:10px;min-height:48px;border:0;border-radius:16px;background:linear-gradient(90deg,#8a63ff,var(--pink) 52%,var(--coral));color:#fff;font-weight:900;place-items:center;box-shadow:0 12px 28px rgba(173,68,220,.22)}
+    .share.show{display:grid}
+    .fari-paywall{position:fixed;inset:0;z-index:9999;display:none;place-items:center;padding:18px;background:rgba(5,5,7,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+    .fari-paywall.show{display:grid}
+    .fari-paywall .pw-card{position:relative;width:min(100%,440px);max-height:92vh;overflow:auto;border-radius:28px;padding:28px 22px 22px;text-align:center;background:linear-gradient(180deg,#17151f,#0d0d12);color:#fff;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+    .fari-paywall .pw-close{position:absolute;top:12px;right:12px;width:34px;height:34px;border:0;border-radius:999px;background:rgba(255,255,255,.08);color:#fff;font-size:24px;font-weight:300;line-height:1}
+    .fari-paywall .pw-eyebrow{display:inline-flex;align-items:center;gap:7px;color:#ff9bbc;font-size:11px;font-weight:850;letter-spacing:.12em;text-transform:uppercase}
+    .fari-paywall .pw-eyebrow:before{content:"";width:7px;height:7px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--coral))}
+    .fari-paywall h2{margin:14px 0 0;font-size:clamp(32px,7vw,46px);line-height:.96;letter-spacing:-.06em}
+    .fari-paywall h2 span{display:block;background:linear-gradient(90deg,var(--pink),#ff9ab7 48%,var(--coral));-webkit-background-clip:text;background-clip:text;color:transparent}
+    .fari-paywall .pw-copy{max-width:380px;margin:14px auto 0;color:var(--muted);font-size:14px;line-height:1.56}
+    .fari-paywall .pw-price{margin:22px auto 6px;display:grid;justify-items:center;gap:4px}
+    .fari-paywall .pw-original{color:#8b8395;font-size:15px;text-decoration:line-through}
+    .fari-paywall .pw-now .amt{font-size:48px;font-weight:820;letter-spacing:-.045em;color:#fff}
+    .fari-paywall .pw-now .amt small{font-size:18px}
+    .fari-paywall .pw-save{color:#bff36a;font-size:12px;font-weight:850}
+    .fari-paywall .pw-cta{width:100%;min-height:56px;margin:18px 0 0;border:0;border-radius:17px;background:linear-gradient(90deg,#8a63ff,var(--pink) 52%,var(--coral));color:#fff;font-size:16px;font-weight:900;box-shadow:0 16px 34px rgba(173,68,220,.22);transition:filter .2s}
+    .fari-paywall .pw-cta:hover{filter:brightness(1.03)}
+    .fari-paywall .pw-micro{margin:12px 0 0;color:#8b8395;font-size:10px}
     .source-video{display:block;width:100%;max-height:320px;margin-top:10px;border:1px solid rgba(255,255,255,.1);border-radius:18px;background:#000}
     .edit-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
     .edit-grid label{margin-top:0}
@@ -153,7 +172,7 @@
       <div class="template-library-head">
         <div>
           <h2>Template prompts and source videos</h2>
-          <p>Pick a template, load the prompt, and generate with your uploaded selfie or portrait. A template reference image is added automatically to improve reproduction fidelity.</p>
+          <p>Pick a template, upload a female single-person front-facing photo, and generate.</p>
         </div>
         <div class="template-active">
           <span>Active template</span>
@@ -378,6 +397,7 @@
             <div class="log" id="mainLog">Submit the main video task to start generating.</div>
             <div class="preview"><video id="mainVideoPreview" controls playsinline></video></div>
             <a class="download" id="mainDownloadLink" href="#" download>Download video</a>
+            <button class="share" id="mainShareBtn" type="button">Share video</button>
           </div>
         </section>
         <section class="card panel result-card-shell">
@@ -394,6 +414,7 @@
             <div class="log" id="customLog">Upload at least one reference image, then click Generate another video.</div>
             <div class="preview"><video id="customVideoPreview" controls playsinline></video></div>
             <a class="download" id="customDownloadLink" href="#" download>Download video</a>
+            <button class="share" id="customShareBtn" type="button">Share video</button>
           </div>
         </section>
         <section class="card panel result-card-shell">
@@ -410,11 +431,29 @@
             <div class="log" id="editLog">Submit the edit task to start generating.</div>
             <div class="preview"><video id="editVideoPreview" controls playsinline></video></div>
             <a class="download" id="editDownloadLink" href="#" download>Download video</a>
+            <button class="share" id="editShareBtn" type="button">Share video</button>
           </div>
         </section>
       </aside>
     </section>
   </main>
+
+  <!-- Paywall overlay: shown at the final download/share step -->
+  <div class="fari-paywall" id="fariPaywall" role="dialog" aria-modal="true" aria-label="Unlock your video">
+    <div class="pw-card">
+      <button class="pw-close" id="pwClose" type="button" aria-label="Close">×</button>
+      <div class="pw-eyebrow">Your video is ready</div>
+      <h2>Unlock the final<br><span>HD video.</span></h2>
+      <p class="pw-copy">Create the finished fari video with motion, timing, and emotion that is ready to share in one tap.</p>
+      <div class="pw-price">
+        <div class="pw-original">原价 $19.90</div>
+        <div class="pw-now"><span class="amt"><small>$</small>9.90</span></div>
+        <div class="pw-save">现在只需 · 限时特惠</div>
+      </div>
+      <button class="pw-cta" id="pwCta" type="button">Create video</button>
+      <p class="pw-micro">No account required. Final video starts now.</p>
+    </div>
+  </div>
 
   <script>
     const form = document.querySelector("#videoForm");
@@ -469,18 +508,21 @@
     const mainLoader = document.querySelector("#mainLoader");
     const mainVideoPreview = document.querySelector("#mainVideoPreview");
     const mainDownloadLink = document.querySelector("#mainDownloadLink");
+    const mainShareBtn = document.querySelector("#mainShareBtn");
     const customStatusPill = document.querySelector("#customStatusPill");
     const customTaskIdEl = document.querySelector("#customTaskId");
     const customLogEl = document.querySelector("#customLog");
     const customLoader = document.querySelector("#customLoader");
     const customVideoPreview = document.querySelector("#customVideoPreview");
     const customDownloadLink = document.querySelector("#customDownloadLink");
+    const customShareBtn = document.querySelector("#customShareBtn");
     const editStatusPill = document.querySelector("#editStatusPill");
     const editTaskIdEl = document.querySelector("#editTaskId");
     const editLogEl = document.querySelector("#editLog");
     const editLoader = document.querySelector("#editLoader");
     const editVideoPreview = document.querySelector("#editVideoPreview");
     const editDownloadLink = document.querySelector("#editDownloadLink");
+    const editShareBtn = document.querySelector("#editShareBtn");
     const editForm = document.querySelector("#editForm");
     const editVideoInput = document.querySelector("#editVideoInput");
     const editVideoState = document.querySelector("#editVideoState");
@@ -524,7 +566,7 @@
     const savedEditFrames = [];
     const customUploadedAssets = { reference: [], firstFrame: null, lastFrame: null };
     let customAssetMode = "reference";
-    const promptBase = "Use the user's uploaded portrait as the only identity reference. Preserve the exact face, hairstyle, skin tone, age impression, body proportions, and expression across every shot. Do not use the template preview image as the person's identity. Keep the result photorealistic, vertical 9:16, crisp, and suitable for short-form social video. If you include a reference inset, it should be the user's photo in the lower-left corner with a small curved transformation arrow. Avoid cartoon styling, warped hands, distorted text, duplicate limbs, fake logos, and unstable facial features.";
+    const promptBase = "Use the uploaded photo — a female single-person front-facing portrait — as the only identity reference. Keep the same face, hair, and skin tone across every shot. Do not use the template preview as the person's identity. Photorealistic, vertical 9:16, no cartoon, warped hands, or distorted faces.";
     const templateData = [
       { id: "01", title: "Brazil Football Motion", file: "01-brazil-football-motion.mp4", preview: "previews/01-brazil-football-motion.jpg", reference: "previews/01-brazil-football-motion.jpg", prompt: `${promptBase} Scene 1: the subject starts as a calm portrait, then the frame blooms into a packed Brazil football stadium with green-yellow lighting, fluttering flags, crowd bokeh, and a rising sense of anticipation. Scene 2: the outfit shifts into a Brazil supporter jersey with cloth motion, scarf movement, and subtle wind. Scene 3: the subject steps forward with a confident celebratory pose while stadium lights sweep behind them and confetti drifts through the air. Scene 4: end on a hero-style fan shot with strong contrast, cinematic depth, and high energy.` },
       { id: "02", title: "Brazil Fan Cheer", file: "02-brazil-fan-cheer.mp4", preview: "previews/02-brazil-fan-cheer.jpg", reference: "previews/02-brazil-fan-cheer.jpg", prompt: `${promptBase} Build a cheer moment that feels like a real Brazil match celebration. Start with the subject looking directly at camera, then transition into a crowded stadium reaction with raised arms, painted cheeks, bright flags, and handheld crowd motion. Keep the face locked and natural while the background becomes louder, brighter, and more alive. Add confetti, camera shake, and a final triumphant pose that feels like a creator-made celebratory reel.` },
@@ -546,7 +588,7 @@
     ];
     let selectedTemplateId = templateData[0].id;
 
-    function createResultState({ pill, taskId, log, loader, video, download }) {
+    function createResultState({ pill, taskId, log, loader, video, download, share }) {
       return {
         setStatus(status, message) {
           pill.textContent = status;
@@ -558,6 +600,7 @@
           download.classList.remove("show");
           loader.classList.remove("show");
           download.removeAttribute("href");
+          share?.classList.remove("show");
         },
         begin(submittingText, message) {
           loader.classList.add("show");
@@ -572,6 +615,7 @@
           video.src = url;
           download.href = url;
           download.classList.add("show");
+          share?.classList.add("show");
           this.setStatus("Succeeded", message);
         },
         fail(message) {
@@ -587,7 +631,8 @@
       log: mainLogEl,
       loader: mainLoader,
       video: mainVideoPreview,
-      download: mainDownloadLink
+      download: mainDownloadLink,
+      share: mainShareBtn
     });
     const imageResult = {
       setStatus(status, message) {
@@ -634,7 +679,8 @@
       log: customLogEl,
       loader: customLoader,
       video: customVideoPreview,
-      download: customDownloadLink
+      download: customDownloadLink,
+      share: customShareBtn
     });
     const editResult = createResultState({
       pill: editStatusPill,
@@ -642,7 +688,8 @@
       log: editLogEl,
       loader: editLoader,
       video: editVideoPreview,
-      download: editDownloadLink
+      download: editDownloadLink,
+      share: editShareBtn
     });
 
     const templateGrid = document.querySelector("#templateGrid");
@@ -695,7 +742,7 @@
       removeTemplateReferenceAssets();
       ensureTemplateReference(template);
       activeTemplateName.textContent = template.title;
-      activeTemplateHint.textContent = "Upload your own portrait reference image. Template preview is style guidance only.";
+      activeTemplateHint.textContent = "Upload a female single-person front-facing photo. Template preview is style only.";
       document.querySelectorAll(".template-card").forEach(card => {
         card.classList.toggle("active", card.dataset.templateId === templateId);
       });
@@ -709,7 +756,7 @@
       const media = [];
       const userReferences = uploadedAssets.reference.filter(asset => asset.kind !== "template");
       if (!userReferences.length) {
-        throw new Error("Upload your own portrait reference image before generating. The template preview is style guidance only.");
+        throw new Error("Upload a female single-person front-facing photo before generating.");
       }
       for (const asset of uploadedAssets.reference) {
         const currentUrl = String(asset.url || "").trim();
@@ -1985,6 +2032,52 @@
     clearBtn.addEventListener("click", () => {
       clearVideoTool();
     });
+
+    // ---- Paywall + share: gate the final download/share step ----
+    (function () {
+      const paywall = document.querySelector("#fariPaywall");
+      const pwClose = document.querySelector("#pwClose");
+      const pwCta = document.querySelector("#pwCta");
+      let pendingShare = null;
+
+      function isPaid() { return localStorage.getItem("fariPaid") === "1"; }
+      function openPaywall(ctx) { pendingShare = ctx; paywall.classList.add("show"); }
+      function closePaywall() { paywall.classList.remove("show"); pendingShare = null; }
+
+      pwClose.addEventListener("click", closePaywall);
+      paywall.addEventListener("click", e => { if (e.target === paywall) closePaywall(); });
+      document.addEventListener("keydown", e => { if (e.key === "Escape" && paywall.classList.contains("show")) closePaywall(); });
+
+      pwCta.addEventListener("click", () => {
+        localStorage.setItem("fariPaid", "1");
+        try { window.fariTrack?.("purchase", { value: 9.9, currency: "USD", method: "one-time" }); } catch (_) {}
+        const ctx = pendingShare;
+        closePaywall();
+        if (ctx) runShare(ctx);
+      });
+
+      function runShare(ctx) {
+        if (!ctx || !ctx.url || ctx.url === "#") return;
+        if (navigator.share) {
+          navigator.share({ title: ctx.title || "fari video", url: ctx.url }).catch(() => {});
+        } else if (navigator.clipboard) {
+          navigator.clipboard.writeText(ctx.url).then(() => alert("Video link copied.")).catch(() => alert(ctx.url));
+        } else {
+          alert(ctx.url);
+        }
+      }
+
+      // Connect the share buttons in the three result cards to the paywall.
+      mainShareBtn.addEventListener("click", () => window.fariShare(mainDownloadLink.href, "fari video"));
+      customShareBtn.addEventListener("click", () => window.fariShare(customDownloadLink.href, "fari video"));
+      editShareBtn.addEventListener("click", () => window.fariShare(editDownloadLink.href, "fari video"));
+
+      window.fariShare = function (url, title) {
+        if (!url || url === "#") return;
+        if (isPaid()) { runShare({ url, title }); return; }
+        openPaywall({ url, title });
+      };
+    })();
   </script>
 </body>
 </html>

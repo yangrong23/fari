@@ -46,9 +46,9 @@ window.FARI_TEMPLATES = [
   },
   {
     "title": "Niver na Piscina IA",
-    "requirement": "Upload a single-person photo",
+    "requirement": "上传单人女生正面照",
     "uploadLabels": [
-      "Upload a single-person photo"
+      "上传单人女生正面照"
     ],
     "image": "assets/production-templates/posters/niver-piscina.jpg",
     "video": "assets/production-templates/niver-piscina.mp4",
@@ -57,9 +57,9 @@ window.FARI_TEMPLATES = [
   },
   {
     "title": "Meu Namorado IA",
-    "requirement": "Upload a single-person photo",
+    "requirement": "上传单人女生正面照",
     "uploadLabels": [
-      "Upload a single-person photo"
+      "上传单人女生正面照"
     ],
     "image": "assets/production-templates/posters/meu-namorado.jpg",
     "video": "assets/production-templates/meu-namorado.mp4",
@@ -68,9 +68,9 @@ window.FARI_TEMPLATES = [
   },
   {
     "title": "Cena de Cinema IA",
-    "requirement": "Upload a single-person photo",
+    "requirement": "上传单人女生正面照",
     "uploadLabels": [
-      "Upload a single-person photo"
+      "上传单人女生正面照"
     ],
     "image": "assets/production-templates/posters/cena-cinema.jpg",
     "video": "assets/production-templates/cena-cinema.mp4",
@@ -79,9 +79,9 @@ window.FARI_TEMPLATES = [
   },
   {
     "title": "De Pequena pra Hoje IA",
-    "requirement": "Upload a single-person photo",
+    "requirement": "上传单人女生正面照",
     "uploadLabels": [
-      "Upload a single-person photo"
+      "上传单人女生正面照"
     ],
     "image": "assets/production-templates/posters/de-pequena.jpg",
     "video": "assets/production-templates/de-pequena.mp4",
@@ -90,9 +90,9 @@ window.FARI_TEMPLATES = [
   },
   {
     "title": "Giro de Craque IA",
-    "requirement": "Upload a single-person photo",
+    "requirement": "上传单人女生正面照",
     "uploadLabels": [
-      "Upload a single-person photo"
+      "上传单人女生正面照"
     ],
     "image": "assets/production-templates/posters/giro-craque.jpg",
     "video": "assets/production-templates/giro-craque.mp4",
@@ -101,9 +101,9 @@ window.FARI_TEMPLATES = [
   },
   {
     "title": "Dança da Torcida IA",
-    "requirement": "Upload a single-person photo",
+    "requirement": "上传单人女生正面照",
     "uploadLabels": [
-      "Upload a single-person photo"
+      "上传单人女生正面照"
     ],
     "image": "assets/production-templates/posters/danca-torcida.jpg",
     "video": "assets/production-templates/danca-torcida.mp4",

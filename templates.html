@@ -142,6 +142,9 @@
     .payment-nav{position:absolute;z-index:3;top:0;left:0;right:0;height:74px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;border-bottom:1px solid rgba(255,255,255,.1);background:rgba(5,5,8,.42);backdrop-filter:blur(18px)}
     .payment-nav .brand img{width:74px;height:40px;object-fit:contain}
     .payment-nav-links{display:flex;align-items:center;gap:28px;color:rgba(255,255,255,.82);font-size:13px;font-weight:750}
+    .payment-nav-right{display:flex;align-items:center;gap:22px}
+    .payment-close{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border:1px solid rgba(255,255,255,.2);border-radius:999px;background:rgba(255,255,255,.07);color:#fff;font-size:22px;font-weight:300;line-height:1;cursor:pointer;transition:background .18s ease,border-color .18s ease}
+    .payment-close:hover{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.42)}
     .payment-content{position:relative;z-index:2;width:min(100% - 32px,540px);margin:auto;text-align:center}
     .payment-step{display:none}
     .payment-step.is-visible{display:block;animation:fadeUp .28s ease both}
@@ -161,6 +164,15 @@
     .purchase-note{margin:8px auto 0;max-width:230px;color:#756d7d;font-size:12px;font-weight:650;line-height:1.45}
     .purchase-cta{position:relative;display:block;width:min(100%,410px);min-height:58px;margin:0 auto;border:0;border-radius:18px;background:linear-gradient(100deg,#ff913b,#ff5f91 50%,#dc3df0);color:#fff;font-size:16px;font-weight:900;box-shadow:0 16px 32px rgba(255,45,111,.28)}
     .purchase-terms{position:relative;z-index:1;margin:14px 0 0;color:#766e7c;font-size:10px;text-decoration:underline}
+    .original-price{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:8px;margin:6px 0 0;color:#9a92a6;font-size:15px;font-weight:800;letter-spacing:.02em}
+    .original-price s{text-decoration:line-through;text-decoration-color:#e2436b;text-decoration-thickness:2px}
+    .fari-countdown{position:relative;z-index:1;width:min(100%,350px);margin:6px auto 0;padding:13px 16px 12px;border-radius:18px;background:linear-gradient(180deg,rgba(255,236,243,.97),rgba(255,222,234,.97));box-shadow:0 12px 28px rgba(255,60,110,.18),0 0 0 1px rgba(255,255,255,.7) inset}
+    .fari-countdown-label{display:flex;align-items:center;justify-content:center;gap:7px;color:#e6316b;font-size:11px;font-weight:850;letter-spacing:.06em;text-transform:uppercase}
+    .fari-flash{display:inline-block;color:#ff7a3b;animation:fariFlash 1s ease-in-out infinite}
+    @keyframes fariFlash{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.28);opacity:.65}}
+    .fari-countdown-time{margin:3px 0 0;font-size:36px;font-weight:900;line-height:1;color:#1f1a24;font-variant-numeric:tabular-nums;letter-spacing:.04em;text-align:center}
+    .fari-countdown-bar{position:relative;height:6px;margin-top:10px;border-radius:999px;background:rgba(255,255,255,.65);overflow:hidden}
+    .fari-countdown-bar span{position:absolute;inset:0 auto 0 0;width:100%;border-radius:999px;background:linear-gradient(90deg,#ff3f81,#ff913b);transition:width 1s linear}
     .payment-methods-wrap{padding:26px 20px 20px;border:1px solid rgba(255,255,255,.62);border-radius:28px;background:linear-gradient(180deg,rgba(246,242,255,.98),rgba(238,230,251,.98));box-shadow:0 24px 62px rgba(0,0,0,.28),0 0 0 1px rgba(255,255,255,.7) inset;backdrop-filter:blur(24px)}
     .payment-kicker{display:inline-flex;align-items:center;justify-content:center;gap:8px;margin-bottom:12px;color:#a132d0;font-size:10px;font-weight:850;letter-spacing:.12em;text-transform:uppercase}
     .payment-kicker:before{content:"";width:7px;height:7px;border-radius:50%;background:linear-gradient(135deg,var(--pink),#d74cff);box-shadow:0 0 12px rgba(255,45,111,.36)}
@@ -390,6 +402,8 @@
       .payment-nav{height:62px;padding:0 16px}
       .payment-nav .brand img{width:58px;height:32px}
       .payment-nav-links{gap:12px;font-size:11px}
+      .payment-nav-right{gap:14px}
+      .payment-close{width:34px;height:34px;font-size:20px}
       .payment-content{width:calc(100% - 28px)}
       .purchase-card{padding:22px 16px 18px;border-radius:22px;background:linear-gradient(180deg,rgba(245,239,255,.98),rgba(238,228,251,.98))}
       .purchase-card h2{font-size:27px}
@@ -603,11 +617,11 @@
                     <div class="grab"></div>
                     <div class="exit-card">
                       <div class="exit-visual" aria-hidden="true"><img src="assets/fari-logo-symbol.png" alt=""></div>
-                      <h3 id="exitTitle">Are you sure you want to quit?</h3>
-                      <p id="exitCopy">Leaving now will discard your uploaded photo and any preview that has not been saved.</p>
+                      <h3 id="exitTitle">确定要退出吗？</h3>
+                      <p id="exitCopy">现在离开将丢弃您上传的照片和未保存的预览。</p>
                       <div class="exit-actions">
-                        <button class="primary" id="stayBtn" type="button">Stay</button>
-                        <button class="secondary" id="exitBtn" type="button">Exit</button>
+                        <button class="primary" id="stayBtn" type="button">留在页面</button>
+                        <button class="secondary" id="exitBtn" type="button">继续退出</button>
                       </div>
                     </div>
                   </div>
@@ -633,7 +647,7 @@
             <button class="selected-card" id="selectPhoto2" type="button" aria-describedby="photoGuidance" hidden><span class="selected-thumb"><span class="plus">+</span></span><span class="selected-text"><strong id="selectedTitle2">2 · Upload photo</strong><span id="selectedHint2"></span></span></button><span class="slot-description" id="slotDescription2"></span>
             </div>
             <p class="two-upload-summary" id="twoUploadSummary">Upload two pet photos</p>
-            <p class="photo-guidance" id="photoGuidance">Use uma foto de frente, com o rosto da pessoa ou do pet inteiro, nítido e em destaque. Evite fotos de perfil, rostos cortados ou muito pequenos.</p>
+            <p class="photo-guidance" id="photoGuidance">请用正面照，脸清晰完整；避免侧脸或太小。</p>
             <p class="hint" id="hint" role="status"></p>
           </aside>
         </div>
@@ -658,22 +672,33 @@
             <div class="payment-sheet-overlay"></div>
             <header class="payment-nav">
               <a class="brand" href="index.html" aria-label="fari home"><img src="assets/fari-logo-symbol.png" alt="fari"></a>
-              <nav class="payment-nav-links" aria-label="Navigation">
-                <a href="template-gallery.html">Modelos</a>
-                <a href="index.html#how">How it works</a>
-              </nav>
+              <div class="payment-nav-right">
+                <nav class="payment-nav-links" aria-label="Navigation">
+                  <a href="template-gallery.html">模板</a>
+                  <a href="index.html#how">使用方式</a>
+                </nav>
+                <button class="payment-close" id="paymentExitBtn" type="button" aria-label="退出">×</button>
+              </div>
             </header>
             <div class="payment-content">
               <div class="payment-step is-visible" id="purchaseStep">
                 <div class="purchase-card">
-                <h2>Unlock the final<br><span>HD video.</span></h2>
-                <div class="price-offer">
-                  <strong>HD final video</strong>
-                  <div class="purchase-price"><small>$</small>9.90</div>
-                  <p class="purchase-note">Music, no watermark, and a share-ready video they will want to keep.</p>
+                <div class="purchase-topline"><span class="purchase-badge">限时特惠</span></div>
+                <h2>解锁高清成片<br><span>下载 · 分享 · 无水印</span></h2>
+                <p class="purchase-copy">您的专属视频已生成完成，立即解锁即可下载与分享高清成片。</p>
+                <div class="fari-countdown" id="fariCountdown">
+                  <div class="fari-countdown-label"><span class="fari-flash">⚡</span> 优惠倒计时</div>
+                  <div class="fari-countdown-time" id="fariCountdownTime">15:00</div>
+                  <div class="fari-countdown-bar"><span id="fariCountdownFill"></span></div>
                 </div>
-                <button class="purchase-cta" id="completePaymentBtn" type="button">Create video</button>
-                <p class="purchase-terms"><a href="ui/terms.html">Terms</a> · <a href="ui/privacy.html">Privacy Policy</a> · <a href="ui/refund.html">Refund Policy</a></p>
+                <div class="price-offer">
+                  <strong>HD 高清成片</strong>
+                  <div class="original-price"><span>原价</span> <s>$19.90</s></div>
+                  <div class="purchase-price"><small>$</small>9.90</div>
+                  <p class="purchase-note">现在下单立省 $10 · 含音乐、无水印、可分享</p>
+                </div>
+                <button class="purchase-cta" id="completePaymentBtn" type="button">立即解锁下载与分享</button>
+                <p class="purchase-terms"><a href="ui/terms.html">条款</a> · <a href="ui/privacy.html">隐私政策</a> · <a href="ui/refund.html">退款政策</a></p>
               </div>
               </div>
             </div>
@@ -1264,17 +1289,17 @@
       const exitTitle = document.querySelector("#exitTitle");
       const exitCopy = document.querySelector("#exitCopy");
       if (generationInProgress) {
-        exitTitle.textContent = "Generation is still running";
-        exitCopy.textContent = "Generation is still running. Closing this page now may interrupt your creation.";
+        exitTitle.textContent = "生成仍在进行中";
+        exitCopy.textContent = "视频仍在生成，现在关闭页面可能会中断您的创作。";
       } else if (videoReady && !downloadCompleted) {
-        exitTitle.textContent = "Baixar before you leave?";
-        exitCopy.textContent = "Your video is ready but has not been downloaded yet. Leaving now may make it harder to recover.";
+        exitTitle.textContent = "离开前先下载吗？";
+        exitCopy.textContent = "您的视频已生成但尚未下载，现在离开可能难以找回。";
       } else if (videoReady) {
-        exitTitle.textContent = "Leave this video?";
-        exitCopy.textContent = "Your finished video is still here. Stay to download, share, or create another version.";
+        exitTitle.textContent = "要离开这个视频吗？";
+        exitCopy.textContent = "您的成片还在，可继续下载、分享或重新生成。";
       } else {
-        exitTitle.textContent = "Are you sure you want to quit?";
-        exitCopy.textContent = "Leaving now will discard your uploaded photo and any preview that has not been saved.";
+        exitTitle.textContent = "确定要退出吗？";
+        exitCopy.textContent = "现在离开将丢弃您上传的照片和未保存的预览。";
       }
       closeSheets();
       openSheet("exitConfirm");
@@ -1365,6 +1390,10 @@
         startVideoGeneration();
         return;
       }
+      if (action === "download") {
+        openSheet("downloadPermission");
+        return;
+      }
       openSheet("share");
     }
 
@@ -1435,24 +1464,69 @@
       finally { uploadLoading = false; }
     });
 
+    let fariCountdownTimer = null;
+    let fariDeadline = 0;
+    const FARI_COUNTDOWN_TOTAL = 15 * 60 * 1000;
+    function startFariCountdown() {
+      stopFariCountdown();
+      const now = Date.now();
+      if (!fariDeadline || fariDeadline <= now) fariDeadline = now + FARI_COUNTDOWN_TOTAL;
+      const render = () => {
+        const remaining = Math.max(0, fariDeadline - Date.now());
+        const totalSec = Math.ceil(remaining / 1000);
+        const m = String(Math.floor(totalSec / 60)).padStart(2, "0");
+        const s = String(totalSec % 60).padStart(2, "0");
+        const timeEl = document.querySelector("#fariCountdownTime");
+        const fillEl = document.querySelector("#fariCountdownFill");
+        if (timeEl) timeEl.textContent = `${m}:${s}`;
+        if (fillEl) fillEl.style.width = `${(remaining / FARI_COUNTDOWN_TOTAL) * 100}%`;
+        if (remaining <= 0) { stopFariCountdown(); if (timeEl) timeEl.textContent = "00:00"; }
+      };
+      render();
+      fariCountdownTimer = setInterval(render, 1000);
+    }
+    function stopFariCountdown() {
+      if (fariCountdownTimer) { clearInterval(fariCountdownTimer); fariCountdownTimer = null; }
+    }
+    function openPaywall() {
+      openSheet("payment");
+      startFariCountdown();
+    }
+
+    let exitingFromPaywall = false;
+    function requestPaywallExit() {
+      exitingFromPaywall = true;
+      const exitTitleEl = document.querySelector("#exitTitle");
+      const exitCopyEl = document.querySelector("#exitCopy");
+      if (exitTitleEl) exitTitleEl.textContent = "确定要离开吗？";
+      if (exitCopyEl) exitCopyEl.textContent = "离开后，您上传的照片和已生成的视频将不会保存。";
+      openSheet("exitConfirm");
+    }
+
     function completeOneTimePayment() {
       paid = true;
+      stopFariCountdown();
       localStorage.setItem("fariLastPurchase", "one-time");
       window.fariTrack?.("purchase", { value: 9.9, currency: "USD", method: "one-time" });
-      showToast("Video generation started");
+      showToast("已解锁，正在为您准备下载与分享");
       completeUnlockedAction(pendingUnlock || "video");
     }
 
     document.querySelector("#completePaymentBtn").addEventListener("click", completeOneTimePayment);
+    document.querySelector("#paymentExitBtn").addEventListener("click", requestPaywallExit);
 
     document.querySelector("#continueVideoBtn").addEventListener("click", () => {
       startVideoGeneration();
     });
     document.querySelector("#shareBtn").addEventListener("click", () => {
+      if (!paid) { pendingUnlock = "share"; openPaywall(); return; }
       syncCompartilharSheet();
       unlock("share");
     });
-    downloadBtn.addEventListener("click", () => openSheet("downloadPermission"));
+    downloadBtn.addEventListener("click", () => {
+      if (!paid) { pendingUnlock = "download"; openPaywall(); return; }
+      openSheet("downloadPermission");
+    });
     document.querySelector("#allowBaixarBtn").addEventListener("click", async () => {
       closeSheets();
       await saveCurrentVideo();
@@ -1507,16 +1581,33 @@
       event.preventDefault();
       requestExit();
     });
-    document.querySelector("#stayBtn").addEventListener("click", () => closeNamedSheet("exitConfirmSheet"));
+    document.querySelector("#stayBtn").addEventListener("click", () => {
+      if (exitingFromPaywall) {
+        exitingFromPaywall = false;
+        openPaywall();
+        return;
+      }
+      closeNamedSheet("exitConfirmSheet");
+    });
     document.querySelector("#exitBtn").addEventListener("click", () => {
       hasUnsavedUpload = false;
       generationInProgress = false;
+      exitingFromPaywall = false;
       window.location.href = "template-gallery.html";
     });
 
     function closeNamedSheet(id) {
       if (id === "videoSheet" && videoReady) {
         requestExit();
+        return;
+      }
+      if (id === "paymentSheet") {
+        requestPaywallExit();
+        return;
+      }
+      if (id === "exitConfirmSheet" && exitingFromPaywall) {
+        exitingFromPaywall = false;
+        openPaywall();
         return;
       }
       const target = document.querySelector(`#${id}`);
