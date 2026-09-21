@@ -1573,6 +1573,7 @@
     }
 
     document.querySelector("#shareTopBtn").addEventListener("click", () => {
+      if (videoReady && !paid) { pendingUnlock = "share"; openPaywall(); return; }
       syncCompartilharSheet();
       openSheet("share");
     });
