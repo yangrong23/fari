@@ -1634,11 +1634,11 @@
       if (openId) closeNamedSheet(openId);
     });
 
-    // Mock-data entry point (?mock=1): auto-fills mock photos and runs the simulated
-    // generation flow. Generation itself is already simulated (setTimeout + mock images),
-    // so this only bypasses the file-upload step to exercise generate -> share -> paywall.
-    (function setupMockFlow() {
-      if (new URLSearchParams(location.search).get("mock") !== "1") return;
+    // Prototype auto-simulation: this site is a pure prototype — generation and payment
+    // are fully simulated (setTimeout + mock images, no backend). On every template load
+    // we auto-fill mock photos and start the simulated image generation, so the
+    // generate -> share -> paywall flow runs from the normal URL without a real upload.
+    (function setupPrototypeSimulation() {
       scene.uploadLabels.forEach((_, i) => {
         uploadedPhotos[i] = { url: scene.image, name: "mock-" + (i + 1) + ".jpg" };
       });
