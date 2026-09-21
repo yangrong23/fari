@@ -114,7 +114,7 @@
     .plus:after{width:3px;height:18px}
     .selected-thumb.has-image .plus{display:none}
     .selected-text{min-width:0}
-    .selected-text strong{display:block;font-size:15px;line-height:1.15;font-weight:850}
+    .selected-text strong{display:block;font-size:16px;line-height:1.2;font-weight:850;letter-spacing:-.01em}
     .selected-text span{display:block;margin-top:3px;color:rgba(255,255,255,.82);font-size:12px;line-height:1.35}
     .hint{margin:12px 0 0;color:#cbc5cf;font-size:12px;text-align:center}
     .sheet-layer{position:absolute;z-index:8;inset:0;display:none;align-items:end;background:rgba(0,0,0,.54)}
@@ -635,19 +635,18 @@
               <p>Upload anonymously, preview the feeling, then choose how to bring it to life.</p>
             </div>
             <div class="upload-slot">
-            <button class="selected-card" id="selectPhoto" type="button" aria-describedby="photoGuidance">
+            <button class="selected-card" id="selectPhoto" type="button">
               <span class="selected-thumb" id="selectedThumb"><span class="plus">+</span><img id="selectedImage" alt="Selected upload"></span>
               <span class="selected-text">
-                <strong id="selectedTitle">Envie uma foto de uma única pessoa</strong>
+                <strong id="selectedTitle">上传照片，来生成你的专属视频</strong>
                 <span id="selectedHint"></span>
               </span>
             </button><span class="slot-description" id="slotDescription1"></span>
             </div>
             <div class="upload-slot">
-            <button class="selected-card" id="selectPhoto2" type="button" aria-describedby="photoGuidance" hidden><span class="selected-thumb"><span class="plus">+</span></span><span class="selected-text"><strong id="selectedTitle2">2 · Upload photo</strong><span id="selectedHint2"></span></span></button><span class="slot-description" id="slotDescription2"></span>
+            <button class="selected-card" id="selectPhoto2" type="button" hidden><span class="selected-thumb"><span class="plus">+</span></span><span class="selected-text"><strong id="selectedTitle2">2 · 上传第二张照片</strong><span id="selectedHint2"></span></span></button><span class="slot-description" id="slotDescription2"></span>
             </div>
-            <p class="two-upload-summary" id="twoUploadSummary">Upload two pet photos</p>
-            <p class="photo-guidance" id="photoGuidance">请用正面照，脸清晰完整；避免侧脸或太小。</p>
+            <p class="two-upload-summary" id="twoUploadSummary">上传两张照片</p>
             <p class="hint" id="hint" role="status"></p>
           </aside>
         </div>
@@ -901,7 +900,7 @@
         title.textContent = label;
         button.setAttribute('aria-label', label);
         if (description) description.textContent = label;
-        copy.textContent = uploadedPhotos[i] ? `${uploadedPhotos[i].name} · Toque para trocar` : "";
+        copy.textContent = uploadedPhotos[i] ? `${uploadedPhotos[i].name} · 点击替换` : "";
         const thumb = button.querySelector('.selected-thumb');
         let img = thumb.querySelector('img');
         if (!img) { img = document.createElement('img'); img.alt = 'Selected pet photo'; thumb.append(img); }
@@ -910,7 +909,7 @@
         else img.removeAttribute('src');
       });
       const summary = document.querySelector('#twoUploadSummary');
-      if (summary) summary.textContent = scene.title === 'Dupla Chef Pet IA' ? 'Upload two pet photos' : 'Upload two photos';
+      if (summary) summary.textContent = scene.title === 'Dupla Chef Pet IA' ? '上传两张宠物照' : '上传两张照片';
     }
     renderUploadSlots();
     const shareContext = buildCompartilharContext();
@@ -1203,8 +1202,8 @@
     function setUploadLoading(active) {
       uploadLoading = active;
       selectPhoto.classList.toggle("is-loading", active);
-      selectedTitle.textContent = active ? "Preparando imagem" : selectedUrl ? "Image selected" : scene.requirement;
-      selectedHint.textContent = active ? "Lendo sua foto..." : selectedUrl ? selectedName : "Choose the photo format shown in this template to start a preview.";
+      selectedTitle.textContent = active ? "正在准备图片" : selectedUrl ? "已选择图片" : scene.requirement;
+      selectedHint.textContent = active ? "正在读取照片…" : selectedUrl ? selectedName : "按模板要求上传照片，即可生成预览。";
       hint.textContent = active ? "Preparing your image for preview..." : hint.textContent;
     }
 
@@ -1349,7 +1348,7 @@
         generationInProgress = false;
         videoReady = true;
         rememberPendingVideo(finalUrl);
-        hint.textContent = "Final video is ready. Baixar it before leaving this page.";
+        hint.textContent = "";
         openSheet("video");
       }, 4200);
     }
@@ -1380,11 +1379,11 @@
       selectedThumb.classList.remove("has-image");
       selectPhoto.classList.remove("is-loading");
       uploadLoading = false;
-      selectedTitle.textContent = scene.requirement;
+      selectedTitle.textContent = scene.uploadLabels[0];
       selectedHint.textContent = "";
       templateImage.src = scene.image;
       templateImage.style.objectPosition = scene.position;
-      hint.textContent = `${scene.requirement} Preview the feeling before creating the final video.`;
+      hint.textContent = "先预览效果，满意后再生成最终视频。";
       assetInput.value = "";
       paid = false;
       pendingUnlock = "";

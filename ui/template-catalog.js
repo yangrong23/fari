@@ -1,9 +1,9 @@
 window.FARI_TEMPLATES = [
   {
     "title": "Da Barriga pra Vida IA",
-    "requirement": "Upload a parent-and-child photo",
+    "requirement": "上传亲子合照，来生成你的专属视频",
     "uploadLabels": [
-      "Upload a parent-and-child photo"
+      "上传亲子合照，来生成你的专属视频"
     ],
     "image": "assets/production-templates/posters/da-barriga.jpg",
     "video": "assets/production-templates/da-barriga.mp4",
@@ -12,10 +12,10 @@ window.FARI_TEMPLATES = [
   },
   {
     "title": "Dupla Chef Pet IA",
-    "requirement": "Upload two pet photos",
+    "requirement": "上传两张宠物照，来生成你的专属视频",
     "uploadLabels": [
-      "1. Upload a pet photo",
-      "2. Upload another pet photo"
+      "上传第一张宠物照，来生成你的专属视频",
+      "上传第二张宠物照"
     ],
     "image": "assets/production-templates/posters/dupla-chef-pet.jpg",
     "video": "assets/production-templates/dupla-chef-pet.mp4",
@@ -24,9 +24,9 @@ window.FARI_TEMPLATES = [
   },
   {
     "title": "Nosso Bebê do Futuro IA",
-    "requirement": "Upload a couple photo",
+    "requirement": "上传情侣合照，来生成你的专属视频",
     "uploadLabels": [
-      "Upload a couple photo"
+      "上传情侣合照，来生成你的专属视频"
     ],
     "image": "assets/production-templates/posters/nosso-bebe.jpg",
     "video": "assets/production-templates/nosso-bebe.mp4",
@@ -35,9 +35,9 @@ window.FARI_TEMPLATES = [
   },
   {
     "title": "Pet Motoqueiro IA",
-    "requirement": "Upload a pet photo",
+    "requirement": "上传宠物照，来生成你的专属视频",
     "uploadLabels": [
-      "Upload a pet photo"
+      "上传宠物照，来生成你的专属视频"
     ],
     "image": "assets/production-templates/posters/pet-motoqueiro.jpg",
     "video": "assets/production-templates/pet-motoqueiro.mp4",
@@ -46,9 +46,9 @@ window.FARI_TEMPLATES = [
   },
   {
     "title": "Niver na Piscina IA",
-    "requirement": "上传单人女生正面照",
+    "requirement": "上传单人女生正面照，来生成你的专属视频",
     "uploadLabels": [
-      "上传单人女生正面照"
+      "上传单人女生正面照，来生成你的专属视频"
     ],
     "image": "assets/production-templates/posters/niver-piscina.jpg",
     "video": "assets/production-templates/niver-piscina.mp4",
@@ -57,9 +57,9 @@ window.FARI_TEMPLATES = [
   },
   {
     "title": "Meu Namorado IA",
-    "requirement": "上传单人女生正面照",
+    "requirement": "上传单人女生正面照，来生成你的专属视频",
     "uploadLabels": [
-      "上传单人女生正面照"
+      "上传单人女生正面照，来生成你的专属视频"
     ],
     "image": "assets/production-templates/posters/meu-namorado.jpg",
     "video": "assets/production-templates/meu-namorado.mp4",
@@ -68,9 +68,9 @@ window.FARI_TEMPLATES = [
   },
   {
     "title": "Cena de Cinema IA",
-    "requirement": "上传单人女生正面照",
+    "requirement": "上传单人女生正面照，来生成你的专属视频",
     "uploadLabels": [
-      "上传单人女生正面照"
+      "上传单人女生正面照，来生成你的专属视频"
     ],
     "image": "assets/production-templates/posters/cena-cinema.jpg",
     "video": "assets/production-templates/cena-cinema.mp4",
@@ -79,9 +79,9 @@ window.FARI_TEMPLATES = [
   },
   {
     "title": "De Pequena pra Hoje IA",
-    "requirement": "上传单人女生正面照",
+    "requirement": "上传单人女生正面照，来生成你的专属视频",
     "uploadLabels": [
-      "上传单人女生正面照"
+      "上传单人女生正面照，来生成你的专属视频"
     ],
     "image": "assets/production-templates/posters/de-pequena.jpg",
     "video": "assets/production-templates/de-pequena.mp4",
@@ -90,9 +90,9 @@ window.FARI_TEMPLATES = [
   },
   {
     "title": "Giro de Craque IA",
-    "requirement": "上传单人女生正面照",
+    "requirement": "上传单人女生正面照，来生成你的专属视频",
     "uploadLabels": [
-      "上传单人女生正面照"
+      "上传单人女生正面照，来生成你的专属视频"
     ],
     "image": "assets/production-templates/posters/giro-craque.jpg",
     "video": "assets/production-templates/giro-craque.mp4",
@@ -101,9 +101,9 @@ window.FARI_TEMPLATES = [
   },
   {
     "title": "Dança da Torcida IA",
-    "requirement": "上传单人女生正面照",
+    "requirement": "上传单人女生正面照，来生成你的专属视频",
     "uploadLabels": [
-      "上传单人女生正面照"
+      "上传单人女生正面照，来生成你的专属视频"
     ],
     "image": "assets/production-templates/posters/danca-torcida.jpg",
     "video": "assets/production-templates/danca-torcida.mp4",
