@@ -1268,6 +1268,8 @@
       }
       const exitTitle = document.querySelector("#exitTitle");
       const exitCopy = document.querySelector("#exitCopy");
+      const exitBtnEl = document.querySelector("#exitBtn");
+      if (exitBtnEl) exitBtnEl.textContent = "继续退出";
       if (generationInProgress) {
         exitTitle.textContent = "生成仍在进行中";
         exitCopy.textContent = "视频仍在生成，现在关闭页面可能会中断您的创作。";
@@ -1478,8 +1480,10 @@
       exitingFromPaywall = true;
       const exitTitleEl = document.querySelector("#exitTitle");
       const exitCopyEl = document.querySelector("#exitCopy");
-      if (exitTitleEl) exitTitleEl.textContent = "确定要离开吗？";
-      if (exitCopyEl) exitCopyEl.textContent = "离开后，您上传的照片和已生成的视频将不会保存。";
+      const exitBtnEl = document.querySelector("#exitBtn");
+      if (exitTitleEl) exitTitleEl.textContent = "确定关闭付费窗口？";
+      if (exitCopyEl) exitCopyEl.textContent = "关闭后将返回视频页面，您的视频仍可继续查看。解锁后即可下载与分享。";
+      if (exitBtnEl) exitBtnEl.textContent = "返回视频";
       openSheet("exitConfirm");
     }
 
@@ -1571,9 +1575,14 @@
       closeNamedSheet("exitConfirmSheet");
     });
     document.querySelector("#exitBtn").addEventListener("click", () => {
+      if (exitingFromPaywall) {
+        exitingFromPaywall = false;
+        closeSheets();
+        if (videoReady) openSheet("video");
+        return;
+      }
       hasUnsavedUpload = false;
       generationInProgress = false;
-      exitingFromPaywall = false;
       window.location.href = "template-gallery.html";
     });
 
