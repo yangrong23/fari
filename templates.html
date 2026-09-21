@@ -916,7 +916,7 @@
         else img.removeAttribute('src');
       });
       const summary = document.querySelector('#twoUploadSummary');
-      if (summary) summary.textContent = scene.title === 'Dupla Chef Pet IA' ? '上传两张宠物照' : '上传两张照片';
+      if (summary) summary.textContent = scene.requirement;
     }
     renderUploadSlots();
     const shareContext = buildCompartilharContext();
