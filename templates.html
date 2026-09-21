@@ -1461,11 +1461,22 @@
     pageBg.style.backgroundImage = `url("${scene.image}")`;
     setCompartilharPlatform(selectedCompartilharPlatform);
 
+    function applyPhotoToSlot(slot, url, name) {
+      if (uploadedPhotos[slot]) URL.revokeObjectURL(uploadedPhotos[slot].url);
+      uploadedPhotos[slot] = { url, name };
+      selectedUrl = uploadedPhotos[0]?.url || '';
+      selectedName = uploadedPhotos[0]?.name || '';
+      hasUnsavedUpload = true;
+      renderUploadSlots();
+      if (uploadedPhotos.every(Boolean)) { closeSheets(); startImageGeneration(); }
+      else hint.textContent = 'Upload the other pet photo to create your preview.';
+    }
     function choosePhoto(slot) {
       if (uploadLoading || generationInProgress) return;
       activeUploadSlot = slot;
-      assetInput.value = '';
-      assetInput.click();
+      // Prototype simulation: skip the real file picker and fill a mock photo,
+      // so the generate -> share -> paywall flow works without a real upload.
+      applyPhotoToSlot(slot, scene.image, 'mock-' + (slot + 1) + '.jpg');
     }
     selectPhoto.addEventListener('click', () => choosePhoto(0));
     selectPhoto2.addEventListener('click', () => choosePhoto(1));
@@ -1681,20 +1692,6 @@
       const openId = getOpenSheetId();
       if (openId) closeNamedSheet(openId);
     });
-
-    // Prototype auto-simulation: this site is a pure prototype — generation and payment
-    // are fully simulated (setTimeout + mock images, no backend). On every template load
-    // we auto-fill mock photos and start the simulated image generation, so the
-    // generate -> share -> paywall flow runs from the normal URL without a real upload.
-    (function setupPrototypeSimulation() {
-      scene.uploadLabels.forEach((_, i) => {
-        uploadedPhotos[i] = { url: scene.image, name: "mock-" + (i + 1) + ".jpg" };
-      });
-      selectedUrl = uploadedPhotos[0] ? uploadedPhotos[0].url : "";
-      selectedName = uploadedPhotos[0] ? uploadedPhotos[0].name : "";
-      renderUploadSlots();
-      window.setTimeout(startImageGeneration, 500);
-    })();
   </script>
 </body>
 </html>
