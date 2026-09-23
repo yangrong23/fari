@@ -1,6 +1,7 @@
 window.FARI_TEMPLATES = [
   {
     "title": "Da Barriga pra Vida IA",
+    "teaser": "🇧🇷 Veja você grávida AI ❤️",
     "requirement": "上传亲子合照，来生成你的专属视频",
     "uploadLabels": [
       "上传亲子合照，来生成你的专属视频"
@@ -12,6 +13,7 @@ window.FARI_TEMPLATES = [
   },
   {
     "title": "Dupla Chef Pet IA",
+    "teaser": "🇧🇷 Veja seus pets como chefs AI ❤️",
     "requirement": "上传两张宠物照，来生成你的专属视频",
     "uploadLabels": [
       "上传第一张宠物照，来生成你的专属视频",
@@ -24,6 +26,7 @@ window.FARI_TEMPLATES = [
   },
   {
     "title": "Nosso Bebê do Futuro IA",
+    "teaser": "🇧🇷 Veja seu bebê do futuro AI ❤️",
     "requirement": "上传情侣合照，来生成你的专属视频",
     "uploadLabels": [
       "上传情侣合照，来生成你的专属视频"
@@ -35,6 +38,7 @@ window.FARI_TEMPLATES = [
   },
   {
     "title": "Pet Motoqueiro IA",
+    "teaser": "🇧🇷 Veja seu pet motoqueiro AI ❤️",
     "requirement": "上传宠物照，来生成你的专属视频",
     "uploadLabels": [
       "上传宠物照，来生成你的专属视频"
@@ -46,6 +50,7 @@ window.FARI_TEMPLATES = [
   },
   {
     "title": "Niver na Piscina IA",
+    "teaser": "🇧🇷 Veja você na piscina AI ❤️",
     "requirement": "上传单人女生正面照，来生成你的专属视频",
     "uploadLabels": [
       "上传单人女生正面照，来生成你的专属视频"
@@ -57,6 +62,7 @@ window.FARI_TEMPLATES = [
   },
   {
     "title": "Meu Namorado IA",
+    "teaser": "🇧🇷 Veja você com seu namorado AI ❤️",
     "requirement": "上传单人女生正面照，来生成你的专属视频",
     "uploadLabels": [
       "上传单人女生正面照，来生成你的专属视频"
@@ -68,6 +74,7 @@ window.FARI_TEMPLATES = [
   },
   {
     "title": "Cena de Cinema IA",
+    "teaser": "🇧🇷 Veja você em cena de cinema AI ❤️",
     "requirement": "上传单人女生正面照，来生成你的专属视频",
     "uploadLabels": [
       "上传单人女生正面照，来生成你的专属视频"
@@ -79,6 +86,7 @@ window.FARI_TEMPLATES = [
   },
   {
     "title": "De Pequena pra Hoje IA",
+    "teaser": "🇧🇷 Veja você crescida AI ❤️",
     "requirement": "上传单人女生正面照，来生成你的专属视频",
     "uploadLabels": [
       "上传单人女生正面照，来生成你的专属视频"
@@ -90,6 +98,7 @@ window.FARI_TEMPLATES = [
   },
   {
     "title": "Giro de Craque IA",
+    "teaser": "🇧🇷 Veja você craque AI ❤️",
     "requirement": "上传单人女生正面照，来生成你的专属视频",
     "uploadLabels": [
       "上传单人女生正面照，来生成你的专属视频"
@@ -101,6 +110,7 @@ window.FARI_TEMPLATES = [
   },
   {
     "title": "Dança da Torcida IA",
+    "teaser": "🇧🇷 Veja você na dança da torcida AI ❤️",
     "requirement": "上传单人女生正面照，来生成你的专属视频",
     "uploadLabels": [
       "上传单人女生正面照，来生成你的专属视频"

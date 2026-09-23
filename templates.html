@@ -117,9 +117,9 @@
     .selected-text strong{display:block;font-size:16px;line-height:1.2;font-weight:850;letter-spacing:-.01em}
     .selected-text span{display:block;margin-top:3px;color:rgba(255,255,255,.82);font-size:12px;line-height:1.35}
     .hint{margin:12px 0 0;color:#cbc5cf;font-size:12px;text-align:center}
-    .upload-privacy{margin:6px 0 0;text-align:center;font-size:11px;font-weight:600;color:rgba(255,255,255,.7)}
-    .upload-privacy a{color:inherit;text-decoration:underline}
-    .control-panel.two-uploads .upload-privacy{flex-basis:100%;width:100%}
+    .upload-meta{margin:6px 0 0;text-align:center;font-size:11px;font-weight:600;color:rgba(255,255,255,.7)}
+    .upload-meta a{color:inherit;text-decoration:underline}
+    .control-panel.two-uploads .upload-meta{flex-basis:100%;width:100%}
     .sheet-layer{position:absolute;z-index:8;inset:0;display:none;align-items:end;background:rgba(0,0,0,.54)}
     .sheet-layer.open{display:flex;animation:fadeIn .18s ease both}
     .sheet{width:100%;padding:18px 16px 18px;border:1px solid rgba(255,255,255,.12);border-bottom:0;border-radius:28px 28px 0 0;background:linear-gradient(180deg,rgba(17,17,23,.96),rgba(8,8,12,.96));color:#fff;box-shadow:0 -22px 50px rgba(0,0,0,.42);animation:sheetIn .25s ease both}
@@ -661,7 +661,7 @@
             </div>
             <p class="two-upload-summary" id="twoUploadSummary">上传两张照片</p>
             <p class="hint" id="hint" role="status"></p>
-            <p class="upload-privacy"><a href="ui/privacy.html">隐私政策</a></p>
+            <p class="upload-meta">高清效果 • Prévia grátis • <a href="ui/privacy.html">隐私政策</a></p>
           </aside>
         </div>
 
@@ -930,9 +930,9 @@
       scene.uploadLabels.forEach((label, i) => {
         const [button, title, copy] = controls[i];
         const description = document.querySelector(`#slotDescription${i + 1}`);
-        title.textContent = label;
-        button.setAttribute('aria-label', label);
-        if (description) description.textContent = label;
+        title.textContent = scene.teaser;
+        button.setAttribute('aria-label', scene.teaser);
+        if (description) description.textContent = scene.teaser;
         copy.textContent = uploadedPhotos[i] ? `${uploadedPhotos[i].name} · 点击替换` : "";
         const thumb = button.querySelector('.selected-thumb');
         let img = thumb.querySelector('img');
@@ -942,7 +942,7 @@
         else img.removeAttribute('src');
       });
       const summary = document.querySelector('#twoUploadSummary');
-      if (summary) summary.textContent = scene.requirement;
+      if (summary) summary.textContent = scene.teaser;
     }
     renderUploadSlots();
     const shareContext = buildCompartilharContext();
@@ -1253,7 +1253,7 @@
       hasUnsavedUpload = true;
       selectedImage.src = url;
       selectedThumb.classList.add("has-image");
-      selectedTitle.textContent = "Image selected";
+      selectedTitle.textContent = scene.teaser;
       selectedHint.textContent = name;
       hint.textContent = "Creating your personalized preview...";
     }
@@ -1261,7 +1261,7 @@
     function setUploadLoading(active) {
       uploadLoading = active;
       selectPhoto.classList.toggle("is-loading", active);
-      selectedTitle.textContent = active ? "正在准备图片" : selectedUrl ? "已选择图片" : scene.requirement;
+      selectedTitle.textContent = active ? "正在准备图片" : selectedUrl ? "已选择图片" : scene.teaser;
       selectedHint.textContent = active ? "正在读取照片…" : selectedUrl ? selectedName : "按模板要求上传照片，即可生成预览。";
       hint.textContent = active ? "Preparing your image for preview..." : hint.textContent;
     }
@@ -1440,7 +1440,7 @@
       selectedThumb.classList.remove("has-image");
       selectPhoto.classList.remove("is-loading");
       uploadLoading = false;
-      selectedTitle.textContent = scene.uploadLabels[0];
+      selectedTitle.textContent = scene.teaser;
       selectedHint.textContent = "";
       templateImage.src = scene.image;
       templateImage.style.objectPosition = scene.position;
