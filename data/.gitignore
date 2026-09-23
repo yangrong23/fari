@@ -1,0 +1,4 @@
+# dados reais de destinatários e logs — nunca commitar
+invites.csv
+suppressed.csv
+invite-log.json

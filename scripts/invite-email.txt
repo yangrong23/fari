@@ -1,0 +1,25 @@
+fari · convite pioneiro 🇧🇷
+
+Você é dos primeiros.
+
+Olá{{NAME}},
+obrigado por se cadastrar no fari. Você está entre os primeiros — e isso tem vantagens.
+
+O fari transforma uma foto em um vídeo curto de IA para os seus momentos: aniversário, casal, pet, gravidez. Em segundos, você vê o resultado.
+
+Queremos convidar você para ser um usuário pioneiro — antes de todo mundo.
+
+• Prévia grátis — veja o seu vídeo antes de decidir
+• Acesso antecipado a novos templates
+• Preço de fundador (tarifa de lançamento fixa)
+• Voz direta — você diz o que quer ver no fari
+
+🔒 Upload anônimo. A sua foto é usada só para gerar o seu vídeo e é apagada em 24h. Nunca vendida, nunca compartilhada.
+
+Comece agora:
+{{SITE_URL}}/templates.html
+
+— Equipe fari · Medrix AI
+Rm 903D, 9/F, Cameron Commercial Centre, 458-468 Hennessy Road, Causeway Bay, Hong Kong
+
+Não quer receber mais? Responda este e-mail com "cancelar".
