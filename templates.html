@@ -29,6 +29,7 @@
     .page-bg:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 34%,rgba(255,45,111,.08),transparent 38%),#050507}
     .page-bg:after{content:"";position:absolute;inset:0;background:rgba(0,0,0,.26);backdrop-filter:blur(22px)}
     .shell{min-height:100vh;display:grid;grid-template-rows:auto 1fr}
+    .shell:not(.is-active){display:none}
     .nav{position:fixed;z-index:20;inset:0 0 auto;height:74px;background:transparent}
     .nav-inner{height:100%;display:flex;align-items:center;justify-content:space-between}
     .logo{display:block;width:74px;height:40px;overflow:hidden}
@@ -120,6 +121,7 @@
     .upload-meta{margin:6px 0 0;text-align:center;font-size:11px;font-weight:600;color:rgba(255,255,255,.7)}
     .upload-meta a{color:inherit;text-decoration:underline}
     .control-panel.two-uploads .upload-meta{flex-basis:100%;width:100%}
+    .control-panel.two-uploads > .hint{display:none}
     .upload-trust{margin:4px 0 0;text-align:center;font-size:11px;font-weight:600;color:rgba(255,255,255,.62);line-height:1.4}
     .control-panel.two-uploads .upload-trust{flex-basis:100%;width:100%}
     .sheet-layer{position:absolute;z-index:8;inset:0;display:none;align-items:end;background:rgba(0,0,0,.54)}
@@ -382,9 +384,94 @@
     .sheet-layer#shareSheet .sheet{max-height:calc(100vh - 32px);overflow:auto}
     .toast{position:fixed;z-index:12;left:50%;top:50%;display:none;max-width:calc(100% - 40px);padding:11px 14px;border-radius:999px;background:rgba(10,10,12,.78);color:#fff;font-size:12px;font-weight:800;transform:translate(-50%,-50%);backdrop-filter:blur(16px)}
     .toast.show{display:block;animation:toast .22s ease both}
-    #assetInput{display:none}
+    #assetInput{position:fixed;left:-10000px;top:0;width:1px;height:1px;opacity:0;pointer-events:none}
+    .tiktok-landing{position:fixed;z-index:30;inset:0;overflow:auto;background:#0b0b0d;color:#f8f3f5}
+    .tiktok-landing.is-hidden{display:none}
+    .tiktok-landing.is-flow-hidden{display:none!important}
+    .tiktok-landing:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 12% 8%,rgba(240,77,134,.18),transparent 30%),radial-gradient(circle at 88% 24%,rgba(255,205,148,.1),transparent 24%),#0b0b0d}
+    .tiktok-landing-inner{position:relative;z-index:1;width:min(1080px,calc(100% - 36px));min-height:100%;margin:0 auto}
+    .tiktok-topbar{display:flex;align-items:center;justify-content:space-between;padding:22px 0 12px}
+    .tiktok-brand{display:inline-flex;align-items:center;color:#fff;text-decoration:none}
+    .tiktok-brand-mark{display:block;width:74px;height:40px;object-fit:contain;filter:drop-shadow(0 5px 12px rgba(0,0,0,.28))}
+    .tiktok-note{display:inline-flex;align-items:center;gap:8px;padding:8px 11px;border:1px solid rgba(255,255,255,.14);border-radius:999px;background:rgba(255,255,255,.04);color:#ded4d8;font-size:11px}
+    .tiktok-note:before{content:"";width:7px;height:7px;border-radius:50%;background:#79d6b4;box-shadow:0 0 0 4px rgba(121,214,180,.12)}
+    .tiktok-hero{display:grid;grid-template-columns:minmax(0,.92fr) minmax(360px,.78fr);align-items:center;gap:clamp(35px,7vw,92px);padding:47px 0 64px}
+    .tiktok-kicker{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid rgba(255,122,167,.33);border-radius:999px;background:rgba(240,77,134,.11);color:#ffc1d4;font-size:11px;font-weight:850}
+    .tiktok-kicker svg{width:13px;height:13px;fill:currentColor}
+    .tiktok-copy h1{max-width:600px;margin:18px 0 16px;font-family:Georgia,"Times New Roman",serif;font-size:clamp(46px,6.5vw,76px);font-weight:500;line-height:.97;letter-spacing:-.06em}
+    .tiktok-copy h1 em{color:#ff7aa7;font-style:normal}
+    .tiktok-copy p{max-width:500px;margin:0;color:#b5aeb2;font-size:16px;line-height:1.62}
+    .tiktok-action{max-width:500px;margin-top:27px}
+    .tiktok-cta{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;padding:17px 20px;border:0;border-radius:15px;background:linear-gradient(135deg,#f04d86,#d93670);box-shadow:0 17px 36px rgba(240,77,134,.23);color:#fff;font-size:15px;font-weight:900;transition:transform .2s,box-shadow .2s}
+    .tiktok-cta:hover{transform:translateY(-2px);box-shadow:0 22px 42px rgba(240,77,134,.32)}
+    .tiktok-cta-mark{display:grid;place-items:center;width:27px;height:27px;border-radius:9px;background:rgba(255,255,255,.2)}
+    .tiktok-cta-mark svg{width:16px;height:16px;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;fill:none}
+    .tiktok-privacy-link{display:block;width:max-content;max-width:100%;margin:10px auto 0;color:#a79da2;font-size:10px;line-height:1.4;text-decoration:underline;text-underline-offset:3px}
+    .tiktok-privacy-link:hover{color:#fff}
+    .tiktok-hint{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 12px;margin-top:12px;color:#c1b7bc;font-size:11px;line-height:1.45;text-align:center}
+    .tiktok-hint strong{color:#fff}
+    .tiktok-requirements{display:flex;flex-wrap:wrap;justify-content:center;gap:7px;margin-top:15px;color:#938a8f;font-size:10px}
+    .tiktok-requirements span{padding:6px 9px;border:1px solid rgba(255,255,255,.08);border-radius:999px}
+    .tiktok-stage{position:relative;max-width:470px;margin:0 auto}
+    .tiktok-preview-card{position:relative;overflow:hidden;padding:8px;border:1px solid rgba(255,255,255,.12);border-radius:29px;background:#171519;box-shadow:0 32px 80px rgba(0,0,0,.42)}
+    .tiktok-preview-frame{position:relative;overflow:hidden;aspect-ratio:.72;border-radius:22px;background:#211e22}
+    .tiktok-preview-frame video,.tiktok-preview-frame img{display:block;width:100%;height:100%;object-fit:cover}
+    .tiktok-preview-frame:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.06) 45%,rgba(0,0,0,.76) 100%);pointer-events:none}
+    .tiktok-preview-top{position:absolute;z-index:2;top:17px;left:17px;right:17px;display:flex;justify-content:space-between;align-items:center;color:#fff;font-size:10px;font-weight:900;letter-spacing:.11em;text-transform:uppercase;text-shadow:0 1px 12px rgba(0,0,0,.5)}
+    .tiktok-preview-time{padding:7px 9px;border:1px solid rgba(255,255,255,.3);border-radius:999px;background:rgba(0,0,0,.25);backdrop-filter:blur(10px);letter-spacing:.04em}
+    .tiktok-play{position:absolute;z-index:3;inset:50% auto auto 50%;width:66px;height:66px;transform:translate(-50%,-50%);display:grid;place-items:center;border:1px solid rgba(255,255,255,.48);border-radius:50%;background:rgba(20,16,21,.45);color:#fff;backdrop-filter:blur(10px)}
+    .tiktok-play svg{width:22px;height:22px;margin-left:3px;fill:currentColor}
+    .tiktok-preview-caption{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 5px 4px}
+    .tiktok-preview-caption strong{font-size:14px}
+    .tiktok-preview-caption span{color:#928a8f;font-size:10px}
+    .tiktok-same-badge{position:absolute;right:-22px;bottom:14%;display:grid;gap:3px;max-width:143px;padding:13px;border:1px solid rgba(240,77,134,.22);border-radius:15px;background:#fff8fa;color:#222;box-shadow:0 18px 32px rgba(0,0,0,.24);font-size:11px;line-height:1.35;transform:rotate(4deg)}
+    .tiktok-same-badge strong{color:#f04d86}
+    .tiktok-trust{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;overflow:hidden;border:1px solid rgba(255,255,255,.12);border-radius:20px;background:rgba(255,255,255,.12)}
+    .tiktok-trust-item{display:grid;grid-template-columns:36px minmax(0,1fr);align-items:start;gap:12px;min-height:96px;padding:18px 16px;background:rgba(255,255,255,.035)}
+    .tiktok-trust-icon{display:grid;place-items:center;width:32px;height:32px;flex:0 0 32px;color:#f3c3d3}
+    .tiktok-trust-icon svg{display:block;width:22px;height:22px;overflow:visible;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}
+    .tiktok-trust-icon.play svg{stroke:none;fill:currentColor}
+    .tiktok-trust-item > div{min-width:0}
+    .tiktok-trust-item strong{display:flex;align-items:flex-start;min-height:2.25em;margin-bottom:4px;font-size:12px;line-height:1.2}
+    .tiktok-trust-item span{display:block;min-height:2.9em;color:#9f969b;font-size:10px;line-height:1.45}
+    .tiktok-how{padding:70px 0 46px}
+    .tiktok-kicker-small{color:#ffc1d4;font-size:10px;font-weight:900;letter-spacing:.16em;text-transform:uppercase}
+    .tiktok-how h2{max-width:570px;margin:13px 0 24px;font-family:Georgia,"Times New Roman",serif;font-size:clamp(31px,4.2vw,47px);font-weight:500;line-height:1.03;letter-spacing:-.045em}
+    .tiktok-how-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .tiktok-how-card{min-height:133px;padding:17px;border:1px solid rgba(255,255,255,.12);border-radius:17px;background:rgba(255,255,255,.035)}
+    .tiktok-how-number{color:#ff7aa7;font-family:Georgia,serif;font-size:21px}
+    .tiktok-how-card h3{margin:13px 0 7px;font-size:13px}
+    .tiktok-how-card p{margin:0;color:#a79da2;font-size:11px;line-height:1.5}
+    .tiktok-faq{max-width:720px;padding:18px 0 70px}
+    .tiktok-faq details{border-top:1px solid rgba(255,255,255,.12)}
+    .tiktok-faq details:last-child{border-bottom:1px solid rgba(255,255,255,.12)}
+    .tiktok-faq summary{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 0;color:#f8f3f5;cursor:pointer;list-style:none;font-size:13px;font-weight:800}
+    .tiktok-faq summary::-webkit-details-marker{display:none}
+    .tiktok-faq summary:after{content:"+";color:#ff7aa7;font-size:19px;font-weight:400}
+    .tiktok-faq details[open] summary:after{content:"−"}
+    .tiktok-faq p{margin:-2px 0 17px;color:#a79da2;font-size:12px;line-height:1.6}
+    .tiktok-more-templates{display:flex;justify-content:center;padding:0 0 28px}
+    .tiktok-more-templates a{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:0 18px;border:1px solid rgba(255,255,255,.16);border-radius:999px;background:rgba(255,255,255,.04);color:#f8f3f5;font-size:12px;font-weight:800;text-decoration:none;transition:background .2s,border-color .2s,transform .2s}
+    .tiktok-more-templates a:hover{border-color:rgba(255,122,167,.55);background:rgba(240,77,134,.12);transform:translateY(-1px)}
+    .tiktok-more-templates a:after{content:"→";color:#ff7aa7;font-size:16px;line-height:1}
+    .tiktok-footer{display:flex;align-items:center;justify-content:space-between;flex-wrap:nowrap;gap:18px;padding:23px 0 30px;border-top:1px solid rgba(255,255,255,.12);color:#867d83;font-size:10px}
+    .tiktok-footer > span{white-space:nowrap}
+    .tiktok-footer a{text-underline-offset:3px;white-space:nowrap}
+    .tiktok-floating-upload{position:fixed;z-index:40;right:18px;bottom:max(18px,env(safe-area-inset-bottom));left:18px;display:none;align-items:center;justify-content:center;gap:10px;min-height:56px;padding:0 20px;border:1px solid rgba(255,255,255,.22);border-radius:17px;background:linear-gradient(135deg,#f04d86,#d93670);box-shadow:0 18px 42px rgba(240,77,134,.34),0 0 0 1px rgba(255,255,255,.12) inset;color:#fff;font-size:15px;font-weight:900;backdrop-filter:blur(14px);transition:transform .2s,box-shadow .2s}
+    .tiktok-floating-upload.is-visible{display:flex}
+    .tiktok-floating-upload:hover{transform:translateY(-2px);box-shadow:0 22px 48px rgba(240,77,134,.42),0 0 0 1px rgba(255,255,255,.16) inset}
+    .tiktok-floating-upload svg{width:19px;height:19px;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;fill:none}
+    .tiktok-generation-modal{position:fixed;z-index:45;inset:0;display:none;place-items:center;padding:24px;background:rgba(5,5,7,.72);backdrop-filter:blur(16px)}
+    .tiktok-generation-modal.is-visible{display:grid}
+    .tiktok-generation-card{display:grid;justify-items:center;width:min(330px,100%);padding:28px 22px 24px;border:1px solid rgba(255,255,255,.15);border-radius:24px;background:linear-gradient(180deg,rgba(39,31,40,.98),rgba(14,12,17,.98));box-shadow:0 30px 80px rgba(0,0,0,.5);text-align:center}
+    .tiktok-generation-spinner{width:58px;height:58px;border:3px solid rgba(255,255,255,.16);border-top-color:#ff7aa7;border-right-color:#b280ff;border-radius:50%;animation:spin .9s linear infinite}
+    .tiktok-generation-card strong{margin-top:18px;color:#fff;font-size:20px;line-height:1.15}
+    .tiktok-generation-card span{margin-top:8px;color:#bdb3ba;font-size:12px;line-height:1.5}
+    @media(max-width:820px){.tiktok-hero{grid-template-columns:1fr;gap:36px;padding-top:18px}.tiktok-copy{order:2}.tiktok-stage{order:1;width:min(100%,480px)}.tiktok-same-badge{right:-5px}}
+    @media(max-width:590px){.tiktok-landing-inner{width:min(100% - 24px,520px);padding-bottom:92px}.tiktok-topbar{padding-top:15px}.tiktok-note{padding:7px 9px;font-size:9px}.tiktok-hero{gap:24px;padding-bottom:44px}.tiktok-copy h1{margin-top:14px;font-size:clamp(43px,13.3vw,63px)}.tiktok-copy p{font-size:14px}.tiktok-preview-card{padding:6px;border-radius:25px}.tiktok-preview-frame{border-radius:19px}.tiktok-preview-top{top:13px;left:13px;right:13px;font-size:8px}.tiktok-preview-time{padding:6px 8px}.tiktok-same-badge{right:-3px;bottom:11%;max-width:128px;padding:11px;font-size:10px}.tiktok-trust{grid-template-columns:1fr}.tiktok-trust-item{grid-template-columns:36px minmax(0,1fr);min-height:0;padding:14px 16px}.tiktok-trust-item strong{min-height:0}.tiktok-trust-item span{min-height:0}.tiktok-how{padding-top:56px}.tiktok-how-grid{grid-template-columns:1fr}.tiktok-how-card{min-height:auto}.tiktok-faq{padding-bottom:105px}.tiktok-footer{gap:8px;padding-bottom:94px;font-size:9px}.tiktok-floating-upload{right:12px;bottom:max(12px,env(safe-area-inset-bottom));left:12px;min-height:54px;border-radius:16px;font-size:14px}}
     @media(max-width:900px){
       body{height:100vh;overflow:hidden;background:#050507}
+      .shell.is-active{display:block}
       .container{width:min(calc(100% - 34px),1180px)}
       .nav{display:none}
       .shell{min-height:100vh;display:block}
@@ -583,11 +670,77 @@
   </style>
 </head>
 <body>
+  <section class="tiktok-landing" id="tiktokLanding" aria-labelledby="tiktokTitle">
+    <div class="tiktok-landing-inner">
+      <header class="tiktok-topbar">
+        <a class="tiktok-brand" href="index.html" aria-label="fari home"><img class="tiktok-brand-mark" src="assets/fari-logo.png" alt="fari"></a>
+        <span class="tiktok-note">sem cadastro para começar</span>
+      </header>
+      <main class="tiktok-hero">
+        <div class="tiktok-copy">
+          <div class="tiktok-kicker"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5L8 5.5Z"></path><path d="M5 4v16"></path></svg><span>Você viu este vídeo no TikTok?</span></div>
+          <h1 id="tiktokTitle">Faça a sua versão <em>com 1 foto.</em></h1>
+          <p id="tiktokDescription">Este é o mesmo modelo do vídeo. Envie uma foto nítida e veja a sua versão personalizada em poucos minutos.</p>
+          <div class="tiktok-action">
+            <button class="tiktok-cta" id="tiktokUploadCta" type="button"><span class="tiktok-cta-mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4"></path><path d="m7 9 5-5 5 5"></path><path d="M5 20h14"></path></svg></span><span id="tiktokCtaLabel">Enviar 1 foto — gerar vídeo</span></button>
+            <div class="tiktok-hint"><strong>Gere o vídeo diretamente.</strong><span>Sem etapa de prévia com imagem.</span></div>
+            <a class="tiktok-privacy-link" href="ui/privacy.html">Privacidade e uso das fotos</a>
+            <div class="tiktok-requirements" aria-label="Requisitos da foto"><span>JPG, PNG ou WebP</span><span>rosto visível</span></div>
+          </div>
+        </div>
+        <div class="tiktok-stage">
+          <div class="tiktok-preview-card">
+            <div class="tiktok-preview-frame">
+              <video id="tiktokTemplateVideo" muted loop playsinline autoplay poster="assets/production-templates/posters/da-barriga.jpg" aria-label="Template video preview"></video>
+              <img id="tiktokTemplateImage" src="assets/production-templates/posters/da-barriga.jpg" alt="Template video preview" hidden>
+              <div class="tiktok-preview-top"><span>mesmo modelo do TikTok</span><span class="tiktok-preview-time">0:12</span></div>
+              <button class="tiktok-play" id="tiktokPlayButton" type="button" aria-label="Pausar prévia"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5v14"></path><path d="M17 5v14"></path></svg></button>
+            </div>
+            <div class="tiktok-preview-caption"><strong id="tiktokTemplateName">Você + este efeito</strong><span>resultado final</span></div>
+          </div>
+          <div class="tiktok-same-badge"><strong>É este mesmo.</strong><span>Agora faça o seu com uma foto.</span></div>
+        </div>
+      </main>
+      <section class="tiktok-trust" aria-label="Informações importantes">
+        <div class="tiktok-trust-item"><span class="tiktok-trust-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5 9.25 17 19 7"></path></svg></span><div><strong>Uma foto é suficiente</strong><span>Escolha uma imagem nítida e deixe o modelo fazer o resto.</span></div></div>
+        <div class="tiktok-trust-item"><span class="tiktok-trust-icon play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13L18.5 12 8 5.5Z"></path></svg></span><div><strong>Vídeo direto</strong><span>Pulamos a prévia de imagem e vamos direto para o vídeo final.</span></div></div>
+        <div class="tiktok-trust-item"><span class="tiktok-trust-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"></circle><path d="M12 7v5l3 2"></path></svg></span><div><strong>Tempo estimado claro</strong><span>O carregamento mostra quanto normalmente leva para concluir.</span></div></div>
+      </section>
+      <section class="tiktok-how" aria-labelledby="tiktokHowTitle">
+        <div class="tiktok-kicker-small">Em três passos</div>
+        <h2 id="tiktokHowTitle">Do vídeo que você viu para a sua própria versão.</h2>
+        <div class="tiktok-how-grid">
+          <article class="tiktok-how-card"><div class="tiktok-how-number">01</div><h3>Escolha uma foto</h3><p>Rosto visível, boa luz e uma imagem que você goste.</p></article>
+          <article class="tiktok-how-card"><div class="tiktok-how-number">02</div><h3>Deixe a Fari criar</h3><p>A inteligência artificial prepara uma versão personalizada do modelo.</p></article>
+          <article class="tiktok-how-card"><div class="tiktok-how-number">03</div><h3>Veja o resultado</h3><p>Baixe ou compartilhe seu vídeo quando ele estiver pronto.</p></article>
+        </div>
+      </section>
+      <section class="tiktok-faq" aria-label="Perguntas frequentes">
+        <details><summary>Que tipo de foto devo enviar?</summary><p>Use uma foto nítida, com o rosto visível e sem cortes fortes. JPG, PNG e WebP são aceitos.</p></details>
+        <details><summary>Preciso criar uma conta?</summary><p>Não para começar. A primeira etapa é escolher a foto e gerar seu vídeo.</p></details>
+        <details><summary>Quanto tempo leva para gerar?</summary><p>A geração normalmente leva de 2 a 5 minutos. Você pode usar outro aplicativo, mas não feche esta página.</p></details>
+        <details><summary>Como minha imagem é usada?</summary><p>A imagem é usada para criar a versão personalizada deste modelo, conforme a política de privacidade do produto.</p></details>
+      </section>
+      <div class="tiktok-more-templates"><a href="template-gallery.html">浏览其他模板</a></div>
+      <footer class="tiktok-footer">
+        <span>Fari · crie algo que fica na memória</span>
+        <span><a href="ui/privacy.html">Privacidade</a> · <a href="#tiktokTitle">Início</a></span>
+      </footer>
+      <button class="tiktok-floating-upload" id="tiktokFloatingUpload" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4"></path><path d="m7 9 5-5 5 5"></path><path d="M5 20h14"></path></svg><span id="tiktokFloatingLabel">Enviar foto e gerar vídeo</span></button>
+    </div>
+  </section>
+  <div class="tiktok-generation-modal" id="tiktokGenerationModal" role="status" aria-live="polite" aria-hidden="true">
+    <div class="tiktok-generation-card">
+      <div class="tiktok-generation-spinner" aria-hidden="true"></div>
+      <strong>Gerando seu vídeo...</strong>
+      <span>Normalmente leva de 2 a 5 minutos. Você pode usar outro aplicativo, mas não feche esta página.</span>
+    </div>
+  </div>
   <div class="page-bg" id="pageBg"></div>
-  <div class="shell">
+  <div class="shell" id="originalFlow">
     <header class="nav">
       <div class="container nav-inner">
-        <a class="logo" href="index.html" aria-label="fari home"><img src="assets/fari-logo-symbol.png" alt="fari"></a>
+        <a class="logo" href="index.html" aria-label="fari home"><img src="assets/fari-logo.png" alt="fari"></a>
         <nav class="nav-links" aria-label="Navigation">
           <a href="template-gallery.html">Modelos</a>
           <a href="index.html#how">How it works</a>
@@ -664,7 +817,6 @@
             <p class="two-upload-summary" id="twoUploadSummary">上传两张照片</p>
             <p class="hint" id="hint" role="status"></p>
             <p class="upload-meta">高清效果 • Prévia grátis • <a href="ui/privacy.html">隐私政策</a></p>
-            <p class="upload-trust">🔒 匿名上传 · 照片仅用于生成 · 用后即删</p>
           </aside>
         </div>
 
@@ -687,7 +839,7 @@
             <video class="payment-bg" src="assets/fari-hero-home.mp4" poster="assets/fari/fari 首页主视觉 - 家庭生日庆祝.webp" autoplay muted loop playsinline aria-hidden="true"></video>
             <div class="payment-sheet-overlay"></div>
             <header class="payment-nav">
-              <a class="brand" href="index.html" aria-label="fari home"><img src="assets/fari-logo-symbol.png" alt="fari"></a>
+              <a class="brand" href="index.html" aria-label="fari home"><img src="assets/fari-logo.png" alt="fari"></a>
               <div class="payment-nav-right">
                 <nav class="payment-nav-links" aria-label="Navigation">
                   <a href="template-gallery.html">模板</a>
@@ -874,6 +1026,16 @@
   <script>
     const scenes = window.FARI_TEMPLATES;
 
+    const tiktokLanding = document.querySelector("#tiktokLanding");
+    const originalFlow = document.querySelector("#originalFlow");
+    const tiktokUploadCta = document.querySelector("#tiktokUploadCta");
+    const tiktokFloatingUpload = document.querySelector("#tiktokFloatingUpload");
+    const tiktokGenerationModal = document.querySelector("#tiktokGenerationModal");
+    const tiktokFloatingLabel = document.querySelector("#tiktokFloatingLabel");
+    const tiktokTemplateVideo = document.querySelector("#tiktokTemplateVideo");
+    const tiktokTemplateImage = document.querySelector("#tiktokTemplateImage");
+    const tiktokPlayButton = document.querySelector("#tiktokPlayButton");
+    const tiktokTemplateName = document.querySelector("#tiktokTemplateName");
     const workspace = document.querySelector("#workspace");
     const pageBg = document.querySelector("#pageBg");
     const templateImage = document.querySelector("#templateImage");
@@ -924,6 +1086,7 @@
     const scene = scenes[activeIndex];
     const uploadedPhotos = scene.uploadLabels.map(() => null);
     let activeUploadSlot = 0;
+    let landingStarted = false;
     assetInput.multiple = false;
     function renderUploadSlots() {
       document.querySelector(".control-panel").classList.toggle("two-uploads", uploadedPhotos.length === 2);
@@ -948,6 +1111,53 @@
       if (summary) summary.textContent = scene.teaser;
     }
     renderUploadSlots();
+    if (scene.uploadLabels.length > 1) {
+      document.querySelector("#tiktokCtaLabel").textContent = `Enviar ${scene.uploadLabels.length} fotos — gerar vídeo`;
+      tiktokFloatingLabel.textContent = `Enviar ${scene.uploadLabels.length} fotos e gerar vídeo`;
+      document.querySelector("#tiktokDescription").textContent = "Este é o mesmo modelo do vídeo. Envie as fotos solicitadas e veja a sua versão personalizada em poucos minutos.";
+    }
+    tiktokTemplateName.textContent = scene.title;
+    tiktokTemplateVideo.src = scene.video;
+    tiktokTemplateVideo.poster = scene.image;
+    tiktokTemplateVideo.addEventListener("error", () => {
+      tiktokTemplateVideo.hidden = true;
+      tiktokTemplateImage.hidden = false;
+      tiktokTemplateImage.src = scene.image;
+    }, { once: true });
+    tiktokPlayButton.addEventListener("click", () => {
+      if (tiktokTemplateVideo.paused) {
+        tiktokTemplateVideo.play().catch(() => {});
+        tiktokPlayButton.setAttribute("aria-label", "Pausar prévia");
+        tiktokPlayButton.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5v14"></path><path d="M17 5v14"></path></svg>';
+      } else {
+        tiktokTemplateVideo.pause();
+        tiktokPlayButton.setAttribute("aria-label", "Reproduzir prévia");
+        tiktokPlayButton.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7V5Z"></path></svg>';
+      }
+    });
+    if ("IntersectionObserver" in window) {
+      const uploadCtaObserver = new IntersectionObserver(([entry]) => {
+        const hasScrolledPastCta = tiktokLanding.scrollTop > 120;
+        tiktokFloatingUpload.classList.toggle("is-visible", hasScrolledPastCta && !entry.isIntersecting && !landingStarted);
+      }, { root: tiktokLanding, threshold: 0.2 });
+      uploadCtaObserver.observe(tiktokUploadCta);
+      tiktokLanding.addEventListener("scroll", () => {
+        const hasScrolledPastCta = tiktokLanding.scrollTop > 120;
+        if (hasScrolledPastCta && tiktokUploadCta.getBoundingClientRect().bottom < 0 && !landingStarted) {
+          tiktokFloatingUpload.classList.add("is-visible");
+        } else if (!hasScrolledPastCta || landingStarted) {
+          tiktokFloatingUpload.classList.remove("is-visible");
+        }
+      }, { passive: true });
+    }
+    function startLandingFlow() {
+      landingStarted = true;
+      tiktokFloatingUpload.classList.remove("is-visible");
+      originalFlow.classList.add("is-active");
+      openPhotoPicker(0);
+    }
+    tiktokUploadCta.addEventListener("click", startLandingFlow);
+    tiktokFloatingUpload.addEventListener("click", startLandingFlow);
     const shareContext = buildCompartilharContext();
     let selectedCompartilharPlatform = shareContext.channel;
 
@@ -986,7 +1196,14 @@
       templateImage.src = url || scene.image;
     }
 
+    function activateOriginalFlow() {
+      tiktokLanding.classList.add("is-hidden", "is-flow-hidden");
+      tiktokFloatingUpload.classList.remove("is-visible");
+      originalFlow.classList.add("is-active");
+    }
+
     function openSheet(name) {
+      if (name !== "select") activateOriginalFlow();
       if (name === "share" && videoReady) {
         sheets.share.classList.remove("open");
         sheets[name].classList.add("open");
@@ -1273,9 +1490,9 @@
       const title = document.querySelector("#loaderTitle");
       const copy = document.querySelector("#loaderCopy");
       if (mode === "video") {
-        title.textContent = "Generating...";
-        copy.textContent = "The final video usually takes up to 10 minutes. Please keep this page open.";
-        hint.textContent = "Rendering your final video. This usually takes up to 10 minutes. Do not close this page.";
+        title.textContent = "Gerando seu vídeo...";
+        copy.textContent = "Normalmente leva de 2 a 5 minutos. Você pode usar outro aplicativo, mas não feche esta página.";
+        hint.textContent = "Seu vídeo está sendo gerado. O tempo esperado é de 2 a 5 minutos.";
         return;
       }
       title.textContent = "Preparing preview...";
@@ -1398,21 +1615,23 @@
     }
 
     function startVideoGeneration() {
-      if (generationInProgress || !imageReady) return;
+      if (generationInProgress || !uploadedPhotos.every(Boolean)) return;
       closeSheets();
       setLoader("video");
       generationInProgress = true;
       workspace.classList.add("generating");
-      hint.textContent = "Rendering your video. This usually takes up to 10 minutes. Do not close this page.";
+      hint.textContent = "Seu vídeo está sendo gerado. O tempo esperado é de 2 a 5 minutos. Não feche esta página.";
       window.setTimeout(() => {
-        const finalUrl = resultImage.src || selectedUrl || scene.image;
+        const finalUrl = scene.video || resultImage.src || selectedUrl || scene.image;
         setVideoPreviewSource(finalUrl);
         setTemplatePreviewSource(finalUrl);
         workspace.classList.remove("generating");
         generationInProgress = false;
         videoReady = true;
         rememberPendingVideo(finalUrl);
-        hint.textContent = "";
+        hint.textContent = "Seu vídeo está pronto para baixar ou compartilhar.";
+        hideLandingGenerationModal();
+        activateOriginalFlow();
         openSheet("video");
       }, 4200);
     }
@@ -1437,6 +1656,11 @@
     function resetCreation() {
       uploadedPhotos.forEach((photo, i) => { if (photo) URL.revokeObjectURL(photo.url); uploadedPhotos[i] = null; });
       closeSheets();
+      tiktokLanding.classList.remove("is-hidden");
+      hideLandingGenerationModal();
+      originalFlow.classList.remove("is-active");
+      tiktokTemplateVideo.currentTime = 0;
+      tiktokTemplateVideo.play().catch(() => {});
       selectedUrl = "";
       selectedName = "";
       selectedImage.removeAttribute("src");
@@ -1475,19 +1699,45 @@
       selectedName = uploadedPhotos[0]?.name || '';
       hasUnsavedUpload = true;
       renderUploadSlots();
-      if (uploadedPhotos.every(Boolean)) { closeSheets(); startImageGeneration(); }
-      else hint.textContent = 'Upload the other pet photo to create your preview.';
+      if (uploadedPhotos.every(Boolean)) {
+        closeSheets();
+        imageReady = false;
+        activateOriginalFlow();
+        showLandingGenerationModal();
+        startVideoGeneration();
+      } else {
+        hint.textContent = 'Upload the other pet photo to create your preview.';
+        const nextSlot = uploadedPhotos.findIndex((photo) => !photo);
+        if (nextSlot >= 0) {
+          window.setTimeout(() => openPhotoPicker(nextSlot), 260);
+        }
+      }
     }
-    function choosePhoto(slot) {
+    function openPhotoPicker(slot) {
       if (uploadLoading || generationInProgress) return;
       activeUploadSlot = slot;
-      // Prototype simulation: skip the real file picker and fill a mock photo,
-      // so the generate -> share -> paywall flow works without a real upload.
-      applyPhotoToSlot(slot, scene.image, 'mock-' + (slot + 1) + '.jpg');
+      simulatePhotoUpload(slot);
     }
-    selectPhoto.addEventListener('click', () => choosePhoto(0));
-    selectPhoto2.addEventListener('click', () => choosePhoto(1));
-    document.querySelector('#galleryChoice').addEventListener('click', () => choosePhoto(0));
+    function simulatePhotoUpload(slot) {
+      if (uploadLoading || generationInProgress) return;
+      uploadLoading = true;
+      renderUploadSlots();
+      window.setTimeout(() => {
+        uploadLoading = false;
+        applyPhotoToSlot(slot, scene.image, `mock-photo-${slot + 1}.jpg`);
+      }, 180);
+    }
+    function showLandingGenerationModal() {
+      tiktokGenerationModal.classList.add("is-visible");
+      tiktokGenerationModal.setAttribute("aria-hidden", "false");
+    }
+    function hideLandingGenerationModal() {
+      tiktokGenerationModal.classList.remove("is-visible");
+      tiktokGenerationModal.setAttribute("aria-hidden", "true");
+    }
+    selectPhoto.addEventListener('click', () => openPhotoPicker(0));
+    selectPhoto2.addEventListener('click', () => openPhotoPicker(1));
+    document.querySelector('#galleryChoice').addEventListener('click', () => openPhotoPicker(0));
     assetInput.addEventListener('change', async () => {
       const file = assetInput.files?.[0];
       if (!file) return;
@@ -1506,8 +1756,19 @@
         selectedName = uploadedPhotos[0]?.name || '';
         hasUnsavedUpload = true;
         renderUploadSlots();
-        if (uploadedPhotos.every(Boolean)) { closeSheets(); startImageGeneration(); }
-        else hint.textContent = 'Upload the other pet photo to create your preview.';
+        if (uploadedPhotos.every(Boolean)) {
+          closeSheets();
+          imageReady = false;
+          activateOriginalFlow();
+          showLandingGenerationModal();
+          startVideoGeneration();
+        } else {
+          hint.textContent = 'Upload the other pet photo to create your preview.';
+          const nextSlot = uploadedPhotos.findIndex((photo) => !photo);
+          if (nextSlot >= 0) {
+            window.setTimeout(() => openPhotoPicker(nextSlot), 260);
+          }
+        }
       } catch { URL.revokeObjectURL(url); showToast('This image could not be opened. Please choose another.'); }
       finally { uploadLoading = false; }
     });
@@ -1540,6 +1801,13 @@
       openSheet("payment");
       startFariCountdown();
     }
+    function openVideoPaywall(action) {
+      activateOriginalFlow();
+      if (!videoReady) return;
+      pendingUnlock = action;
+      closeSheets();
+      openPaywall();
+    }
 
     let exitingFromPaywall = false;
     function requestPaywallExit() {
@@ -1569,12 +1837,16 @@
       startVideoGeneration();
     });
     document.querySelector("#shareBtn").addEventListener("click", () => {
-      if (!paid) { pendingUnlock = "share"; openPaywall(); return; }
+      if (!paid) { openVideoPaywall("share"); return; }
+      activateOriginalFlow();
+      closeSheets();
       syncCompartilharSheet();
-      unlock("share");
+      openSheet("share");
     });
     downloadBtn.addEventListener("click", () => {
-      if (!paid) { pendingUnlock = "download"; openPaywall(); return; }
+      if (!paid) { openVideoPaywall("download"); return; }
+      activateOriginalFlow();
+      closeSheets();
       openSheet("downloadPermission");
     });
     document.querySelector("#allowBaixarBtn").addEventListener("click", async () => {
@@ -1624,7 +1896,14 @@
     }
 
     document.querySelector("#shareTopBtn").addEventListener("click", () => {
-      if (videoReady && !paid) { pendingUnlock = "share"; openPaywall(); return; }
+      if (videoReady && !paid) { openVideoPaywall("share"); return; }
+      activateOriginalFlow();
+      if (videoReady) {
+        closeSheets();
+        syncCompartilharSheet();
+        openSheet("share");
+        return;
+      }
       syncCompartilharSheet();
       openSheet("share");
     });
