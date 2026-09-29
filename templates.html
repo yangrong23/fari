@@ -683,9 +683,9 @@
           <p id="tiktokDescription">Este é o mesmo modelo do vídeo. Envie uma foto nítida e veja a sua versão personalizada em poucos minutos.</p>
           <div class="tiktok-action">
             <button class="tiktok-cta" id="tiktokUploadCta" type="button"><span class="tiktok-cta-mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4"></path><path d="m7 9 5-5 5 5"></path><path d="M5 20h14"></path></svg></span><span id="tiktokCtaLabel">Enviar 1 foto — gerar vídeo</span></button>
-            <div class="tiktok-hint"><strong>Gere o vídeo diretamente.</strong><span>Sem etapa de prévia com imagem.</span></div>
+            <div class="tiktok-hint"><strong>Gere o vídeo diretamente.</strong></div>
             <a class="tiktok-privacy-link" href="ui/privacy.html">Privacidade e uso das fotos</a>
-            <div class="tiktok-requirements" aria-label="Requisitos da foto"><span>JPG, PNG ou WebP</span><span>rosto visível</span></div>
+            <div class="tiktok-requirements" aria-label="Requisitos da foto"><span>JPG, PNG ou WebP</span><span id="tiktokPhotoRequirement">rosto visível</span></div>
           </div>
         </div>
         <div class="tiktok-stage">
@@ -698,11 +698,11 @@
             </div>
             <div class="tiktok-preview-caption"><strong id="tiktokTemplateName">Você + este efeito</strong><span>resultado final</span></div>
           </div>
-          <div class="tiktok-same-badge"><strong>É este mesmo.</strong><span>Agora faça o seu com uma foto.</span></div>
+          <div class="tiktok-same-badge"><strong>É este mesmo.</strong><span id="tiktokSameBadgeCopy">Agora faça o seu com uma foto.</span></div>
         </div>
       </main>
       <section class="tiktok-trust" aria-label="Informações importantes">
-        <div class="tiktok-trust-item"><span class="tiktok-trust-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5 9.25 17 19 7"></path></svg></span><div><strong>Uma foto é suficiente</strong><span>Escolha uma imagem nítida e deixe o modelo fazer o resto.</span></div></div>
+        <div class="tiktok-trust-item"><span class="tiktok-trust-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5 9.25 17 19 7"></path></svg></span><div><strong id="tiktokPhotoFeatureTitle">Uma foto é suficiente</strong><span id="tiktokPhotoFeatureCopy">Escolha uma imagem nítida e deixe o modelo fazer o resto.</span></div></div>
         <div class="tiktok-trust-item"><span class="tiktok-trust-icon play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13L18.5 12 8 5.5Z"></path></svg></span><div><strong>Vídeo direto</strong><span>Pulamos a prévia de imagem e vamos direto para o vídeo final.</span></div></div>
         <div class="tiktok-trust-item"><span class="tiktok-trust-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"></circle><path d="M12 7v5l3 2"></path></svg></span><div><strong>Tempo estimado claro</strong><span>O carregamento mostra quanto normalmente leva para concluir.</span></div></div>
       </section>
@@ -710,13 +710,13 @@
         <div class="tiktok-kicker-small">Em três passos</div>
         <h2 id="tiktokHowTitle">Do vídeo que você viu para a sua própria versão.</h2>
         <div class="tiktok-how-grid">
-          <article class="tiktok-how-card"><div class="tiktok-how-number">01</div><h3>Escolha uma foto</h3><p>Rosto visível, boa luz e uma imagem que você goste.</p></article>
+          <article class="tiktok-how-card"><div class="tiktok-how-number">01</div><h3 id="tiktokStepPhotoTitle">Escolha uma foto</h3><p id="tiktokStepPhotoCopy">Rosto visível, boa luz e uma imagem que você goste.</p></article>
           <article class="tiktok-how-card"><div class="tiktok-how-number">02</div><h3>Deixe a Fari criar</h3><p>A inteligência artificial prepara uma versão personalizada do modelo.</p></article>
           <article class="tiktok-how-card"><div class="tiktok-how-number">03</div><h3>Veja o resultado</h3><p>Baixe ou compartilhe seu vídeo quando ele estiver pronto.</p></article>
         </div>
       </section>
       <section class="tiktok-faq" aria-label="Perguntas frequentes">
-        <details><summary>Que tipo de foto devo enviar?</summary><p>Use uma foto nítida, com o rosto visível e sem cortes fortes. JPG, PNG e WebP são aceitos.</p></details>
+        <details><summary>Que tipo de foto devo enviar?</summary><p id="tiktokPhotoFaqAnswer">Use uma foto nítida, com o rosto visível e sem cortes fortes. JPG, PNG e WebP são aceitos.</p></details>
         <details><summary>Preciso criar uma conta?</summary><p>Não para começar. A primeira etapa é escolher a foto e gerar seu vídeo.</p></details>
         <details><summary>Quanto tempo leva para gerar?</summary><p>A geração normalmente leva de 2 a 5 minutos. Você pode usar outro aplicativo, mas não feche esta página.</p></details>
         <details><summary>Como minha imagem é usada?</summary><p>A imagem é usada para criar a versão personalizada deste modelo, conforme a política de privacidade do produto.</p></details>
@@ -806,7 +806,7 @@
             <button class="selected-card" id="selectPhoto" type="button">
               <span class="selected-thumb" id="selectedThumb"><span class="plus">+</span><img id="selectedImage" alt="Selected upload"></span>
               <span class="selected-text">
-                <strong id="selectedTitle">上传照片，来生成你的专属视频</strong>
+                <strong id="selectedTitle">上传符合模板要求的照片</strong>
                 <span id="selectedHint"></span>
               </span>
             </button><span class="slot-description" id="slotDescription1"></span>
@@ -1022,7 +1022,7 @@
     </main>
   </div>
 
-  <script src="ui/template-catalog.js?v=20260915"></script>
+  <script src="ui/template-catalog.js?v=20260929-photo-requirements"></script>
   <script>
     const scenes = window.FARI_TEMPLATES;
 
@@ -1088,6 +1088,79 @@
     let activeUploadSlot = 0;
     let landingStarted = false;
     assetInput.multiple = false;
+    const photoCopy = {
+      0: {
+        hero: "com 1 foto de pai/mãe e criança.",
+        description: "Este é o mesmo modelo do vídeo. Envie uma única foto nítida com o adulto e a criança juntos.",
+        cta: "Enviar 1 foto — gerar vídeo",
+        requirement: "pai/mãe + criança visíveis",
+        sameBadge: "Agora faça o seu com uma foto de pai/mãe e criança.",
+        featureTitle: "Uma foto de pai/mãe e criança é suficiente",
+        featureCopy: "Escolha uma única foto nítida com o adulto e a criança juntos.",
+        title: "Escolha uma foto de pai/mãe e criança",
+        copy: "Envie uma única foto com o adulto e a criança juntos, com os dois rostos visíveis.",
+        faq: "Use uma única foto nítida com o adulto e a criança juntos. Os dois rostos devem estar visíveis; JPG, PNG e WebP são aceitos."
+      },
+      1: {
+        hero: "com 2 fotos dos seus pets.",
+        description: "Este é o mesmo modelo do vídeo. Envie duas fotos nítidas, uma de cada pet.",
+        cta: "Enviar 2 fotos — gerar vídeo",
+        requirement: "1 foto por pet",
+        sameBadge: "Agora faça o seu com duas fotos dos seus pets.",
+        featureTitle: "Duas fotos de pets são necessárias",
+        featureCopy: "Escolha uma foto nítida para cada pet que aparecerá no vídeo.",
+        title: "Escolha duas fotos de pets",
+        copy: "Envie uma foto nítida para cada pet que aparecerá no vídeo.",
+        faq: "Envie duas fotos nítidas: uma do primeiro pet e outra do segundo. Os pets devem aparecer com clareza; JPG, PNG e WebP são aceitos."
+      },
+      2: {
+        hero: "com 1 foto do casal.",
+        description: "Este é o mesmo modelo do vídeo. Envie uma única foto nítida com o casal junto.",
+        cta: "Enviar 1 foto — gerar vídeo",
+        requirement: "casal visível",
+        sameBadge: "Agora faça o seu com uma foto do casal.",
+        featureTitle: "Uma foto do casal é suficiente",
+        featureCopy: "Escolha uma única foto nítida com os dois parceiros juntos.",
+        title: "Escolha uma foto do casal",
+        copy: "Envie uma única foto com os dois parceiros juntos e visíveis.",
+        faq: "Use uma única foto nítida com os dois parceiros juntos e visíveis. JPG, PNG e WebP são aceitos."
+      },
+      3: {
+        hero: "com 1 foto do seu pet.",
+        description: "Este é o mesmo modelo do vídeo. Envie uma única foto nítida do pet.",
+        cta: "Enviar 1 foto — gerar vídeo",
+        requirement: "pet visível",
+        sameBadge: "Agora faça o seu com uma foto do seu pet.",
+        featureTitle: "Uma foto do pet é suficiente",
+        featureCopy: "Escolha uma única foto nítida do pet que aparecerá no vídeo.",
+        title: "Escolha uma foto do pet",
+        copy: "Envie uma única foto nítida do pet que aparecerá no vídeo.",
+        faq: "Use uma única foto nítida do pet, com o animal visível e sem cortes fortes. JPG, PNG e WebP são aceitos."
+      }
+    };
+    const copy = photoCopy[activeIndex] || {
+      hero: scene.uploadLabels.length > 1 ? `com ${scene.uploadLabels.length} fotos.` : "com 1 foto.",
+      description: `Este é o mesmo modelo do vídeo. ${scene.requirement}.`,
+      cta: scene.uploadLabels.length > 1 ? `Enviar ${scene.uploadLabels.length} fotos — gerar vídeo` : "Enviar 1 foto — gerar vídeo",
+      requirement: scene.requirement,
+      sameBadge: scene.requirement,
+      featureTitle: scene.requirement,
+      featureCopy: scene.requirement,
+      title: scene.uploadLabels.length > 1 ? `Escolha ${scene.uploadLabels.length} fotos` : "Escolha uma foto",
+      copy: scene.requirement,
+      faq: `${scene.requirement}. JPG, PNG e WebP são aceitos.`
+    };
+    document.querySelector("#tiktokTitle").innerHTML = `Faça a sua versão <em>${copy.hero}</em>`;
+    document.querySelector("#tiktokDescription").textContent = copy.description;
+    document.querySelector("#tiktokCtaLabel").textContent = copy.cta;
+    tiktokFloatingLabel.textContent = copy.cta.replace(" — gerar vídeo", " e gerar vídeo");
+    document.querySelector("#tiktokPhotoRequirement").textContent = copy.requirement;
+    document.querySelector("#tiktokSameBadgeCopy").textContent = copy.sameBadge;
+    document.querySelector("#tiktokPhotoFeatureTitle").textContent = copy.featureTitle;
+    document.querySelector("#tiktokPhotoFeatureCopy").textContent = copy.featureCopy;
+    document.querySelector("#tiktokStepPhotoTitle").textContent = copy.title;
+    document.querySelector("#tiktokStepPhotoCopy").textContent = copy.copy;
+    document.querySelector("#tiktokPhotoFaqAnswer").textContent = copy.faq;
     function renderUploadSlots() {
       document.querySelector(".control-panel").classList.toggle("two-uploads", uploadedPhotos.length === 2);
       selectPhoto2.hidden = uploadedPhotos.length === 1;
@@ -1096,9 +1169,9 @@
       scene.uploadLabels.forEach((label, i) => {
         const [button, title, copy] = controls[i];
         const description = document.querySelector(`#slotDescription${i + 1}`);
-        title.textContent = scene.teaser;
-        button.setAttribute('aria-label', scene.teaser);
-        if (description) description.textContent = scene.teaser;
+        title.textContent = label;
+        button.setAttribute('aria-label', label);
+        if (description) description.textContent = label;
         copy.textContent = uploadedPhotos[i] ? `${uploadedPhotos[i].name} · 点击替换` : "";
         const thumb = button.querySelector('.selected-thumb');
         let img = thumb.querySelector('img');
@@ -1108,14 +1181,9 @@
         else img.removeAttribute('src');
       });
       const summary = document.querySelector('#twoUploadSummary');
-      if (summary) summary.textContent = scene.teaser;
+      if (summary) summary.textContent = scene.requirement;
     }
     renderUploadSlots();
-    if (scene.uploadLabels.length > 1) {
-      document.querySelector("#tiktokCtaLabel").textContent = `Enviar ${scene.uploadLabels.length} fotos — gerar vídeo`;
-      tiktokFloatingLabel.textContent = `Enviar ${scene.uploadLabels.length} fotos e gerar vídeo`;
-      document.querySelector("#tiktokDescription").textContent = "Este é o mesmo modelo do vídeo. Envie as fotos solicitadas e veja a sua versão personalizada em poucos minutos.";
-    }
     tiktokTemplateName.textContent = scene.title;
     tiktokTemplateVideo.src = scene.video;
     tiktokTemplateVideo.poster = scene.image;
@@ -1473,7 +1541,7 @@
       hasUnsavedUpload = true;
       selectedImage.src = url;
       selectedThumb.classList.add("has-image");
-      selectedTitle.textContent = scene.teaser;
+      selectedTitle.textContent = scene.uploadLabels[0] || scene.requirement;
       selectedHint.textContent = name;
       hint.textContent = "Creating your personalized preview...";
     }
@@ -1481,7 +1549,7 @@
     function setUploadLoading(active) {
       uploadLoading = active;
       selectPhoto.classList.toggle("is-loading", active);
-      selectedTitle.textContent = active ? "正在准备图片" : selectedUrl ? "已选择图片" : scene.teaser;
+      selectedTitle.textContent = active ? "正在准备图片" : selectedUrl ? "已选择图片" : scene.requirement;
       selectedHint.textContent = active ? "正在读取照片…" : selectedUrl ? selectedName : "按模板要求上传照片，即可生成预览。";
       hint.textContent = active ? "Preparing your image for preview..." : hint.textContent;
     }
@@ -1667,7 +1735,7 @@
       selectedThumb.classList.remove("has-image");
       selectPhoto.classList.remove("is-loading");
       uploadLoading = false;
-      selectedTitle.textContent = scene.teaser;
+      selectedTitle.textContent = scene.requirement;
       selectedHint.textContent = "";
       templateImage.src = scene.image;
       templateImage.style.objectPosition = scene.position;

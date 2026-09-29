@@ -653,7 +653,7 @@
             <button class="selected-card" id="selectPhoto" type="button">
               <span class="selected-thumb" id="selectedThumb"><span class="plus">+</span><img id="selectedImage" alt="Selected upload"></span>
               <span class="selected-text">
-                <strong id="selectedTitle">上传照片，来生成你的专属视频</strong>
+                <strong id="selectedTitle">上传符合模板要求的照片</strong>
                 <span id="selectedHint"></span>
               </span>
             </button><span class="slot-description" id="slotDescription1"></span>
@@ -870,7 +870,7 @@
     </main>
   </div>
 
-  <script src="ui/template-catalog.js?v=20260915"></script>
+  <script src="ui/template-catalog.js?v=20260929-photo-requirements"></script>
   <script>
     const scenes = window.FARI_TEMPLATES;
 
@@ -933,9 +933,9 @@
       scene.uploadLabels.forEach((label, i) => {
         const [button, title, copy] = controls[i];
         const description = document.querySelector(`#slotDescription${i + 1}`);
-        title.textContent = scene.teaser;
-        button.setAttribute('aria-label', scene.teaser);
-        if (description) description.textContent = scene.teaser;
+        title.textContent = label;
+        button.setAttribute('aria-label', label);
+        if (description) description.textContent = label;
         copy.textContent = uploadedPhotos[i] ? `${uploadedPhotos[i].name} · 点击替换` : "";
         const thumb = button.querySelector('.selected-thumb');
         let img = thumb.querySelector('img');
@@ -945,7 +945,7 @@
         else img.removeAttribute('src');
       });
       const summary = document.querySelector('#twoUploadSummary');
-      if (summary) summary.textContent = scene.teaser;
+      if (summary) summary.textContent = scene.requirement;
     }
     renderUploadSlots();
     const shareContext = buildCompartilharContext();
@@ -1230,7 +1230,7 @@
       hasUnsavedUpload = true;
       selectedImage.src = url;
       selectedThumb.classList.add("has-image");
-      selectedTitle.textContent = scene.teaser;
+      selectedTitle.textContent = scene.uploadLabels[0] || scene.requirement;
       selectedHint.textContent = name;
       hint.textContent = "Creating your personalized preview...";
     }
@@ -1238,7 +1238,7 @@
     function setUploadLoading(active) {
       uploadLoading = active;
       selectPhoto.classList.toggle("is-loading", active);
-      selectedTitle.textContent = active ? "正在准备图片" : selectedUrl ? "已选择图片" : scene.teaser;
+      selectedTitle.textContent = active ? "正在准备图片" : selectedUrl ? "已选择图片" : scene.requirement;
       selectedHint.textContent = active ? "正在读取照片…" : selectedUrl ? selectedName : "按模板要求上传照片，即可生成预览。";
       hint.textContent = active ? "Preparing your image for preview..." : hint.textContent;
     }
@@ -1417,7 +1417,7 @@
       selectedThumb.classList.remove("has-image");
       selectPhoto.classList.remove("is-loading");
       uploadLoading = false;
-      selectedTitle.textContent = scene.teaser;
+      selectedTitle.textContent = scene.requirement;
       selectedHint.textContent = "";
       templateImage.src = scene.image;
       templateImage.style.objectPosition = scene.position;
